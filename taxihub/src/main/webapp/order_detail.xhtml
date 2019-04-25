@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="orderDetailComponent" type="vn.ontaxi.component.OrderDetailComponent"-->
+<!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h:outputScript name="js/booking_routes.js"/>
+        <h1 align="center">#{msg.chi_tiet_don_hang}</h1>
+        <p:spacer height="10px"/>
+        <h:form>
+            <p:commandButton value="#{msg.danh_sach}" action="index.jsf?faces-redirect=true" ajax="false"
+                             immediate="true"/>
+        </h:form>
+        <p:spacer height="10px"/>
+
+        <ui:param name="dateTimePattern" value="dd-MM-yyyy HH:mm"/>
+        <h:form id="contentForm">
+            <p:growl id="growl" showDetail="true" sticky="true"/>
+            <table class="table_booking_info">
+                <tr>
+                    <td class="label">
+                        #{msg.mobile}
+                    </td>
+                    <td>
+                        <p:inputText id="mobile" label="#{msg.mobile}" type="text" readonly="#{!orderDetailComponent.booking.ordered and !orderDetailComponent.booking.isNew()}"
+                                     value="#{orderDetailComponent.booking.mobile}" required="true">
+                            <p:ajax listener="#{orderDetailComponent.saveBooking()}"/>
+                        </p:inputText>
+                        <p:message for="mobile"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.customer_name}
+                    </td>
+                    <td>
+                        <h:outputText type="text" value="#{orderDetailComponent.booking.name}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.returned_customer}
+                    </td>
+                    <td>
+                        <p:selectBooleanCheckbox value="#{orderDetailComponent.booking.returnedCustomer}" disabled="true"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.loai_xe}
+                    </td>
+                    <td>
+                        <p:selectOneMenu value="#{orderDetailComponent.booking.car_type}" disabled="#{not (orderDetailComponent.booking.ordered)}">
+                            <f:selectItem itemLabel="4 Cho" itemValue="N4"/>
+                            <f:selectItem itemLabel="4 Cho Vios" itemValue="G4"/>
+                            <f:selectItem itemLabel="7 Cho" itemValue="N7"/>
+                            <p:ajax event="change" listener="#{orderDetailComponent.onChangeCarType}" update="@form"/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        Lái Xe
+                    </td>
+                    <td>
+                        <h:outputText
+                                value="${orderDetailComponent.booking.accepted_by_driver.name}
+                                ${orderDetailComponent.booking.accepted_by_driver.mobile} ${orderDetailComponent.booking.accepted_by_driver.license_plates}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.diem_di}
+                    </td>
+                    <td>
+                        <h:outputText id="fromLocation" value="#{orderDetailComponent.booking.from_location}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.diem_den}
+                    </td>
+                    <td>
+                        <h:outputText id="toLocation" value="#{orderDetailComponent.booking.to_location}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.hai_chieu}
+                    </td>
+                    <td>
+                        <h:outputText value="#{orderDetailComponent.booking.roundTrip ? msg.yes : msg.no}"/>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="table_booking_info">
+                <tr>
+                    <td class="label">
+                        Giờ Đi dự kiến
+                    </td>
+                    <td>
+                        <p:calendar id="departureDate" value="#{orderDetailComponent.booking.departure_time}" pattern="#{dateTimePattern}" required="true"
+                                    disabled="#{not (orderDetailComponent.booking.ordered)}">
+                            <p:ajax event="dateSelect" listener="#{orderDetailComponent.saveBooking}" update="departureDate"/>
+                        </p:calendar>
+
+                        <p:message for="departureDate"/>
+                    </td>
+                </tr>
+                <ui:fragment rendered="#{orderDetailComponent.booking.completed}">
+                    <tr>
+                        <td class="label">
+                            Giờ Đi thực tế
+                        </td>
+                        <td>
+                            <h:outputText value="#{orderDetailComponent.booking.actual_departure_time}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </h:outputText>
+                        </td>
+                    </tr>
+                    <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
+                        <tr>
+                            <td class="label">
+                                Giờ Kết Thúc Chiều Đi
+                            </td>
+                            <td>
+                                <h:outputText value="#{orderDetailComponent.booking.outwardArrivalTime}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </h:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                Giờ Bắt Đầu Chiều Về
+                            </td>
+                            <td>
+                                <h:outputText value="#{orderDetailComponent.booking.returnDepartureTime}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </h:outputText>
+                            </td>
+                        </tr>
+                    </ui:fragment>
+                    <tr>
+                        <td class="label">
+                            Giờ Đến
+                        </td>
+                        <td>
+                            <h:outputText value="#{orderDetailComponent.booking.arrival_time}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </h:outputText>
+                        </td>
+                    </tr>
+                </ui:fragment>
+            </table>
+
+            <table class="table_booking_info">
+                <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
+                    <tr>
+                        <td class="label">
+                            #{msg.gio_cho}
+                        </td>
+                        <td>
+                            <h:outputText type="text" value="#{orderDetailComponent.booking.wait_hours}"/>
+                        </td>
+                    </tr>
+                </ui:fragment>
+                <tr>
+                    <td class="label">
+                        Khách Hợp Đồng
+                    </td>
+                    <td>
+                        <h:outputText value="#{orderDetailComponent.booking.laterPaid ? msg.yes : msg.no}"/>
+                    </td>
+                </tr>
+                <ui:fragment
+                        rendered="#{!(!orderDetailComponent.booking.laterPaid and orderDetailComponent.booking.completed)}">
+                    <tr>
+                        <td class="label">
+                        </td>
+                        <td>
+                            <p:selectOneMenu id="debitorOption" value="#{orderDetailComponent.booking.debtor}" disabled="true">
+                                <f:selectItems value="#{orderDetailComponent.debtorSelectItems}"/>
+                            </p:selectOneMenu>
+                        </td>
+                    </tr>
+                </ui:fragment>
+                <tr>
+                    <td class="label">
+                        Trọn Gói
+                    </td>
+                    <td>
+                        <div>
+                            <p:selectBooleanCheckbox value="#{orderDetailComponent.booking.fixedPrice}"
+                                                     disabled="#{not (orderDetailComponent.booking.ordered)}"
+                                                     style="vertical-align: middle; padding-right: 10px">
+                                <p:ajax update="fixedPriceText, transportFeeText" listener="#{orderDetailComponent.saveBooking}"/>
+                            </p:selectBooleanCheckbox>
+                            <p:inputText readonly="#{not (orderDetailComponent.booking.ordered)}"
+                                         id="fixedPriceText" type="text" value="#{orderDetailComponent.booking.total_price}"
+                                         style="width: 60px" disabled="#{not orderDetailComponent.booking.fixedPrice}">
+                                <f:convertNumber pattern="#,###"/>
+                                <p:ajax event="blur" update="fixedPriceText, totalAmount" listener="#{orderDetailComponent.onChangeFixedPrice}"/>
+                            </p:inputText>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        Phí Cầu Đường
+                    </td>
+                    <td>
+                        <div>
+                            <p:inputText readonly="#{not (orderDetailComponent.booking.ordered)}"
+                                         id="transportFeeText" type="text" value="#{orderDetailComponent.booking.transport_fee}"
+                                         style="width: 60px" disabled="#{not orderDetailComponent.booking.fixedPrice}">
+                                <f:convertNumber pattern="#,###"/>
+                                <p:ajax event="blur" update="transportFeeText" listener="#{orderDetailComponent.onChangeFixedPrice}"/>
+                            </p:inputText>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.promotion}
+                    </td>
+                    <td>
+                        <p:selectOneMenu id="promotionPercentage"
+                                         disabled="#{not (orderDetailComponent.booking.ordered)}" value="#{orderDetailComponent.booking.promotionPercentage}">
+                            <f:selectItems value="#{orderDetailComponent.promotionPercentageSelectItems}"/>
+                            <p:ajax update="promotionPercentage" listener="#{orderDetailComponent.recalculateDriverFee}"/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        Phần Trăm Thu
+                    </td>
+                    <td>
+                        <p:selectOneMenu id="feePercentage" disabled="#{not (orderDetailComponent.booking.ordered)}"
+                                         value="#{orderDetailComponent.booking.fee_percentage}">
+                            <f:selectItems value="#{orderDetailComponent.feePercentageSelectItems}"/>
+                            <p:ajax update="feePercentage" listener="#{orderDetailComponent.recalculateDriverFee}"/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+
+                <ui:fragment rendered="#{orderDetailComponent.booking.ordered || orderDetailComponent.booking.isNew()}">
+                    <tr>
+                        <td class="label">
+                            #{msg.driver_group_option}
+                        </td>
+                        <td>
+                            <p:selectOneRadio value="#{orderDetailComponent.sendToGroupOption}">
+                                <f:selectItems value="#{orderDetailComponent.sendToDriverGroupsOptions}"/>
+                                <p:ajax update="chooseDriverMenu"/>
+                            </p:selectOneRadio>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td/>
+                        <td>
+                            <!--@elvariable id="driverConverter" type="vn.ontaxi.converter.DriverConverter"-->
+                            <ui:fragment rendered="#{orderDetailComponent.booking.ordered}">
+                                <p:selectManyMenu id="chooseDriverMenu" style="width: 500px"
+                                                  converter="#{driverConverter}" validator="#{orderDetailComponent.validateSelectDriver}"
+                                                  disabled="#{!orderDetailComponent.sendToIndividual}"
+                                                  value="#{orderDetailComponent.selectedDrivers}"
+                                                  var="d" filter="true" filterMatchMode="contains" showCheckbox="true">
+                                    <f:selectItems value="#{orderDetailComponent.drivers}" var="driver"
+                                                   itemValue="#{driver}" itemLabel="#{driver.email}"/>
+                                    <p:column>
+                                        <h:outputText value="#{d.name}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{d.mobile}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{d.carType}"/>
+                                    </p:column>
+                                </p:selectManyMenu>
+                                <h:message for="chooseDriverMenu" />
+                            </ui:fragment>
+                            <ui:fragment rendered="#{orderDetailComponent.booking.isNew()}">
+                                <h:outputText value="#{orderDetailComponent.booking.to_drivers}"/>
+                            </ui:fragment>
+                        </td>
+                    </tr>
+                </ui:fragment>
+            </table>
+            <table class="table_booking_info">
+                <tr>
+                    <td class="label">
+                        <h:outputText value="#{msg.quang_duong_du_kien}"/>
+                    </td>
+                    <td>
+                        <h:outputText
+                                value="#{numberFormatterComponent.formatDistance(orderDetailComponent.booking.total_distance)}"/>
+                    </td>
+                </tr>
+                <ui:fragment rendered="#{orderDetailComponent.booking.completed}">
+                    <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
+                        <tr>
+                            <td class="label">
+                                <h:outputText value="#{msg.chieu_di_thuc_te}"/>
+                            </td>
+                            <td>
+                                <h:outputText
+                                        value="#{numberFormatterComponent.formatDistance(orderDetailComponent.booking.outward_distance)}"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <h:outputText value="#{msg.chieu_ve_thuc_te}"/>
+                            </td>
+                            <td>
+                                <h:outputText
+                                        value="#{numberFormatterComponent.formatDistance(orderDetailComponent.booking.return_distance)}"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <h:outputText value="#{msg.chieu_di_tinh_toan_duoc}"/>
+                            </td>
+                            <td>
+                                <h:outputText id="outwardSystemCalculatedDistance"
+                                              value="#{numberFormatterComponent.formatDistance(orderDetailComponent.distanceCalculated)}"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                <h:outputText value="#{msg.chieu_ve_tinh_toan_duoc}"/>
+                            </td>
+                            <td>
+                                <h:outputText id="returnSystemCalculatedDistance"
+                                              value="#{numberFormatterComponent.formatDistance(orderDetailComponent.returnDistanceCalculated)}"/>
+                            </td>
+                        </tr>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{!orderDetailComponent.booking.roundTrip}">
+                        <tr>
+                            <td class="label">
+                                <h:outputText value="#{msg.quang_duong_thuc_te}"/>
+                            </td>
+                            <td>
+                                <h:outputText
+                                        value="#{numberFormatterComponent.formatDistance(orderDetailComponent.booking.actual_total_distance)}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <h:outputText value="#{msg.quang_duong_tinh_toan_duoc}"/>
+                            </td>
+                            <td>
+                                <h:outputText id="systemCalculatedDistance"
+                                              value="#{numberFormatterComponent.formatDistance(orderDetailComponent.distanceCalculated)}"/>
+                            </td>
+                        </tr>
+                    </ui:fragment>
+                    <tr>
+                        <td class="label">
+                            <h:outputText value="#{msg.phi_cau_duong}"/>
+                        </td>
+                        <td>
+                            <h:outputText
+                                    value="#{numberFormatterComponent.formatPrice(orderDetailComponent.booking.transport_fee)}"/>
+                        </td>
+                    </tr>
+                </ui:fragment>
+            </table>
+            <table class="table_booking_info">
+                <tr>
+                    <td class="label">
+                        <h:outputText value="#{msg.tong_tien}"/>
+                    </td>
+                    <td>
+                        <!--@elvariable id="priceCalculator" type="vn.ontaxi.service.PriceCalculator"-->
+                        <h:outputText id="totalAmount"
+                                      value="#{orderDetailComponent.booking.completed ? orderDetailComponent.booking.getTotalPriceInDetail(priceCalculator) : numberFormatterComponent.formatPrice(orderDetailComponent.booking.total_price)}"/>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <ui:fragment rendered="#{orderDetailComponent.booking.ordered}">
+                    <p:commandButton value="#{msg.send_to_driver}" action="#{orderDetailComponent.sendOrderToDriver}" update="contentForm"/>
+                </ui:fragment>
+                <ui:fragment rendered="#{orderDetailComponent.booking.laterPaid and !orderDetailComponent.booking.paidToDriver}">
+                    <p:commandButton value="#{msg.payment_to_driver}" action="#{orderDetailComponent.payDriver}"/>
+                </ui:fragment>
+            </div>
+        </h:form>
+
+        <ui:fragment rendered="#{orderDetailComponent.booking.completed}">
+            <h:form>
+                <p:selectOneRadio value="#{orderDetailComponent.with_snap}">
+                    <f:selectItem itemLabel="Làm Đẹp" itemValue="true"/>
+                    <f:selectItem itemLabel="Nguyên Bản" itemValue="false"/>
+                    <p:ajax update="locationJson, contentForm:systemCalculatedDistance, contentForm:returnSystemCalculatedDistance, contentForm:outwardSystemCalculatedDistance"
+                            oncomplete="initMap();"/>
+                </p:selectOneRadio>
+                Độ Chính Xác ( Theo mét )
+                <!--@elvariable id="configurationComponent" type="vn.ontaxi.component.ConfigurationComponent"-->
+                <p:inputText value="#{configurationComponent.accuracy_limit}">
+                    <p:ajax update="locationJson, contentForm:systemCalculatedDistance, contentForm:returnSystemCalculatedDistance, contentForm:outwardSystemCalculatedDistance"
+                            oncomplete="initMap();"/>
+                </p:inputText>
+                <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
+                    <p:selectOneRadio value="#{orderDetailComponent.display_outward_routes}">
+                        <f:selectItem itemLabel="Đường Đi" itemValue="true"/>
+                        <f:selectItem itemLabel="Đường Về" itemValue="false"/>
+                        <p:ajax update="locationJson, contentForm:systemCalculatedDistance, contentForm:returnSystemCalculatedDistance, contentForm:outwardSystemCalculatedDistance"
+                                oncomplete="initMap();"/>
+                    </p:selectOneRadio>
+                </ui:fragment>
+            </h:form>
+            <h:outputText value="#{orderDetailComponent.locationJson}" id="locationJson" style="display: none"/>
+            <div id="map"/>
+            <script type="text/javascript"
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdmBQwrZ5ADzaUyBFSUx9DQSXlneMkWXU&amp;callback=initMap"/>
+        </ui:fragment>
+
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of the div
+             * element that contains the map. */
+            #map {
+                height: 100%;
+            }
+
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            .table_booking_info {
+                border: 1px solid black;
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            .label {
+                width: 15%;
+            }
+
+        </style>
+    </ui:define>
+</ui:composition>
+</html>

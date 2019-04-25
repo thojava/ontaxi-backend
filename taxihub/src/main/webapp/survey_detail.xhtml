@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="customerSurveyComponent" type="vn.ontaxi.component.CustomerSurveyComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">#{msg.khao_sat_khach_hang}</h1>
+
+        <h:form>
+            <table>
+                <tr>
+                    <td class="label">
+                        Chi Tiết
+                    </td>
+                    <td>
+                        <p:commandLink value="${customerSurveyComponent.booking.id}"
+                                       action="${customerSurveyComponent.viewBookingDetail}" target="_blank"
+                                       ajax="false"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        Mobile
+                    </td>
+                    <td>
+                        <h:outputText type="text" value="#{customerSurveyComponent.booking.mobile}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.customer_name}
+                    </td>
+                    <td>
+                        <h:outputText type="text" value="#{customerSurveyComponent.booking.name}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.loai_xe}
+                    </td>
+                    <td>
+                        <p:selectOneMenu value="#{customerSurveyComponent.booking.car_type}"
+                                         disabled="true">
+                            <f:selectItem itemLabel="4 Cho" itemValue="N4"/>
+                            <f:selectItem itemLabel="4 Cho Vios" itemValue="G4"/>
+                            <f:selectItem itemLabel="7 Cho" itemValue="N7"/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        Lái Xe
+                    </td>
+                    <td>
+                        <h:outputText
+                                value="${customerSurveyComponent.booking.accepted_by_driver.name}
+                                ${customerSurveyComponent.booking.accepted_by_driver.mobile} ${customerSurveyComponent.booking.accepted_by_driver.license_plates}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.diem_di}
+                    </td>
+                    <td>
+                        <h:outputText id="fromLocation" value="#{customerSurveyComponent.booking.from_location}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.diem_den}
+                    </td>
+                    <td>
+                        <h:outputText id="toLocation" value="#{customerSurveyComponent.booking.to_location}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.hai_chieu}
+                    </td>
+                    <td>
+                        <h:outputText value="#{customerSurveyComponent.booking.roundTrip ? msg.yes : msg.no}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label" style="vertical-align: top">
+                        Đánh giá
+                    </td>
+                    <td>
+                        <p:selectOneRadio value="#{customerSurveyComponent.customerSurvey.evaluation}" required="true" disabled="${customerSurveyComponent.booking.surveyId > 0}">
+                            <f:selectItem itemLabel="Kém" itemValue="B"/>
+                            <f:selectItem itemLabel="Bình Thường" itemValue="N"/>
+                            <f:selectItem itemLabel="Tốt" itemValue="G"/>
+                            <p:ajax/>
+                        </p:selectOneRadio>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label" style="vertical-align: top">
+                        Phản hồi của khách hàng
+                    </td>
+                    <td>
+                        <p:inputTextarea value="#{customerSurveyComponent.customerSurvey.comment}" cols="100" rows="10" required="true"
+                                         readonly="${customerSurveyComponent.booking.surveyId > 0}">
+                            <p:ajax event="change"/>
+                        </p:inputTextarea>
+                    </td>
+                </tr>
+            </table>
+        </h:form>
+        <h:form>
+            <table>
+                <tr>
+                    <td>
+                        <p:commandLink value="Đặt Xe" action="#{customerSurveyComponent.createBooking}" ajax="false" target="_blank" rendered="${customerSurveyComponent.booking.surveyId eq 0}"/>
+                    </td>
+                    <td>
+                        <p:commandButton value="Hoàn Thành" action="${customerSurveyComponent.completeSurvey}" rendered="${customerSurveyComponent.booking.surveyId eq 0}"/>
+                    </td>
+                </tr>
+            </table>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

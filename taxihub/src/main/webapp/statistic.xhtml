@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="statisticComponent" type="vn.ontaxi.component.StatisticComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">#{msg.statistic}</h1>
+
+        <p:chart type="line" model="#{statisticComponent.incomeChartModel}" style="height:300px;"/>
+    </ui:define>
+</ui:composition>
+</html>

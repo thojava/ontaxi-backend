@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<!--@elvariable id="userCredentialComponent" type="vn.ontaxi.component.UserCredentialComponent"-->
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<div align="right">
+    <div style="position: relative; float: right">
+        <h3>
+            Tài Khoản: #{userCredentialComponent.userName}</h3>
+        <form action="/logout">
+            <input type="submit" value="Thoát"/>
+        </form>
+    </div>
+    <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+    <span style="position: relative; float: left">
+        <h:form>
+            <table>
+                <tr>
+                    <td>
+                         <p:commandButton value="Danh sách đơn hàng" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                    </td>
+                    <td>
+                        <p:commandButton value="Danh sách lái xe" action="driver.jsf?faces-redirect=true" ajax="false" immediate="true"
+                        rendered="#{not userCredentialComponent.customer}"/>
+                    </td>
+                    <td>
+                        <p:commandButton value="Khảo sát khách hàng" action="customer_survey.jsf?faces-redirect=true" ajax="false" immediate="true"
+                                         rendered="#{not userCredentialComponent.customer}"/>
+                    </td>
+                    <td>
+                        <p:commandButton value="Báo Cáo" action="report.jsf?faces-redirect=true" ajax="false" immediate="true"
+                                         rendered="#{not userCredentialComponent.customer}"/>
+                    </td>
+                    <td>
+                        <p:commandButton value="#{msg.statistic}" action="statistic.jsf?faces-redirect=true" ajax="false" immediate="true"
+                                         rendered="#{not userCredentialComponent.customer}"/>
+                    </td>
+                    <td>
+                        <p:commandButton value="#{msg.configuration}" action="configuration.jsf?faces-redirect=true" ajax="false" immediate="true"
+                                         rendered="#{not userCredentialComponent.customer}"/>
+                    </td>
+                    <td>
+                        <p:commandButton value="Trạng Thái Website" action="marketing.jsf?faces-redirect=true" ajax="false" immediate="true"
+                                         rendered="#{not userCredentialComponent.customer}"/>
+                    </td>
+                </tr>
+            </table>
+        </h:form>
+    </span>
+</div>
+
+</html>

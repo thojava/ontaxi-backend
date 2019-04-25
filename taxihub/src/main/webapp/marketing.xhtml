@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">Trạng Thái Website</h1>
+        <p:spacer height="10px"/>
+
+        <h:form id="mainForm">
+            <!--@elvariable id="marketingComponent" type="vn.ontaxi.component.MarketingComponent"-->
+            <p:poll interval="30" update="mainForm"/>
+            <p:dataTable value="#{marketingComponent.todayViewPrices}" var="viewPrice" id="scheduledBookingTable"
+                         widgetVar="scheduledBookingTable"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+                <p:column headerText="#{msg.view_price_datetime}">
+                    <h:outputText value="#{viewPrice.created_datetime}">
+                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="#{msg.diem_di}">
+                    <h:outputText value="#{viewPrice.from_location}"/>
+                </p:column>
+                <p:column headerText="#{msg.diem_den}">
+                    <h:outputText value="#{viewPrice.to_location}"/>
+                </p:column>
+                <p:column headerText="#{msg.quang_duong}">
+                    <h:outputText value="#{viewPrice.total_distance}"/>
+                </p:column>
+                <p:column headerText="#{msg.gio_di}">
+                    <h:outputText value="#{viewPrice.departureTime}">
+                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                    </h:outputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

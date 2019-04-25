@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="bookingListComponent" type="vn.ontaxi.component.BookingListComponent"-->
+<!--@elvariable id="orderDetailComponent" type="vn.ontaxi.component.OrderDetailComponent"-->
+<!--@elvariable id="orderSummaryTabStore" type="vn.ontaxi.component.OrderSummaryTabStore"-->
+<!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+<!--@elvariable id="userCredentialComponent" type="vn.ontaxi.component.UserCredentialComponent"-->
+
+<ui:composition>
+    <h:outputScript name="js/order_summary.js"/>
+    <h1 align="center">#{msg.quan_ly_don_hang}</h1>
+    <p:spacer height="10px"/>
+
+    <h:form rendered="#{not userCredentialComponent.customer}">
+        <p:commandButton value="#{msg.tao_moi}" action="new_order.jsf?faces-redirect=true" ajax="false"/>
+        <p:commandButton value="#{msg.huy_order}" action="#{bookingListComponent.cancelBooking}"
+                         update="mainForm:bookingTabView"/>
+    </h:form>
+
+    <p:spacer height="10px"/>
+
+    <h:form id="mainForm">
+        <p:poll interval="30"
+                update="mainForm"
+                oncomplete="playAudio();"
+                listener="#{bookingListComponent.resetNewOrder}"/>
+
+        <p:tabView id="bookingTabView" activeIndex="#{orderSummaryTabStore.activeIndex}">
+            <p:ajax event="tabChange" listener="#{orderSummaryTabStore.onTabChange}"/>
+
+            <p:tab title="#{msg.new_booking} (#{bookingListComponent.scheduledBookingSize})" rendered="#{not userCredentialComponent.customer}">
+                <ui:include src="order_summary/scheduled_bookings.xhtml"/>
+            </p:tab>
+
+
+            <p:tab title="#{msg.send_to_driver} (#{bookingListComponent.newBookingSize})" rendered="#{not userCredentialComponent.customer}">
+                <ui:include src="order_summary/new_bookings.xhtml"/>
+            </p:tab>
+
+            <p:tab title="#{msg.accepted} (#{bookingListComponent.acceptedBookingSize})" rendered="#{not userCredentialComponent.customer}">
+                <ui:include src="order_summary/accepted_bookings.xhtml"/>
+            </p:tab>
+
+
+            <p:tab title="#{msg.completed} (#{bookingListComponent.completedBookingSize})">
+                <ui:include src="order_summary/completed_bookings.xhtml"/>
+            </p:tab>
+        </p:tabView>
+    </h:form>
+</ui:composition>
+</html>

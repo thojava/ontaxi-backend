@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="customersComponent" type="vn.ontaxi.component.CustomersComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+
+        <h1 align="center">#{msg.quan_ly_khach_hang}</h1>
+        <p:spacer height="10px"/>
+
+        <h:form id="mainForm">
+            <p:dataTable value="#{customersComponent.customers}" var="customer">
+                <p:column headerText="Phone">
+                    <h:outputText value="#{customer.phone}"/>
+                </p:column>
+                <p:column headerText="Tên">
+                    <h:outputText value="#{customer.name}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

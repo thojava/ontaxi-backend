@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+    <!--@elvariable id="bookingListComponent" type="vn.ontaxi.component.BookingListComponent"-->
+
+    <p:dataTable value="#{bookingListComponent.scheduledBookings}"
+                 var="booking"
+                 id="scheduledBookingTable"
+                 widgetVar="scheduledBookingTable"
+                 filteredValue="#{bookingListComponent.filteredNewBookings}"
+                 rows="20"
+                 paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,15"
+                 rowStyleClass="#{!booking.viewed ? 'not_viewed_order' : (booking.outOfDate ? 'out_of_date_order' : null)}"
+                 lazy="true">
+        <p:column style="width: 20px">
+            <p:selectBooleanCheckbox value="#{booking.beanSelected}">
+                <p:ajax/>
+            </p:selectBooleanCheckbox>
+        </p:column>
+
+        <p:column headerText="Id" style="width: 50px">
+            <p:commandLink value="#{booking.id}"
+                           action="#{bookingListComponent.selectBooking(booking)}"
+                           update="@all"/>
+        </p:column>
+
+        <p:column headerText="#{msg.khach_hang}" filterBy="#{booking.mobile}">
+            <h:outputText value="#{booking.mobile}&lt;br/&gt;#{booking.name}" escape="false"/>
+        </p:column>
+
+        <p:column headerText="#{msg.diem_di}">
+            <h:outputText value="#{bookingListComponent.justifyLocation(booking.from_location)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.diem_den}">
+            <h:outputText value="#{bookingListComponent.justifyLocation(booking.to_location)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.quang_duong}">
+            <h:outputText value="#{numberFormatterComponent.formatDistance(booking.total_distance)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.tong_tien}">
+            <h:outputText value="#{numberFormatterComponent.formatPrice(booking.total_price)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.gio_di}"
+                  filterBy="#{booking.departure_time}"
+                  filterFunction="#{bookingListComponent.filterByDate}">
+            <f:facet name="filter">
+                <p:calendar pattern="yyyy-MM-dd">
+                    <p:ajax event="dateSelect" oncomplete="PF('scheduledBookingTable').filter()"
+                            update="scheduledBookingTable"/>
+                    <p:ajax event="change" execute="@this" oncomplete="PF('scheduledBookingTable').filter()"
+                            update="scheduledBookingTable"/>
+                </p:calendar>
+            </f:facet>
+
+            <h:outputText value="#{booking.departure_time}">
+                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+            </h:outputText>
+        </p:column>
+    </p:dataTable>
+</ui:composition>

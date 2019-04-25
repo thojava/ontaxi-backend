@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="driverDetailComponent" type="vn.ontaxi.component.DriverDetailComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">#{msg.driver_detail}</h1>
+        <p:spacer height="10px"/>
+
+        <p:tabView>
+            <p:tab title="#{msg.general_info}">
+                <h:form id="newOrderForm">
+
+                    <p:growl id="growl" showDetail="true" sticky="true"/>
+                    <table cellspacing="5px">
+                        <tr>
+                            <td class="label">
+                                #{msg.full_name}
+                            </td>
+                            <td>
+                                <p:inputText id="name" label="#{msg.full_name}" type="text" value="#{driverDetailComponent.newDriver.name}" required="true"/>
+                                <p:message for="name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.mobile}
+                            </td>
+                            <td>
+                                <p:inputText id="mobile" label="#{msg.mobile}" type="text" value="#{driverDetailComponent.newDriver.mobile}" required="true"/>
+                                <p:message for="mobile"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.loai_xe}
+                            </td>
+                            <td>
+                                <p:selectOneMenu value="#{driverDetailComponent.newDriver.carType}">
+                                    <f:selectItem itemLabel="4 Cho" itemValue="4 Chỗ"/>
+                                    <f:selectItem itemLabel="4 Cho Vios" itemValue="4 Chỗ Vios"/>
+                                    <f:selectItem itemLabel="7 Cho" itemValue="7 Chỗ"/>
+                                </p:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.email}
+                            </td>
+                            <td>
+                                <p:inputText id="email" label="#{msg.email}" type="text" value="#{driverDetailComponent.newDriver.email}" required="true"/>
+                                <p:message for="email"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.license_plates}
+                            </td>
+                            <td>
+                                <p:inputText id="license_plates" label="#{msg.license_plates}" type="text" value="#{driverDetailComponent.newDriver.license_plates}" required="true"/>
+                                <p:message for="license_plates"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.airport}
+                            </td>
+                            <td>
+                                <p:selectBooleanCheckbox value="#{driverDetailComponent.newDriver.airport}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.level}
+                            </td>
+                            <td>
+                                <p:selectOneMenu value="#{driverDetailComponent.newDriver.level}">
+                                    <f:selectItem itemLabel="Ưu Tiên" itemValue="1"/>
+                                    <f:selectItem itemLabel="Bình Thường" itemValue="2"/>
+                                </p:selectOneMenu>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div>
+                        <p:commandButton value="#{msg.save_driver}" action="#{driverDetailComponent.addNewDriver}" update="@form"/>
+                    </div>
+                </h:form>
+            </p:tab>
+            <p:tab title="#{msg.transaction}">
+                <div>
+                    <h:form>
+                        <h:commandButton value="#{msg.export_financial_report}" action="#{driverDetailComponent.exportFinancialReport}" update="@form"/>
+                    </h:form>
+                </div>
+                <p:spacer height="10px"/>
+                <p:dataTable value="#{driverDetailComponent.driverTransactions}" var="driverTransaction">
+                    <p:column headerText="#{msg.payment_type}">
+                        <h:outputText id="paymentType" value="#{driverTransaction.paymentType eq 'RC' ? msg.debit : msg.credit}"/>
+                    </p:column>
+                    <p:column headerText="#{msg.amount}">
+                        <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                        <p:outputLabel value="#{numberFormatterComponent.formatPrice(driverTransaction.amount)}"/>
+                    </p:column>
+                    <p:column headerText="#{msg.reason}">
+                        <h:outputText value="#{driverTransaction.reason}"/>
+                    </p:column>
+                    <p:column headerText="#{msg.transaction_time}">
+                        <h:outputText value="#{driverTransaction.lastUpdatedDatetime}">
+                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </p:tab>
+        </p:tabView>
+    </ui:define>
+</ui:composition>
+</html>

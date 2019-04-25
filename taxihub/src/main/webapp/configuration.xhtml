@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="configurationComponent" type="vn.ontaxi.component.ConfigurationComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">#{msg.promotion_plan}</h1>
+        <p:spacer height="10px"/>
+
+        <h:form>
+            <!--@elvariable id="configurationComponent" type="vn.ontaxi.component.ConfigurationComponent"-->
+            <p:dataTable value="#{configurationComponent.promotionPlans}" var="promotionPlan">
+                <p:column headerText="#{msg.distance_from} KM">
+                    <p:outputLabel value="#{promotionPlan.from_distance}"/>
+                </p:column>
+                <p:column headerText="#{msg.distance_to} KM">
+                    <p:outputLabel value="#{promotionPlan.to_distance}"/>
+                </p:column>
+                <p:column headerText="#{msg.monday}">
+                    <p:inputText value="#{promotionPlan.monday_percentage}">
+                        <p:ajax event="blur" update="@form" listener="#{configurationComponent.savePromotion(promotionPlan)}"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="#{msg.tuesday}">
+                    <p:inputText value="#{promotionPlan.tuesday_percentage}">
+                        <p:ajax event="blur" update="@form" listener="#{configurationComponent.savePromotion(promotionPlan)}"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="#{msg.wednesday}">
+                    <p:inputText value="#{promotionPlan.wednesday_percentage}">
+                        <p:ajax event="blur" update="@form" listener="#{configurationComponent.savePromotion(promotionPlan)}"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="#{msg.thursday}">
+                    <p:inputText value="#{promotionPlan.thursday_percentage}">
+                        <p:ajax event="blur" update="@form" listener="#{configurationComponent.savePromotion(promotionPlan)}"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="#{msg.friday}">
+                    <p:inputText value="#{promotionPlan.friday_percentage}">
+                        <p:ajax event="blur" update="@form" listener="#{configurationComponent.savePromotion(promotionPlan)}"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="#{msg.saturday}">
+                    <p:inputText value="#{promotionPlan.saturday_percentage}">
+                        <p:ajax event="blur" update="@form" listener="#{configurationComponent.savePromotion(promotionPlan)}"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="#{msg.sunday}">
+                    <p:inputText value="#{promotionPlan.sunday_percentage}">
+                        <p:ajax event="blur" update="@form" listener="#{configurationComponent.savePromotion(promotionPlan)}"/>
+                    </p:inputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <p:spacer height="10px"/>
+        <h1 align="center">#{msg.setup_unit_price}</h1>
+        <h:form>
+            <table>
+                <tr>
+                    <td>
+                        4 Chỗ
+                    </td>
+                    <td>
+                        <p:inputText value="#{configurationComponent.priceConfiguration.normal_4}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        5 Chỗ
+                    </td>
+                    <td>
+                        <p:inputText value="#{configurationComponent.priceConfiguration.good_4}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        7 Chỗ
+                    </td>
+                    <td>
+                        <p:inputText value="#{configurationComponent.priceConfiguration.normal_7}"/>
+                    </td>
+                </tr>
+            </table>
+            <p:commandButton action="#{configurationComponent.savePriceConfiguration()}" update="@form" title="#{msg.update_unit_price}"/>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h:outputScript name="js/driver_map.js"/>
+        <h:form id="mapForm">
+            <p:poll interval="5" oncomplete="reloadMarkers();" update="mapForm" global="false"/>
+            <!--@elvariable id="driversMapComponent" type="vn.ontaxi.component.DriversMapComponent"-->
+            <h:outputText value="#{driversMapComponent.locationJson}" id="locationJson" style="display: none"/>
+            <h:outputText value="Tổng số xe đang hoạt động "/>
+            <h:outputText value="#{driversMapComponent.getOnlineDriversLocation(false).size()}"/>
+        </h:form>
+        <div id="map"/>
+        <style type="text/css">
+            /* Always set the map height explicitly to define the size of the div
+             * element that contains the map. */
+            #map {
+                height: 100%;
+            }
+
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+        <script type="text/javascript"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC983JhXlUWUomd07jsfBkPjv7VpHA_eWQ&amp;callback=initMap"/>
+    </ui:define>
+</ui:composition>
+</html>

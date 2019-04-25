@@ -1,0 +1,42 @@
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+#starterDiv{
+    padding-top: 3%;
+}
+
+a.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+    padding: 1px 5px 2px;
+}
+
+.label {
+    font-weight: bold;
+}
+
+.out_of_date_order {
+    background-color:red;
+}
+
+.not_viewed_order {
+    background: blueviolet;
+}
+
+.offline_driver {
+    background: gray;
+}
+
+.lơw_balance_driver {
+    background: red;
+}
+
+.coming_soon_order {
+    background-color:yellow;
+}

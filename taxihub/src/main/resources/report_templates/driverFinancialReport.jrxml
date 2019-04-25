@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="employeeReport" pageWidth="1792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="0a836801-c49d-4956-8866-6be46a94e16a">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="net.sf.jasperreports.export.xls.one.page.per.sheet" value="true"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="213"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="776"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="523"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="463"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="DRIVER" class="java.lang.String" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[SELECT * FROM driver_transaction  WHERE driver =  $P{DRIVER} and payment_type = 'RC' 
+order by created_datetime desc]]>
+	</queryString>
+	<field name="version" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="version"/>
+	</field>
+	<field name="id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+	</field>
+	<field name="driver" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="driver"/>
+	</field>
+	<field name="amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="amount"/>
+	</field>
+	<field name="payment_type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="payment_type"/>
+	</field>
+	<field name="reason" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="reason"/>
+	</field>
+	<field name="created_by" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="created_by"/>
+	</field>
+	<field name="created_datetime" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="created_datetime"/>
+	</field>
+	<field name="last_updated_datetime" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="last_updated_datetime"/>
+	</field>
+	<variable name="TOTAL_DEBIT_AMOUNT" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL_CREDIT_AMOUNT" class="java.lang.Double">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<title>
+		<band height="186" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="151" y="0" width="526" height="50" uuid="d37df3dc-7b41-499c-bcdf-b21ccecbe2b5"/>
+				<textElement textAlignment="Center">
+					<font size="26"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Báo Cáo Tài Chính"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="80" width="99" height="20" uuid="657a96ee-b415-48d9-849e-9cefc5711c6c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lái Xe]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="99" y="80" width="300" height="20" uuid="5c23e7b4-42f7-45a3-9c98-aa837791ce9a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{DRIVER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="100" width="99" height="20" uuid="cf105898-97f6-47cc-9ef5-20e0a3372494">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tổng Tiền Nạp]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="#,###">
+				<reportElement x="99" y="100" width="300" height="20" uuid="f87eaffd-7f4a-4df6-8b22-f0af6843d5b5"/>
+				<textFieldExpression><![CDATA[$V{TOTAL_DEBIT_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="120" width="100" height="20" uuid="e4cef1da-0bfe-4e43-8d09-92dc6fa22a0f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tổng Tiền Trừ]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="#,###">
+				<reportElement x="100" y="120" width="300" height="20" uuid="9b39dd06-6734-40df-85c7-92b9612a7edc"/>
+				<textFieldExpression><![CDATA[$V{TOTAL_CREDIT_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="140" width="100" height="20" uuid="7b951a2a-37bf-4cfb-aa60-e81301a573ea">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Số Dư]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="#,###">
+				<reportElement x="100" y="140" width="300" height="20" uuid="f6c2012f-942b-4063-b0f6-c7c22ae30cb3"/>
+				<textFieldExpression><![CDATA[$V{TOTAL_DEBIT_AMOUNT} - $V{TOTAL_CREDIT_AMOUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="99" height="20" uuid="02f05264-1f16-4499-a15f-a85065384e86">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mã]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="99" y="0" width="91" height="20" uuid="6a2454fb-03e9-45a6-8afc-642b08e57c1a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ngày, tháng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="281" y="0" width="118" height="20" uuid="fa361167-844d-42a0-b793-9ee29293e3ba">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Số Tiền]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="0" width="91" height="20" uuid="f49fde33-9934-4c42-94bd-19d49ec5ab80">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hình Thức]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="200" height="20" uuid="faeffce9-2b21-4d56-aa85-6fc8d99e673c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lý Do]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="207" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="99" height="20" uuid="7d8bf0ba-f84e-46c0-ab9e-9412b5fae342"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/mm/yyyy">
+				<reportElement x="99" y="0" width="91" height="20" uuid="2e3a2996-dc5f-4b7b-abf8-cbc76a4e2391"/>
+				<textFieldExpression><![CDATA[$F{created_datetime}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="281" y="0" width="118" height="20" uuid="efa53b93-07c0-4f90-a615-b5fc7323925a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/mm/yyyy">
+				<reportElement x="190" y="0" width="91" height="20" uuid="5f8ca5aa-3e3c-46ee-b02e-c928eb42c42a"/>
+				<textFieldExpression><![CDATA["Nạp Tiền"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="399" y="0" width="200" height="20" uuid="f3ff46c0-93b9-4e9d-92e2-e6193aaa80eb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{reason}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="127">
+			<subreport>
+				<reportElement x="0" y="20" width="260" height="100" uuid="ba434b5e-58e0-4565-b9f9-0e5ebcadc575"/>
+				<subreportParameter name="DRIVER">
+					<subreportParameterExpression><![CDATA[$P{DRIVER}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="TOTAL_CREDIT_AMOUNT" toVariable="TOTAL_CREDIT_AMOUNT"/>
+				<subreportExpression><![CDATA["/report_templates/Blank_A4_Landscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="driverPaymentComponent" type="vn.ontaxi.component.DriverPaymentComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">#{msg.manage_driver_balance}</h1>
+        <p:spacer height="10px"/>
+
+        <h:form id="newOrderForm">
+            <table>
+                <tr>
+                    <td class="label">
+                        Lái Xe
+                    </td>
+                    <td>
+                        <!--@elvariable id="driverConverter" type="vn.ontaxi.converter.DriverConverter"-->
+                        <p:selectOneMenu value="#{driverPaymentComponent.payment.driver}" var="d"
+                                         filter="true" filterMatchMode="contains"
+                                         converter="#{driverConverter}">
+                            <!--@elvariable id="driversComponent" type="vn.ontaxi.component.DriversComponent"-->
+                            <f:selectItems value="#{driversComponent.drivers}" var="driver" itemValue="#{driver}"
+                                           itemLabel="#{driver.name}"/>
+                            <p:column>
+                                <h:outputText value="#{d.name}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{d.mobile}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{d.carType}"/>
+                            </p:column>
+                            <p:ajax/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        #{msg.amount}
+                    </td>
+                    <td>
+                        <h:inputText id="amount" value="#{driverPaymentComponent.payment.amount}">
+                            <f:validateLongRange minimum="1000"/>
+                            <f:convertNumber pattern="#,###"/>
+                            <p:ajax event="blur" update="amount"/>
+                        </h:inputText>
+                        <h:message for="amount" style="color:red"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        #{msg.payment_type}
+                    </td>
+                    <td>
+                        <p:selectOneMenu id="paymentType" value="#{driverPaymentComponent.payment.paymentType}">
+                            <f:selectItem itemLabel="#{msg.debit}" itemValue="RC"/>
+                            <f:selectItem itemLabel="#{msg.credit}" itemValue="UC"/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        #{msg.reason}
+                    </td>
+                    <td>
+                        <h:inputTextarea value="#{driverPaymentComponent.payment.reason}" cols="100" rows="10" required="true" id="reason">
+                            <p:ajax/>
+                            <h:message for="reason" style="color:red"/>
+                        </h:inputTextarea>
+                    </td>
+                </tr>
+            </table>
+
+            <p:commandButton value="#{msg.payment}" action="#{driverPaymentComponent.doPayment}" update="@form"/>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

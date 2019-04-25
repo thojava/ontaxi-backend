@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_Landscape" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="822" leftMargin="0" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4c64bb14-ac6b-4dd9-89ee-17b1d2bcc870">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="228"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="761"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="DRIVER" class="java.lang.String" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[SELECT * FROM driver_transaction  WHERE driver =  $P{DRIVER} and payment_type = 'UC'
+order by created_datetime desc]]>
+	</queryString>
+	<field name="version" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="version"/>
+	</field>
+	<field name="id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+	</field>
+	<field name="driver" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="driver"/>
+	</field>
+	<field name="amount" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="amount"/>
+	</field>
+	<field name="payment_type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="payment_type"/>
+	</field>
+	<field name="reason" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="reason"/>
+	</field>
+	<field name="created_by" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="created_by"/>
+	</field>
+	<field name="created_datetime" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="created_datetime"/>
+	</field>
+	<field name="last_updated_datetime" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="last_updated_datetime"/>
+	</field>
+	<variable name="TOTAL_CREDIT_AMOUNT" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="RETURN_TOTAL_CREDIT_AMOUNT" class="java.lang.Double">
+		<variableExpression><![CDATA[$V{TOTAL_CREDIT_AMOUNT}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement x="99" y="0" width="91" height="20" uuid="3bed3ade-8e71-4da4-8e76-b11127a60cd2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ngày, tháng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="0" width="91" height="20" uuid="eaa6088b-fd6c-4950-9f6f-06393c9f31c5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hình Thức]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="281" y="0" width="119" height="20" uuid="2868e4c9-5616-45f7-9e0f-3fef934bc030">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Số Tiền]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="99" height="20" uuid="5d55644f-1e5c-4f7d-a817-25e8e9017b8e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mã]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="200" height="20" uuid="0f525c6c-cb4e-4640-8d12-fc405e845321">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lý Do]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="59" splitType="Stretch">
+			<textField pattern="dd/mm/yyyy">
+				<reportElement x="190" y="20" width="91" height="20" uuid="3a8fe374-2a24-4198-a1b8-1933f87d44f5"/>
+				<textFieldExpression><![CDATA["Trừ Tiền"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="20" width="99" height="20" uuid="092c7c45-5811-4a22-9368-1e9df483685b"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="281" y="20" width="119" height="20" uuid="9041206f-35d6-4a3b-a408-6d1841a41acb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/mm/yyyy">
+				<reportElement x="99" y="20" width="91" height="20" uuid="c0a430a3-a31a-4cd3-8b8a-6047c499551b"/>
+				<textFieldExpression><![CDATA[$F{created_datetime}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="400" y="20" width="200" height="20" uuid="d25fe875-c8c4-4116-8d03-ee8c940277ec">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{reason}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

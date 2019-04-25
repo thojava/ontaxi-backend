@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html">
+
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="driversComponent" type="vn.ontaxi.component.DriversComponent"-->
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">Quản Lý Lái Xe</h1>
+        <p:spacer height="10px"/>
+
+        <p:tabView>
+            <p:tab title="Thông Tin Lái Xe">
+                <h:form>
+                    <table>
+                        <tr>
+                            <td>
+                                <p:commandButton value="#{msg.nap_tru_tien}" action="recharge.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                            </td>
+                            <td>
+                                <p:commandButton value="#{msg.create_new_driver}" action="driver_detail.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                            </td>
+                            <td>
+                                <p:commandButton value="#{msg.delete_driver}" action="${driversComponent.deleteDriver}" update="@all"/>
+                            </td>
+                        </tr>
+                    </table>
+                </h:form>
+
+                <p:spacer height="10px"/>
+
+                <p:tabView id="driverTabView">
+                    <p:tab title="Đường Dài">
+                        <h:form>
+                            <!--@elvariable id="driver" type="vn.ontaxi.jpa.entity.Driver"-->
+                            <p:dataTable value="#{driversComponent.longHaulDrivers}" var="driver" id="newBookingTable"
+                                         widgetVar="newBookingTable"
+                                         rows="40" paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15"
+                                         rowStyleClass="#{driversComponent.isLowBalance(driver) ? 'lơw_balance_driver' : (driversComponent.isActive(driver) ? '' : 'offline_driver')}">
+                                <p:column style="width: 20px">
+                                    <p:selectBooleanCheckbox value="#{driver.beanSelected}">
+                                        <p:ajax/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                                <p:column headerText="Id" style="width: 20px">
+                                    <p:commandLink value="#{driver.id}" action="#{driversComponent.viewDriverDetail(driver)}" ajax="false" immediate="true"/>
+                                </p:column>
+                                <p:column headerText="Tên">
+                                    <p:outputLabel value="#{driver.name}"/>
+                                </p:column>
+                                <p:column headerText="Phone">
+                                    <p:outputLabel value="#{driver.mobile}"/>
+                                </p:column>
+                                <p:column headerText="Email">
+                                    <p:outputLabel value="#{driver.email}"/>
+                                </p:column>
+                                <p:column headerText="Biển Số">
+                                    <p:outputLabel value="#{driver.license_plates}"/>
+                                </p:column>
+                                <p:column headerText="Loại Xe">
+                                    <p:outputLabel value="#{driver.carType}"/>
+                                </p:column>
+                                <p:column headerText="Phiên Bản Ứng Dụng">
+                                    <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>
+                                </p:column>
+                                <p:column headerText="Tài Khoản">
+                                    <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                                    <p:outputLabel value="#{numberFormatterComponent.formatPrice(driver.amount)}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.level}">
+                                    <p:selectOneMenu value="#{driver.level}" disabled="true">
+                                        <f:selectItem itemLabel="Chưa Thiết Lập" itemValue="0"/>
+                                        <f:selectItem itemLabel="Ưu Tiên" itemValue="1"/>
+                                        <f:selectItem itemLabel="Bình Thường" itemValue="2"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column style="width: 50px" headerText="#{msg.blocked}">
+                                    <p:selectBooleanCheckbox value="#{driver.blocked}">
+                                        <p:ajax listener="#{driversComponent.updateDriver(driver)}"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                                <f:facet name="footer">
+                                    <table>
+                                        <h:commandButton styleClass="lơw_balance_driver" value="#{msg.low_balance_driver}" disabled="true"/>
+                                        <h:commandButton styleClass="offline_driver" value="#{msg.offline_driver}" disabled="true"/>
+                                    </table>
+                                </f:facet>
+                            </p:dataTable>
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Sân Bay">
+                        <h:form>
+                            <!--@elvariable id="driver" type="vn.ontaxi.jpa.entity.Driver"-->
+                            <p:dataTable value="#{driversComponent.airportDrivers}" var="driver" id="airportDriverTable"
+                                         widgetVar="airportDriverTable"
+                                         rows="40" paginator="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15"
+                                         rowStyleClass="#{driversComponent.isLowBalance(driver) ? 'lơw_balance_driver' : (driversComponent.isActive(driver) ? '' : 'offline_driver')}">
+                                <p:column style="width: 20px">
+                                    <p:selectBooleanCheckbox value="#{driver.beanSelected}">
+                                        <p:ajax/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                                <p:column headerText="Id" style="width: 20px">
+                                    <p:commandLink value="#{driver.id}" action="#{driversComponent.viewDriverDetail(driver)}" ajax="false" immediate="true"/>
+                                </p:column>
+                                <p:column headerText="Tên">
+                                    <p:outputLabel value="#{driver.name}"/>
+                                </p:column>
+                                <p:column headerText="Phone">
+                                    <p:outputLabel value="#{driver.mobile}"/>
+                                </p:column>
+                                <p:column headerText="Email">
+                                    <p:outputLabel value="#{driver.email}"/>
+                                </p:column>
+                                <p:column headerText="Biển Số">
+                                    <p:outputLabel value="#{driver.license_plates}"/>
+                                </p:column>
+                                <p:column headerText="Loại Xe">
+                                    <p:outputLabel value="#{driver.carType}"/>
+                                </p:column>
+                                <p:column headerText="Phiên Bản Ứng Dụng">
+                                    <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>
+                                </p:column>
+                                <p:column headerText="Tài Khoản">
+                                    <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                                    <p:outputLabel value="#{numberFormatterComponent.formatPrice(driver.amount)}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.level}">
+                                    <p:selectOneMenu value="#{driver.level}" disabled="true">
+                                        <f:selectItem itemLabel="Chưa Thiết Lập" itemValue="0"/>
+                                        <f:selectItem itemLabel="Ưu Tiên" itemValue="1"/>
+                                        <f:selectItem itemLabel="Bình Thường" itemValue="2"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column style="width: 50px" headerText="#{msg.blocked}">
+                                    <p:selectBooleanCheckbox value="#{driver.blocked}">
+                                        <p:ajax listener="#{driversComponent.updateDriver(driver)}"/>
+                                    </p:selectBooleanCheckbox>
+                                </p:column>
+                                <f:facet name="footer">
+                                    <table>
+                                        <h:commandButton styleClass="lơw_balance_driver" value="#{msg.low_balance_driver}" disabled="true"/>
+                                        <h:commandButton styleClass="offline_driver" value="#{msg.offline_driver}" disabled="true"/>
+                                    </table>
+                                </f:facet>
+                            </p:dataTable>
+                        </h:form>
+                    </p:tab>
+                </p:tabView>
+
+            </p:tab>
+            <p:tab title="#{msg.transaction}">
+                <h:form>
+                    <p:dataTable value="#{driversComponent.driverPayments}" var="driverTransaction"
+                                 rows="20" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <p:column headerText="Id">
+                            <h:outputText value="#{driverTransaction.id}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.driver}" filterBy="#{driverTransaction.driver.name}"
+                                  filterMatchMode="contains">
+                            <h:outputText id="driver" value="#{driverTransaction.driver.name} #{driverTransaction.driver.email}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.payment_type}">
+                            <h:outputText id="paymentType" value="#{driverTransaction.paymentType eq 'RC' ? msg.debit : msg.credit}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.amount}">
+                            <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                            <p:outputLabel value="#{numberFormatterComponent.formatPrice(driverTransaction.amount)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.reason}">
+                            <h:outputText value="#{driverTransaction.reason}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.transaction_time}">
+                            <h:outputText value="#{driverTransaction.lastUpdatedDatetime}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:tab>
+        </p:tabView>
+    </ui:define>
+</ui:composition>
+</html>

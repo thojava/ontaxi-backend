@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="employeeReport" pageWidth="1792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="0a836801-c49d-4956-8866-6be46a94e16a">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="net.sf.jasperreports.export.xls.one.page.per.sheet" value="true"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="213"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="776"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="523"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="463"/>
+	<parameter name="DEBTOR" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="DATE_FILTER_PARAM" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="ARRIVAL_FROM_DATE" class="java.util.Date" isForPrompting="false"/>
+	<parameter name="DRIVER" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="DEBT_ONLY" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="ARRIVAL_TO_DATE" class="java.util.Date" isForPrompting="false"/>
+	<parameter name="SHOW_FEE" class="java.lang.Boolean" isForPrompting="false"/>
+	<queryString>
+		<![CDATA[SELECT * FROM booking WHERE status = 'C' AND ($P{DEBTOR} = '' or debtor =  $P{DEBTOR}) AND ($P{DRIVER} = '' or accepted_by =  $P{DRIVER})
+AND ($P{DEBT_ONLY} = false or (is_later_paid = 'Y' and paid_to_driver = 'N')) 
+AND (( $P{ARRIVAL_FROM_DATE}  is null and  $P{ARRIVAL_TO_DATE}  is null) OR arrival_time between $P{ARRIVAL_FROM_DATE} and  $P{ARRIVAL_TO_DATE})]]>
+	</queryString>
+	<field name="from_location" class="java.lang.String"/>
+	<field name="to_location" class="java.lang.String"/>
+	<field name="actual_total_price" class="java.lang.Double"/>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="arrival_time" class="java.sql.Date"/>
+	<field name="actual_total_distance" class="java.lang.Double"/>
+	<field name="actual_outward_price" class="java.lang.Double"/>
+	<field name="actual_return_price" class="java.lang.Double"/>
+	<field name="actual_wait_price" class="java.lang.Double"/>
+	<field name="transport_fee" class="java.lang.Double"/>
+	<field name="actual_total_fee" class="java.lang.Double"/>
+	<variable name="TOTAL_PRICE" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{actual_total_price} - $F{transport_fee}]]></variableExpression>
+		<initialValueExpression><![CDATA[0.D]]></initialValueExpression>
+	</variable>
+	<variable name="TOTAL_FEE" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{actual_total_fee}]]></variableExpression>
+		<initialValueExpression><![CDATA[0.D]]></initialValueExpression>
+	</variable>
+	<title>
+		<band height="156" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="151" y="0" width="526" height="50" uuid="d37df3dc-7b41-499c-bcdf-b21ccecbe2b5"/>
+				<textElement textAlignment="Center">
+					<font size="26"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Báo Cáo Tài Chính"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="60" width="80" height="20" uuid="e239cc7b-566c-4538-9e17-6be9f89d0610">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Khách Hàng]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="60" width="300" height="20" uuid="21d752b4-2600-441d-90a0-d0942d7e4e67">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{DEBTOR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="80" width="80" height="20" uuid="657a96ee-b415-48d9-849e-9cefc5711c6c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lái Xe]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="80" width="300" height="20" uuid="5c23e7b4-42f7-45a3-9c98-aa837791ce9a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{DRIVER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="120" width="300" height="20" uuid="238797e7-e92e-4f78-987e-14d94ef11f05">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="120" width="80" height="20" uuid="d8789d12-49f7-4904-992f-358ee966aec6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="100" width="80" height="20" uuid="2d10ac32-006d-4b5d-8d7d-99cbde6c158b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Thời Gian]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="100" width="300" height="20" uuid="3b7fe46c-6ecc-44d1-ad2c-6fe61e6ca190">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$P{DATE_FILTER_PARAM}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="30">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="60" height="20" uuid="02f05264-1f16-4499-a15f-a85065384e86">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mã]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="151" y="0" width="178" height="20" uuid="c7bd62f5-7125-43e4-88f3-62f54a931a2e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Điểm Đi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="0" width="178" height="20" uuid="da296d72-daa1-48fb-bd0a-c476d970172e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Điểm Đến	]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="60" y="0" width="91" height="20" uuid="6a2454fb-03e9-45a6-8afc-642b08e57c1a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ngày, tháng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="507" y="0" width="70" height="20" uuid="50dded37-bb62-427d-84a5-9b5cc732334f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tổng KM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="977" y="0" width="103" height="20" uuid="8ee03337-3d93-454a-947b-546bae452948">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tổng Tiền]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="577" y="0" width="100" height="20" uuid="c74a40a4-5b7c-418d-a1cf-c6c88867bf59">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiền Chiều Đi ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="677" y="0" width="100" height="20" uuid="f412ade9-bdea-466e-a408-a64e3419135c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiền Chiều Về ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="777" y="0" width="100" height="20" uuid="fa361167-844d-42a0-b793-9ee29293e3ba">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tiền Chờ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="877" y="0" width="100" height="20" uuid="3a8d67e7-3594-42d6-a957-cd33a286bf0b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phí Cầu Đường]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="47" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="60" height="20" uuid="7d8bf0ba-f84e-46c0-ab9e-9412b5fae342"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="151" y="0" width="178" height="20" uuid="d4bde325-cfbb-4319-9316-57294a552ed4"/>
+				<textFieldExpression><![CDATA[$F{from_location}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="329" y="0" width="178" height="20" uuid="6652db1a-a8db-40c5-8dd1-f46ecf7dd71e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{to_location}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/mm/yyyy">
+				<reportElement x="60" y="0" width="91" height="20" uuid="2e3a2996-dc5f-4b7b-abf8-cbc76a4e2391"/>
+				<textFieldExpression><![CDATA[$F{arrival_time}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="507" y="0" width="70" height="20" uuid="55085838-e791-41c8-8925-4643412119f5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{actual_total_distance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="977" y="0" width="103" height="20" uuid="5f8a2c67-bd36-4228-a612-47e192ced6c7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{actual_total_price}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="577" y="0" width="100" height="20" uuid="58863317-1a8d-428f-a7fe-0629d3804cb4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{actual_outward_price}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="677" y="0" width="100" height="20" uuid="9522e508-04ac-49f9-98ae-d1cc4bc5628f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{actual_return_price}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="777" y="0" width="100" height="20" uuid="efa53b93-07c0-4f90-a615-b5fc7323925a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{actual_wait_price}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement x="877" y="0" width="100" height="20" uuid="e479076c-6cc1-4b1c-9686-01f598f4ddad">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{transport_fee}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="100">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="#,###">
+				<reportElement x="977" y="0" width="103" height="30" uuid="ac8b0992-cd5e-43be-bc31-1c2e3141da2d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_PRICE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="877" y="0" width="100" height="30" uuid="5fcb287c-1ede-460b-b9d0-874faf00f3bd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tổng Tiền]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="877" y="30" width="100" height="30" uuid="bb6f2ed7-9c6e-4de7-9932-d499e690fa0a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$P{SHOW_FEE}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tổng Phí]]></text>
+			</staticText>
+			<textField pattern="#,###">
+				<reportElement x="977" y="30" width="103" height="30" uuid="7a91dafd-bdf5-4e19-a1be-4853a8385aed">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$P{SHOW_FEE}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_FEE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="877" y="60" width="100" height="30" uuid="a8e164a1-852b-4fbc-95d5-89996c195eaa">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$P{SHOW_FEE}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<textField pattern="#0.###;(#0.###-)">
+				<reportElement x="977" y="60" width="103" height="30" uuid="7975fd69-0157-4f9b-9ae5-5b8b56b78cd6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$P{SHOW_FEE}]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOTAL_FEE} * 100 / $V{TOTAL_PRICE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
