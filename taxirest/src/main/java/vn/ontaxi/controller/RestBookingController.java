@@ -32,9 +32,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static reactor.bus.selector.Selectors.$;
+
 @RestController
 @Transactional
-@RequestMapping("rest")
+@RequestMapping("/booking")
 public class RestBookingController {
     private static final Logger logger = LoggerFactory.getLogger(RestBookingController.class);
 
@@ -49,12 +51,12 @@ public class RestBookingController {
     private final FCMService fcmService;
     private final SMSService smsService;
     private final MessageSource messageSource;
-    //    private final DriversMapComponent driversMapComponent;
+    private final LocationWithDriverService locationWithDriverService;
     private final ConfigurationService configurationService;
     private final PriceCalculator priceCalculator;
 
     @Autowired
-    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, DriverRepository driverRepository, FCMService fcmService, SMSService smsService, MessageSource messageSource, EventBus eventBus, ConfigurationService configurationService, PriceCalculator priceCalculator) {
+    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, DriverRepository driverRepository, FCMService fcmService, SMSService smsService, MessageSource messageSource, EventBus eventBus, ConfigurationService configurationService, PriceCalculator priceCalculator, LocationWithDriverService locationWithDriverService) {
         this.bookingRepository = bookingRepository;
         this.viewPriceRepository = viewPriceRepository;
         this.promotionPlanRepository = promotionPlanRepository;
@@ -63,14 +65,14 @@ public class RestBookingController {
         this.smsService = smsService;
         this.messageSource = messageSource;
         this.eventBus = eventBus;
-//        this.driversMapComponent = driversMapComponent;
+        this.locationWithDriverService = locationWithDriverService;
         this.configurationService = configurationService;
         this.priceCalculator = priceCalculator;
     }
 
     @PostConstruct
     public void init() {
-//        eventBus.on($("updateLocation"), driversMapComponent);
+        eventBus.on($("updateLocation"), locationWithDriverService);
     }
 
     @RequestMapping(path = "/acceptOrder/{driverCode:.+}")

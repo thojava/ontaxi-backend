@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.ontaxi.service.LocationWithDriverService;
 
 @RestController
-@RequestMapping("rest")
+@RequestMapping("/driver")
 public class RestDriverController {
     private final LocationWithDriverService driversMapComponent;
 
@@ -18,7 +18,7 @@ public class RestDriverController {
     }
 
     @CrossOrigin
-    @RequestMapping(path = "/driverLocation")
+    @RequestMapping(path = "/location")
     public String getLocationJson() {
         return new Gson().toJson(driversMapComponent.getOnlineDriversLocation(true).values());
     }
