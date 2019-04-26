@@ -1,6 +1,7 @@
 package vn.ontaxi.utils;
 
 import vn.ontaxi.constant.CarTypes;
+import vn.ontaxi.jpa.entity.Booking;
 import vn.ontaxi.model.PriceInfo;
 
 public class PriceUtils {
@@ -51,5 +52,19 @@ public class PriceUtils {
         }
 
         throw new IllegalArgumentException("Invalid type " + car_type);
+    }
+
+    public static void calculateActualPrice(Booking booking) {
+        PriceInfo priceInfo = calculatePrice(booking.getUnit_price(), booking.isRoundTrip() ? booking.getOutward_distance() : booking.getActual_total_distance(), booking.getReturn_distance(),
+                booking.getCar_type(), booking.isRoundTrip(), booking.getWait_hours(), booking.getTransport_fee(), booking.getPromotionPercentage());
+        booking.setActual_total_price(priceInfo.getTotal_price());
+        booking.setActualTotalPriceBeforePromotion(priceInfo.getTotal_price_before_promotion());
+        booking.setActual_outward_price(priceInfo.outwardPrice);
+        booking.setActual_return_price(priceInfo.returnPrice);
+        booking.setActual_wait_price(priceInfo.waitPrice);
+    }
+
+    public static double calculateDriverFee(double priceWithoutTransportFee, double fee_percentage, double promotion_percentage) {
+        return priceWithoutTransportFee * (fee_percentage - promotion_percentage) / 100;
     }
 }

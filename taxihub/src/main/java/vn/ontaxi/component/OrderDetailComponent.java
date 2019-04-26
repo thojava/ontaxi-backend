@@ -19,12 +19,10 @@ import vn.ontaxi.jpa.repository.DriverRepository;
 import vn.ontaxi.jpa.repository.PersistentCustomerRepository;
 import vn.ontaxi.model.Location;
 import vn.ontaxi.model.direction.GoogleDirections;
-import vn.ontaxi.service.DistanceMatrixService;
-import vn.ontaxi.service.FCMService;
-import vn.ontaxi.service.PriceCalculator;
-import vn.ontaxi.service.SnapToRoadService;
+import vn.ontaxi.service.*;
 import vn.ontaxi.utils.BookingUtils;
 import vn.ontaxi.utils.PolyUtil;
+import vn.ontaxi.utils.PriceUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -43,7 +41,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     private final DriverRepository driverRepository;
     private final FCMService fcmService;
     private final DistanceMatrixService distanceMatrixService;
-    private final ConfigurationComponent configurationComponent;
+    private final ConfigurationService configurationService;
     private final PriceCalculator priceCalculator;
 
     private boolean with_snap;
@@ -51,14 +49,14 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public OrderDetailComponent(Environment env, BookingRepository bookingRepository, DriverRepository driverRepository, FCMService fcmService, DistanceMatrixService distanceMatrixService, ConfigurationComponent configurationComponent, MessageSource messageSource, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator) {
+    public OrderDetailComponent(Environment env, BookingRepository bookingRepository, DriverRepository driverRepository, FCMService fcmService, DistanceMatrixService distanceMatrixService, ConfigurationService configurationService, MessageSource messageSource, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator) {
         super(messageSource, persistentCustomerRepository);
         this.env = env;
         this.bookingRepository = bookingRepository;
         this.driverRepository = driverRepository;
         this.fcmService = fcmService;
         this.distanceMatrixService = distanceMatrixService;
-        this.configurationComponent = configurationComponent;
+        this.configurationService = configurationService;
         this.priceCalculator = priceCalculator;
     }
 
@@ -68,7 +66,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     }
 
     public void recalculateDriverFee() {
-        double fee = PriceCalculator.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
         saveBooking();
     }
@@ -79,7 +77,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
             priceCalculator.calculateEstimatedPrice(booking);
         }
 
-        double fee = PriceCalculator.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
 
         saveBooking();
@@ -92,7 +90,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     public void onChangeFixedPrice() {
         booking.setTotalPriceBeforePromotion(booking.getTotal_price());
 
-        double fee = PriceCalculator.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
 
         saveBooking();
@@ -121,7 +119,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
         List<Map<String, Double>> coordinates = new ArrayList<>();
         List<Location> locations = SnapToRoadService.parseRoutes(routes);
         if (with_snap) {
-            locations = SnapToRoadService.getDistance(locations, configurationComponent.getAccuracy_limit());
+            locations = SnapToRoadService.getDistance(locations, configurationService.getAccuracy_limit());
         }
 
         double previousLat = 0;

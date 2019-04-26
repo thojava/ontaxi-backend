@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import vn.ontaxi.utils.PriceUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -109,7 +110,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
             booking.setTotalPriceBeforePromotion(booking.getTotal_price());
         }
 
-        double fee = PriceCalculator.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
     }
 

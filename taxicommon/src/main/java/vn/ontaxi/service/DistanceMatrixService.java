@@ -5,7 +5,6 @@ import org.apache.commons.lang3.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import vn.ontaxi.component.ConfigurationComponent;
 import vn.ontaxi.json.model.google.dm.DistanceMatrix;
 import vn.ontaxi.model.Location;
 import vn.ontaxi.model.direction.GoogleDirections;
@@ -22,12 +21,12 @@ public class DistanceMatrixService {
 
     private static final String OUTPUT_FORMAT = "json";
     private static final String UNIT = "metric";
-    private final ConfigurationComponent configurationComponent;
+    private final ConfigurationService configurationService;
     private final Environment environment;
 
     @Autowired
-    public DistanceMatrixService(ConfigurationComponent configurationComponent, Environment environment) {
-        this.configurationComponent = configurationComponent;
+    public DistanceMatrixService(ConfigurationService configurationService, Environment environment) {
+        this.configurationService = configurationService;
         this.environment = environment;
     }
 
@@ -71,7 +70,7 @@ public class DistanceMatrixService {
     public double getDistanceFromRoutes(String routes, boolean with_snap) throws Exception {
         List<Location> locations = SnapToRoadService.parseRoutes(routes);
         if(with_snap) {
-            locations = SnapToRoadService.getDistance(locations, configurationComponent.getAccuracy_limit());
+            locations = SnapToRoadService.getDistance(locations, configurationService.getAccuracy_limit());
         }
         double previousLat = 0;
         double previousLng = 0;

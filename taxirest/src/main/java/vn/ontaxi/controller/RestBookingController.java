@@ -1,7 +1,13 @@
 package vn.ontaxi.controller;
 
-import vn.ontaxi.component.ConfigurationComponent;
-import vn.ontaxi.component.DriversMapComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import reactor.bus.Event;
+import reactor.bus.EventBus;
 import vn.ontaxi.constant.BooleanConstants;
 import vn.ontaxi.constant.OrderStatus;
 import vn.ontaxi.jpa.entity.Booking;
@@ -13,20 +19,10 @@ import vn.ontaxi.jpa.repository.PromotionPlanRepository;
 import vn.ontaxi.jpa.repository.ViewPriceRepository;
 import vn.ontaxi.model.Location;
 import vn.ontaxi.model.LocationWithDriver;
-import vn.ontaxi.service.DistanceMatrixService;
-import vn.ontaxi.service.FCMService;
-import vn.ontaxi.service.PriceCalculator;
-import vn.ontaxi.service.SMSService;
+import vn.ontaxi.service.*;
 import vn.ontaxi.utils.BookingUtils;
+import vn.ontaxi.utils.PriceUtils;
 import vn.ontaxi.utils.SMSContentBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import reactor.bus.Event;
-import reactor.bus.EventBus;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -35,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static reactor.bus.selector.Selectors.$;
 
 @RestController
 @Transactional
@@ -55,12 +49,12 @@ public class RestBookingController {
     private final FCMService fcmService;
     private final SMSService smsService;
     private final MessageSource messageSource;
-    private final DriversMapComponent driversMapComponent;
-    private final ConfigurationComponent configurationComponent;
+    //    private final DriversMapComponent driversMapComponent;
+    private final ConfigurationService configurationService;
     private final PriceCalculator priceCalculator;
 
     @Autowired
-    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, DriverRepository driverRepository, FCMService fcmService, SMSService smsService, MessageSource messageSource, EventBus eventBus, DriversMapComponent driversMapComponent, ConfigurationComponent configurationComponent, PriceCalculator priceCalculator) {
+    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, DriverRepository driverRepository, FCMService fcmService, SMSService smsService, MessageSource messageSource, EventBus eventBus, ConfigurationService configurationService, PriceCalculator priceCalculator) {
         this.bookingRepository = bookingRepository;
         this.viewPriceRepository = viewPriceRepository;
         this.promotionPlanRepository = promotionPlanRepository;
@@ -69,14 +63,14 @@ public class RestBookingController {
         this.smsService = smsService;
         this.messageSource = messageSource;
         this.eventBus = eventBus;
-        this.driversMapComponent = driversMapComponent;
-        this.configurationComponent = configurationComponent;
+//        this.driversMapComponent = driversMapComponent;
+        this.configurationService = configurationService;
         this.priceCalculator = priceCalculator;
     }
 
     @PostConstruct
     public void init() {
-        eventBus.on($("updateLocation"), driversMapComponent);
+//        eventBus.on($("updateLocation"), driversMapComponent);
     }
 
     @RequestMapping(path = "/acceptOrder/{driverCode:.+}")
@@ -88,7 +82,7 @@ public class RestBookingController {
         RestResult restResult = new RestResult();
 
         Driver driver = driverRepository.findByEmail(driverCode);
-        if (driver.getAmount() < booking.getTotal_fee() + configurationComponent.getDriver_balance_low_limit()) {
+        if (driver.getAmount() < booking.getTotal_fee() + configurationService.getDriver_balance_low_limit()) {
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("your_account_amount_is_not_enough_for_this_order", null, Locale.getDefault()));
             return restResult;
@@ -139,14 +133,14 @@ public class RestBookingController {
             persistedBooking.setOutwardArrivalTime(booking.getOutwardArrivalTime());
 
             if (!BooleanConstants.YES.equalsIgnoreCase(persistedBooking.getIsFixedPrice())) {
-                priceCalculator.calculateActualPrice(persistedBooking);
+                PriceUtils.calculateActualPrice(persistedBooking);
             } else {
                 persistedBooking.setActual_total_price(persistedBooking.getTotal_price());
                 persistedBooking.setActualTotalPriceBeforePromotion(persistedBooking.getTotal_price());
             }
 
             double priceBeforePromotionWithoutTransportFee = persistedBooking.getActualTotalPriceBeforePromotion() - persistedBooking.getTransport_fee();
-            double fee = PriceCalculator.calculateDriverFee(priceBeforePromotionWithoutTransportFee, persistedBooking.getFee_percentage(), persistedBooking.getPromotionPercentage());
+            double fee = PriceUtils.calculateDriverFee(priceBeforePromotionWithoutTransportFee, persistedBooking.getFee_percentage(), persistedBooking.getPromotionPercentage());
             persistedBooking.setActual_total_fee(fee);
             persistedBooking.setStatus(OrderStatus.COMPLETED);
             bookingRepository.saveAndFlush(persistedBooking);
@@ -209,7 +203,7 @@ public class RestBookingController {
         booking = calculateDistanceAndPrice(booking);
         // Recalculate the fee
         booking.setFee_percentage(12);
-        booking.setTotal_fee(PriceCalculator.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
+        booking.setTotal_fee(PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
 
         bookingRepository.saveAndFlush(booking);
         return booking;

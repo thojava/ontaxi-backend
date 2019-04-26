@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import vn.ontaxi.constant.PaymentTypes;
-import vn.ontaxi.controller.RestBookingController;
 import vn.ontaxi.jpa.entity.Driver;
 import vn.ontaxi.jpa.entity.DriverPayment;
 import vn.ontaxi.jpa.repository.DriverPaymentRepository;
@@ -16,7 +15,7 @@ import vn.ontaxi.jpa.repository.DriverRepository;
 @Component
 @Scope("view")
 public class DriverPaymentComponent {
-    private static final Logger logger = LoggerFactory.getLogger(RestBookingController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DriverPaymentComponent.class);
     private DriverPayment payment;
     private final DriverRepository driverRepository;
     private final DriverPaymentRepository driverPaymentRepository;

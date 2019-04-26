@@ -1,13 +1,5 @@
 package vn.ontaxi;
 
-import vn.ontaxi.constant.BooleanConstants;
-import vn.ontaxi.constant.CarTypes;
-import vn.ontaxi.jpa.entity.Booking;
-import vn.ontaxi.jpa.entity.PriceConfiguration;
-import vn.ontaxi.jpa.repository.PriceConfigurationRepository;
-import vn.ontaxi.service.PriceCalculator;
-import vn.ontaxi.service.SMSService;
-import vn.ontaxi.utils.SMSContentBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +9,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import vn.ontaxi.constant.BooleanConstants;
+import vn.ontaxi.constant.CarTypes;
+import vn.ontaxi.jpa.entity.Booking;
+import vn.ontaxi.jpa.entity.PriceConfiguration;
+import vn.ontaxi.jpa.repository.PriceConfigurationRepository;
+import vn.ontaxi.service.PriceCalculator;
+import vn.ontaxi.service.SMSService;
+import vn.ontaxi.utils.PriceUtils;
+import vn.ontaxi.utils.SMSContentBuilder;
 
 @SpringBootTest(classes = {SMSService.class, PriceCalculator.class, PriceConfigurationRepository.class})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,7 +59,7 @@ public class SMSServiceTest {
         singleRouteBooking.setActual_total_price(650000);
         singleRouteBooking.setUnit_price(priceCalculator.getPricePerKm(singleRouteBooking.getCar_type()));
 
-        priceCalculator.calculateActualPrice(singleRouteBooking);
+        PriceUtils.calculateActualPrice(singleRouteBooking);
 
         return singleRouteBooking;
     }
@@ -77,7 +78,7 @@ public class SMSServiceTest {
         returnedRounded.setPromotionPercentage(5);
         returnedRounded.setTransport_fee(50000);
         returnedRounded.setUnit_price(priceCalculator.getPricePerKm(returnedRounded.getCar_type()));
-        priceCalculator.calculateActualPrice(returnedRounded);
+        PriceUtils.calculateActualPrice(returnedRounded);
 
         return returnedRounded;
     }

@@ -8,6 +8,7 @@ import vn.ontaxi.model.LocationWithDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import vn.ontaxi.service.ConfigurationService;
 
 import java.util.List;
 import java.util.Map;
@@ -18,16 +19,15 @@ public class DriversComponent {
     private final DriverRepository driverRepository;
     private Map<String, LocationWithDriver> onlineDriversLocation;
     private DriverPaymentRepository driverPaymentRepository;
-    private final ConfigurationComponent configurationComponent;
+    private final ConfigurationService configurationService;
     private List<Driver> longHaulDrivers;
     private List<Driver> airportDrivers;
 
     @Autowired
-    public DriversComponent(DriverRepository driverRepository, DriversMapComponent driversMapComponent, DriverPaymentRepository driverPaymentRepository, ConfigurationComponent configurationComponent) {
+    public DriversComponent(DriverRepository driverRepository, DriverPaymentRepository driverPaymentRepository, ConfigurationService configurationService) {
         this.driverRepository = driverRepository;
-        onlineDriversLocation = driversMapComponent.getOnlineDriversLocation(true);
         this.driverPaymentRepository = driverPaymentRepository;
-        this.configurationComponent = configurationComponent;
+        this.configurationService = configurationService;
     }
 
     public Iterable<Driver> getLongHaulDrivers() {
@@ -51,7 +51,7 @@ public class DriversComponent {
     }
 
     public boolean isLowBalance(Driver driver) {
-        return driver.getAmount() < configurationComponent.getDriver_balance_low_limit() + 100000;
+        return driver.getAmount() < configurationService.getDriver_balance_low_limit() + 100000;
     }
 
     public int getVersionCode(Driver driver) {

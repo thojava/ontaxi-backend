@@ -3,7 +3,6 @@ package vn.ontaxi.utils;
 import org.apache.commons.lang3.StringUtils;
 import vn.ontaxi.jpa.entity.Booking;
 import vn.ontaxi.jpa.entity.Driver;
-import vn.ontaxi.service.PriceCalculator;
 
 public class SMSContentBuilder {
     private static final String HOTLINE = "0976857832";

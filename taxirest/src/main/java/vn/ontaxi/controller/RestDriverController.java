@@ -5,15 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.ontaxi.component.DriversMapComponent;
+import vn.ontaxi.service.LocationWithDriverService;
 
 @RestController
 @RequestMapping("rest")
 public class RestDriverController {
-    private final DriversMapComponent driversMapComponent;
+    private final LocationWithDriverService driversMapComponent;
 
     @Autowired
-    public RestDriverController(DriversMapComponent driversMapComponent) {
+    public RestDriverController(LocationWithDriverService driversMapComponent) {
         this.driversMapComponent = driversMapComponent;
     }
 

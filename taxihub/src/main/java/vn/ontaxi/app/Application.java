@@ -16,8 +16,6 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.WebApplicationInitializer;
 import vn.ontaxi.scope.ViewScope;
-import reactor.Environment;
-import reactor.bus.EventBus;
 
 @ComponentScan("vn.ontaxi")
 @EnableAutoConfiguration
@@ -54,16 +52,6 @@ public class Application extends SpringBootServletInitializer implements WebAppl
         CustomScopeConfigurer customScopeConfigurer = new CustomScopeConfigurer();
         customScopeConfigurer.addScope("view", new ViewScope());
         return customScopeConfigurer;
-    }
-
-    @Bean
-    public Environment env() {
-        return Environment.initializeIfEmpty().assignErrorJournal();
-    }
-
-    @Bean
-    public EventBus createEventBus(Environment env) {
-        return EventBus.create(env, Environment.THREAD_POOL);
     }
 
     @Override
