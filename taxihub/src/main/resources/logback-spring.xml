@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="HIBERNATE_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/opt/tomcat/logs/hibernate.log</file>
+        <file>/var/lib/tomcat8/logs/hibernate.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>hibernate.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>1</maxHistory>
@@ -14,7 +14,7 @@
         </encoder>
     </appender>
     <appender name="APPLICATION_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/opt/tomcat/logs/application.log</file>
+        <file>/var/lib/tomcat8/logs/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>application.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>1</maxHistory>
@@ -27,7 +27,7 @@
         </encoder>
     </appender>
     <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/opt/tomcat/logs/info.log</file>
+        <file>/var/lib/tomcat8/logs/info.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>info.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>1</maxHistory>
