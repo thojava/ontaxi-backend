@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.service.ConfigurationService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 @Scope("view")
 public class DriversComponent {
     private final DriverRepository driverRepository;
-    private Map<String, LocationWithDriver> onlineDriversLocation;
+    private Map<String, LocationWithDriver> onlineDriversLocation = new HashMap<>();
     private DriverPaymentRepository driverPaymentRepository;
     private final ConfigurationService configurationService;
     private List<Driver> longHaulDrivers;

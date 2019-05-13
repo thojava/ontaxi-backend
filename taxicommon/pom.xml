@@ -10,8 +10,11 @@
     </parent>
     
     <artifactId>taxi-common</artifactId>    
-	<packaging>pom</packaging>
-	
+
+    <properties>
+        <maven.plugin.jar.version>3.0.2</maven.plugin.jar.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -9,7 +9,6 @@
     </parent>
 
     <artifactId>taxi-hub</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>Taxi Hub</name>
@@ -146,7 +145,7 @@
         <dependency>
             <groupId>vn.ontaxi</groupId>
             <artifactId>taxi-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <!-- This H2 Driver is for integration of Spring JPA into Unit Test-->
         <dependency>
