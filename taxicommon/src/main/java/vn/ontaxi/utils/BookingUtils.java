@@ -36,8 +36,8 @@ public class BookingUtils {
         stream = stream.filter(driver -> !driver.isBlocked());
 
         // Send to related car type
-        if (booking.getCar_type().equalsIgnoreCase(CarTypes.NORMAL_7)) {
-            stream = stream.filter(d -> d.getCarType().contains("7"));
+        if (booking.getCar_type() == CarTypes.N7) {
+            stream = stream.filter(d -> d.getCarType() == CarTypes.N7);
         }
 
         booking.setTo_drivers(stream.map(Driver::getEmail).collect(Collectors.joining(DELIMITER)));

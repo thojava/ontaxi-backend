@@ -8,7 +8,6 @@ import vn.ontaxi.jpa.repository.PersistentCustomerRepository;
 import vn.ontaxi.service.ReportService;
 import vn.ontaxi.utils.DateUtils;
 import vn.ontaxi.utils.HttpUtils;
-import vn.ontaxi.utils.SelectItemGenerator;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -66,10 +65,6 @@ public class ReportComponent {
 
         outputStream.flush();
         outputStream.close();
-    }
-
-    public List<SelectItem> getDebtorSelectItems() {
-        return SelectItemGenerator.getDebtorSelectItems(persistentCustomerRepository);
     }
 
     public Iterable<Driver> getDrivers() {

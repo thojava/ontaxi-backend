@@ -1,7 +1,14 @@
 package vn.ontaxi.constant;
 
-public interface CarTypes {
-    String NORMAL_4 = "N4";
-    String GOOD_4 = "G4";
-    String NORMAL_7 = "N7";
+public enum CarTypes {
+    N4("4 Chỗ"), G4("4 Chỗ Vios"), N7( "7 Chỗ");
+
+    private String description;
+    CarTypes(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

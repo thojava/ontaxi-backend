@@ -2,12 +2,10 @@ package vn.ontaxi.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
+import vn.ontaxi.constant.CarTypes;
 import vn.ontaxi.utils.RoundUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Driver extends AbstractEntity {
@@ -20,7 +18,8 @@ public class Driver extends AbstractEntity {
     private String name;
     private String license_plates;
     private double amount;
-    private String carType;
+    @Enumerated(EnumType.STRING)
+    private CarTypes carType;
     private int level;
     private boolean blocked;
     private boolean deleted;
@@ -92,11 +91,11 @@ public class Driver extends AbstractEntity {
     }
 
     @JsonIgnore
-    public String getCarType() {
+    public CarTypes getCarType() {
         return carType;
     }
 
-    public void setCarType(String carType) {
+    public void setCarType(CarTypes carType) {
         this.carType = carType;
     }
 

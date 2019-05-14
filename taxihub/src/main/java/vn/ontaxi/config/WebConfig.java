@@ -1,4 +1,4 @@
-package vn.ontaxi.app;
+package vn.ontaxi.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;

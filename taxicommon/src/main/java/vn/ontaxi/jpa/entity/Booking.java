@@ -2,6 +2,7 @@ package vn.ontaxi.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import vn.ontaxi.constant.BooleanConstants;
+import vn.ontaxi.constant.CarTypes;
 import vn.ontaxi.constant.OrderStatus;
 import vn.ontaxi.utils.NumberUtils;
 import vn.ontaxi.utils.PriceUtils;
@@ -50,7 +51,8 @@ public class Booking extends AbstractEntity {
     private double actual_total_fee;
     private String status = OrderStatus.NEW;
     private String accepted_by;
-    private String car_type;
+    @Enumerated(EnumType.STRING)
+    private CarTypes car_type;
     private String is_round_trip;
     private double wait_hours;
     private String mobile;
@@ -259,11 +261,11 @@ public class Booking extends AbstractEntity {
         this.actual_total_fee = actual_total_fee;
     }
 
-    public String getCar_type() {
+    public CarTypes getCar_type() {
         return car_type;
     }
 
-    public void setCar_type(String car_type) {
+    public void setCar_type(CarTypes car_type) {
         this.car_type = car_type;
     }
 

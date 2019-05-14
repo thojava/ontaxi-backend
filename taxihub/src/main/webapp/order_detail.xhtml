@@ -10,6 +10,7 @@
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
 <!--@elvariable id="orderDetailComponent" type="vn.ontaxi.component.OrderDetailComponent"-->
 <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+<!--@elvariable id="selectItemGenerator" type="vn.ontaxi.component.SelectItemGenerator"-->
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
         <h:outputScript name="js/booking_routes.js"/>
@@ -59,9 +60,7 @@
                     </td>
                     <td>
                         <p:selectOneMenu value="#{orderDetailComponent.booking.car_type}" disabled="#{not (orderDetailComponent.booking.ordered)}">
-                            <f:selectItem itemLabel="4 Cho" itemValue="N4"/>
-                            <f:selectItem itemLabel="4 Cho Vios" itemValue="G4"/>
-                            <f:selectItem itemLabel="7 Cho" itemValue="N7"/>
+                            <f:selectItems value="#{selectItemGenerator.carTypeSelectItems}"/>
                             <p:ajax event="change" listener="#{orderDetailComponent.onChangeCarType}" update="@form"/>
                         </p:selectOneMenu>
                     </td>
@@ -188,7 +187,7 @@
                         </td>
                         <td>
                             <p:selectOneMenu id="debitorOption" value="#{orderDetailComponent.booking.debtor}" disabled="true">
-                                <f:selectItems value="#{orderDetailComponent.debtorSelectItems}"/>
+                                <f:selectItems value="#{selectItemGenerator.debtorSelectItems}"/>
                             </p:selectOneMenu>
                         </td>
                     </tr>

@@ -35,13 +35,13 @@ public class PriceCalculator {
 
 
 
-    public double getPricePerKm(String car_type) {
+    public double getPricePerKm(CarTypes car_type) {
         PriceConfiguration priceConfiguration = priceConfigurationRepository.findAll().get(0);
-        if (CarTypes.NORMAL_4.equalsIgnoreCase(car_type)) {
+        if (CarTypes.N4 == car_type) {
             return priceConfiguration.getNormal_4();
-        } else if (CarTypes.GOOD_4.equalsIgnoreCase(car_type)) {
+        } else if (CarTypes.G4 == car_type) {
             return priceConfiguration.getGood_4();
-        } else if (CarTypes.NORMAL_7.equalsIgnoreCase(car_type)) {
+        } else if (CarTypes.N7 == car_type) {
             return priceConfiguration.getNormal_7();
         }
 

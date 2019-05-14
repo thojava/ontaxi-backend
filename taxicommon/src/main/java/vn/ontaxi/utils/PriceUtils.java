@@ -5,7 +5,7 @@ import vn.ontaxi.jpa.entity.Booking;
 import vn.ontaxi.model.PriceInfo;
 
 public class PriceUtils {
-    public static PriceInfo calculatePrice(double pricePerKm, double outwardDistant, double returnDistant, String car_type, boolean isRoundTrip,
+    public static PriceInfo calculatePrice(double pricePerKm, double outwardDistant, double returnDistant, CarTypes car_type, boolean isRoundTrip,
                                            double wait_hours, double transportFee, double promotionPercentage) {
         if (isRoundTrip) {
             double lowDistance = Math.min(outwardDistant, returnDistant);
@@ -42,12 +42,12 @@ public class PriceUtils {
         }
     }
 
-    public static int getPricePerWaitHour(String car_type) {
-        if (CarTypes.NORMAL_4.equalsIgnoreCase(car_type)) {
+    public static int getPricePerWaitHour(CarTypes car_type) {
+        if (CarTypes.N4 == car_type) {
             return 40000;
-        } else if (CarTypes.GOOD_4.equalsIgnoreCase(car_type)) {
+        } else if (CarTypes.G4 == car_type) {
             return 40000;
-        } else if (CarTypes.NORMAL_7.equalsIgnoreCase(car_type)) {
+        } else if (CarTypes.N7 == car_type) {
             return 50000;
         }
 

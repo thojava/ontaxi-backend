@@ -8,6 +8,7 @@
         xmlns:p="http://primefaces.org/ui">
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
 <!--@elvariable id="driverDetailComponent" type="vn.ontaxi.component.DriverDetailComponent"-->
+<!--@elvariable id="selectItemGenerator" type="vn.ontaxi.component.SelectItemGenerator"-->
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
         <h1 align="center">#{msg.driver_detail}</h1>
@@ -43,9 +44,7 @@
                             </td>
                             <td>
                                 <p:selectOneMenu value="#{driverDetailComponent.newDriver.carType}">
-                                    <f:selectItem itemLabel="4 Cho" itemValue="4 Chỗ"/>
-                                    <f:selectItem itemLabel="4 Cho Vios" itemValue="4 Chỗ Vios"/>
-                                    <f:selectItem itemLabel="7 Cho" itemValue="7 Chỗ"/>
+                                    <f:selectItems value="#{selectItemGenerator.carTypeSelectItems}"/>
                                 </p:selectOneMenu>
                             </td>
                         </tr>

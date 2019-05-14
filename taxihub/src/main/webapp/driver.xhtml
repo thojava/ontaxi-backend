@@ -64,7 +64,7 @@
                                     <p:outputLabel value="#{driver.license_plates}"/>
                                 </p:column>
                                 <p:column headerText="Loại Xe">
-                                    <p:outputLabel value="#{driver.carType}"/>
+                                    <p:outputLabel value="#{driver.carType.description}"/>
                                 </p:column>
                                 <p:column headerText="Phiên Bản Ứng Dụng">
                                     <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>
@@ -124,7 +124,7 @@
                                     <p:outputLabel value="#{driver.license_plates}"/>
                                 </p:column>
                                 <p:column headerText="Loại Xe">
-                                    <p:outputLabel value="#{driver.carType}"/>
+                                    <p:outputLabel value="#{driver.carType.description}"/>
                                 </p:column>
                                 <p:column headerText="Phiên Bản Ứng Dụng">
                                     <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>

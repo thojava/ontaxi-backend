@@ -16,6 +16,7 @@
         <h:outputScript name="js/new_order.js"/>
         <h:form id="newOrderForm">
             <!--@elvariable id="newOrderComponent" type="vn.ontaxi.component.NewOrderComponent"-->
+            <!--@elvariable id="selectItemGenerator" type="vn.ontaxi.component.SelectItemGenerator"-->
             <p:growl id="growl" showDetail="true" sticky="true"/>
             <table cellspacing="5px">
                 <tr>
@@ -130,7 +131,7 @@
                             <p:ajax update="debitorOption"/>
                         </p:selectBooleanCheckbox>
                             <p:selectOneMenu id="debitorOption" value="#{newOrderComponent.booking.debtor}" disabled="#{!newOrderComponent.booking.laterPaid}">
-                                <f:selectItems value="#{newOrderComponent.debtorSelectItems}"/>
+                                <f:selectItems value="#{selectItemGenerator.debtorSelectItems}"/>
                             </p:selectOneMenu></div>
                     </td>
                 </tr>
