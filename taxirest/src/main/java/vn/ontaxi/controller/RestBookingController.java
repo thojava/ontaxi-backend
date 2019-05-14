@@ -173,7 +173,7 @@ public class RestBookingController {
         viewPrice.setTo_location(booking.getTo_location());
         viewPrice.setTotal_distance(booking.getTotal_distance());
         viewPrice.setDepartureTime(booking.getDeparture_time());
-        viewPrice.setCar_type(booking.getCar_type());
+        viewPrice.setCar_type(booking.getCar_type().name());
         viewPriceRepository.saveAndFlush(viewPrice);
 
         return booking;

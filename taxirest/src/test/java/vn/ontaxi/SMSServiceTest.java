@@ -52,7 +52,7 @@ public class SMSServiceTest {
         singleRouteBooking.setFrom_city("Ha Noi");
         singleRouteBooking.setTo_city("Ha Nam");
         singleRouteBooking.setActual_total_distance(80);
-        singleRouteBooking.setCar_type(CarTypes.GOOD_4);
+        singleRouteBooking.setCar_type(CarTypes.G4);
         singleRouteBooking.setTransport_fee(50000);
         singleRouteBooking.setActualTotalPriceBeforePromotion(700000);
         singleRouteBooking.setPromotionPercentage(5);
@@ -73,7 +73,7 @@ public class SMSServiceTest {
         returnedRounded.setTo_city("Ha Nam");
         returnedRounded.setOutward_distance(100);
         returnedRounded.setReturn_distance(90);
-        returnedRounded.setCar_type(CarTypes.GOOD_4);
+        returnedRounded.setCar_type(CarTypes.G4);
         returnedRounded.setWait_hours(5);
         returnedRounded.setPromotionPercentage(5);
         returnedRounded.setTransport_fee(50000);
