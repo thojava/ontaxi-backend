@@ -11,6 +11,7 @@
 	    
     <artifactId>taxi-rest</artifactId>
     <packaging>war</packaging>
+    <name>Taxi API</name>
 
     <dependencies>
         <dependency>

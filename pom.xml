@@ -14,6 +14,7 @@
     <artifactId>taxi-backend</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>Taxi Backend</name>
     
 
     <build>

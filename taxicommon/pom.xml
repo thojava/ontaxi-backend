@@ -9,8 +9,8 @@
 		<version>1.0.0-SNAPSHOT</version>
     </parent>
     
-    <artifactId>taxi-common</artifactId>    
-
+    <artifactId>taxi-common</artifactId>
+    <name>Taxi Common</name>
     <properties>
         <maven.plugin.jar.version>3.0.2</maven.plugin.jar.version>
     </properties>
