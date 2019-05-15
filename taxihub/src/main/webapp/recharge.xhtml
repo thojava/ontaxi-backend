@@ -8,7 +8,7 @@
         xmlns:p="http://primefaces.org/ui">
 
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-<!--@elvariable id="driverPaymentComponent" type="vn.ontaxi.component.DriverPaymentComponent"-->
+<!--@elvariable id="driverPaymentComponent" type="vn.ontaxi.hub.component.DriverPaymentComponent"-->
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
         <h1 align="center">#{msg.manage_driver_balance}</h1>
@@ -21,11 +21,11 @@
                         Lái Xe
                     </td>
                     <td>
-                        <!--@elvariable id="driverConverter" type="vn.ontaxi.converter.DriverConverter"-->
+                        <!--@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"-->
                         <p:selectOneMenu value="#{driverPaymentComponent.payment.driver}" var="d"
                                          filter="true" filterMatchMode="contains"
                                          converter="#{driverConverter}">
-                            <!--@elvariable id="driversComponent" type="vn.ontaxi.component.DriversComponent"-->
+                            <!--@elvariable id="driversComponent" type="vn.ontaxi.hub.component.DriversComponent"-->
                             <f:selectItems value="#{driversComponent.drivers}" var="driver" itemValue="#{driver}"
                                            itemLabel="#{driver.name}"/>
                             <p:column>

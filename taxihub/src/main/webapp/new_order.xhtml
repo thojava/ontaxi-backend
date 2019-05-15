@@ -15,8 +15,8 @@
         <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
         <h:outputScript name="js/new_order.js"/>
         <h:form id="newOrderForm">
-            <!--@elvariable id="newOrderComponent" type="vn.ontaxi.component.NewOrderComponent"-->
-            <!--@elvariable id="selectItemGenerator" type="vn.ontaxi.component.SelectItemGenerator"-->
+            <!--@elvariable id="newOrderComponent" type="vn.ontaxi.hub.component.NewOrderComponent"-->
+            <!--@elvariable id="selectItemGenerator" type="vn.ontaxi.hub.component.SelectItemGenerator"-->
             <p:growl id="growl" showDetail="true" sticky="true"/>
             <table cellspacing="5px">
                 <tr>
@@ -203,7 +203,7 @@
                 <tr>
                     <td/>
                     <td>
-                        <!--@elvariable id="driverConverter" type="vn.ontaxi.converter.DriverConverter"-->
+                        <!--@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"-->
                         <p:selectManyMenu id="chooseDriverMenu" style="width: 500px" disabled="#{!newOrderComponent.sendToIndividual}"
                                           value="#{newOrderComponent.selectedDrivers}"
                                           converter="#{driverConverter}" validator="#{newOrderComponent.validateSelectDriver}"

@@ -11,7 +11,7 @@
         <h:outputScript name="js/driver_map.js"/>
         <h:form id="mapForm">
             <p:poll interval="5" oncomplete="reloadMarkers();" update="mapForm" global="false"/>
-            <!--@elvariable id="driversMapComponent" type="vn.ontaxi.component.DriversMapComponent"-->
+            <!--@elvariable id="driversMapComponent" type="vn.ontaxi.hub.component.DriversMapComponent"-->
             <h:outputText value="#{driversMapComponent.locationJson}" id="locationJson" style="display: none"/>
             <h:outputText value="Tổng số xe đang hoạt động "/>
             <h:outputText value="#{driversMapComponent.getOnlineDriversLocation(false).size()}"/>

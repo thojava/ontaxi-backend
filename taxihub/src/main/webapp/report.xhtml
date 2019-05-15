@@ -7,7 +7,7 @@
         xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-<!--@elvariable id="reportComponent" type="vn.ontaxi.component.ReportComponent"-->
+<!--@elvariable id="reportComponent" type="vn.ontaxi.hub.component.ReportComponent"-->
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
         <h1 align="center">#{msg.report}</h1>
@@ -30,7 +30,7 @@
                         Lái Xe
                     </td>
                     <td>
-                        <!--@elvariable id="driverConverter" type="vn.ontaxi.converter.DriverConverter"-->
+                        <!--@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"-->
                         <p:selectOneMenu value="#{reportComponent.driver}" var="d" id="drivers"
                                          filter="true" filterMatchMode="contains"
                                          converter="#{driverConverter}">

@@ -7,8 +7,8 @@
         xmlns:f="http://xmlns.jcp.org/jsf/core"
         xmlns:p="http://primefaces.org/ui">
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-<!--@elvariable id="driverDetailComponent" type="vn.ontaxi.component.DriverDetailComponent"-->
-<!--@elvariable id="selectItemGenerator" type="vn.ontaxi.component.SelectItemGenerator"-->
+<!--@elvariable id="driverDetailComponent" type="vn.ontaxi.hub.component.DriverDetailComponent"-->
+<!--@elvariable id="selectItemGenerator" type="vn.ontaxi.hub.component.SelectItemGenerator"-->
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
         <h1 align="center">#{msg.driver_detail}</h1>
@@ -104,7 +104,7 @@
                         <h:outputText id="paymentType" value="#{driverTransaction.paymentType eq 'RC' ? msg.debit : msg.credit}"/>
                     </p:column>
                     <p:column headerText="#{msg.amount}">
-                        <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                        <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.hub.component.NumberFormatterComponent"-->
                         <p:outputLabel value="#{numberFormatterComponent.formatPrice(driverTransaction.amount)}"/>
                     </p:column>
                     <p:column headerText="#{msg.reason}">

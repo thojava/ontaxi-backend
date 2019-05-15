@@ -4,7 +4,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui">
     <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-    <!--@elvariable id="bookingListComponent" type="vn.ontaxi.component.BookingListComponent"-->
+    <!--@elvariable id="bookingListComponent" type="vn.ontaxi.hub.component.BookingListComponent"-->
 
     <ui:param name="datePattern" value="dd-MM-yyyy"/>
     <div>
@@ -99,7 +99,7 @@
         </p:column>
 
         <f:facet name="footer">
-            <!--@elvariable id="userCredentialComponent" type="vn.ontaxi.component.UserCredentialComponent"-->
+            <!--@elvariable id="userCredentialComponent" type="vn.ontaxi.hub.component.UserCredentialComponent"-->
             <p:fragment id="footerPanel" autoUpdate="true" rendered="#{userCredentialComponent.manager}">
                 <table>
                     <tr>

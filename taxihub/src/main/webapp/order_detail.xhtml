@@ -8,9 +8,9 @@
         xmlns:p="http://primefaces.org/ui">
 
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-<!--@elvariable id="orderDetailComponent" type="vn.ontaxi.component.OrderDetailComponent"-->
-<!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
-<!--@elvariable id="selectItemGenerator" type="vn.ontaxi.component.SelectItemGenerator"-->
+<!--@elvariable id="orderDetailComponent" type="vn.ontaxi.hub.component.OrderDetailComponent"-->
+<!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.hub.component.NumberFormatterComponent"-->
+<!--@elvariable id="selectItemGenerator" type="vn.ontaxi.hub.component.SelectItemGenerator"-->
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
         <h:outputScript name="js/booking_routes.js"/>
@@ -267,7 +267,7 @@
                     <tr>
                         <td/>
                         <td>
-                            <!--@elvariable id="driverConverter" type="vn.ontaxi.converter.DriverConverter"-->
+                            <!--@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"-->
                             <ui:fragment rendered="#{orderDetailComponent.booking.ordered}">
                                 <p:selectManyMenu id="chooseDriverMenu" style="width: 500px"
                                                   converter="#{driverConverter}" validator="#{orderDetailComponent.validateSelectDriver}"
@@ -384,7 +384,7 @@
                         <h:outputText value="#{msg.tong_tien}"/>
                     </td>
                     <td>
-                        <!--@elvariable id="priceCalculator" type="vn.ontaxi.service.PriceCalculator"-->
+                        <!--@elvariable id="priceCalculator" type="vn.ontaxi.hub.service.PriceCalculator"-->
                         <h:outputText id="totalAmount"
                                       value="#{orderDetailComponent.booking.completed ? orderDetailComponent.booking.getTotalPriceInDetail(priceCalculator) : numberFormatterComponent.formatPrice(orderDetailComponent.booking.total_price)}"/>
                     </td>
@@ -409,7 +409,7 @@
                             oncomplete="initMap();"/>
                 </p:selectOneRadio>
                 Độ Chính Xác ( Theo mét )
-                <!--@elvariable id="configurationComponent" type="vn.ontaxi.component.ConfigurationComponent"-->
+                <!--@elvariable id="configurationComponent" type="vn.ontaxi.hub.component.ConfigurationComponent"-->
                 <p:inputText value="#{configurationComponent.accuracy_limit}">
                     <p:ajax update="locationJson, contentForm:systemCalculatedDistance, contentForm:returnSystemCalculatedDistance, contentForm:outwardSystemCalculatedDistance"
                             oncomplete="initMap();"/>

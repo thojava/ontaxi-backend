@@ -7,7 +7,7 @@
         xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html">
 
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-<!--@elvariable id="driversComponent" type="vn.ontaxi.component.DriversComponent"-->
+<!--@elvariable id="driversComponent" type="vn.ontaxi.hub.component.DriversComponent"-->
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
         <h1 align="center">Quản Lý Lái Xe</h1>
@@ -36,7 +36,7 @@
                 <p:tabView id="driverTabView">
                     <p:tab title="Đường Dài">
                         <h:form>
-                            <!--@elvariable id="driver" type="vn.ontaxi.jpa.entity.Driver"-->
+                            <!--@elvariable id="driver" type="vn.ontaxi.hub.jpa.entity.Driver"-->
                             <p:dataTable value="#{driversComponent.longHaulDrivers}" var="driver" id="newBookingTable"
                                          widgetVar="newBookingTable"
                                          rows="40" paginator="true"
@@ -70,7 +70,7 @@
                                     <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>
                                 </p:column>
                                 <p:column headerText="Tài Khoản">
-                                    <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                                    <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.hub.component.NumberFormatterComponent"-->
                                     <p:outputLabel value="#{numberFormatterComponent.formatPrice(driver.amount)}"/>
                                 </p:column>
                                 <p:column headerText="#{msg.level}">
@@ -96,7 +96,7 @@
                     </p:tab>
                     <p:tab title="Sân Bay">
                         <h:form>
-                            <!--@elvariable id="driver" type="vn.ontaxi.jpa.entity.Driver"-->
+                            <!--@elvariable id="driver" type="vn.ontaxi.hub.jpa.entity.Driver"-->
                             <p:dataTable value="#{driversComponent.airportDrivers}" var="driver" id="airportDriverTable"
                                          widgetVar="airportDriverTable"
                                          rows="40" paginator="true"
@@ -130,7 +130,7 @@
                                     <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>
                                 </p:column>
                                 <p:column headerText="Tài Khoản">
-                                    <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                                    <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.hub.component.NumberFormatterComponent"-->
                                     <p:outputLabel value="#{numberFormatterComponent.formatPrice(driver.amount)}"/>
                                 </p:column>
                                 <p:column headerText="#{msg.level}">
@@ -174,7 +174,7 @@
                             <h:outputText id="paymentType" value="#{driverTransaction.paymentType eq 'RC' ? msg.debit : msg.credit}"/>
                         </p:column>
                         <p:column headerText="#{msg.amount}">
-                            <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.component.NumberFormatterComponent"-->
+                            <!--@elvariable id="numberFormatterComponent" type="vn.ontaxi.hub.component.NumberFormatterComponent"-->
                             <p:outputLabel value="#{numberFormatterComponent.formatPrice(driverTransaction.amount)}"/>
                         </p:column>
                         <p:column headerText="#{msg.reason}">

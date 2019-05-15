@@ -13,7 +13,7 @@
         <p:spacer height="10px"/>
 
         <h:form id="mainForm">
-            <!--@elvariable id="marketingComponent" type="vn.ontaxi.component.MarketingComponent"-->
+            <!--@elvariable id="marketingComponent" type="vn.ontaxi.hub.component.MarketingComponent"-->
             <p:poll interval="30" update="mainForm"/>
             <p:dataTable value="#{marketingComponent.todayViewPrices}" var="viewPrice" id="scheduledBookingTable"
                          widgetVar="scheduledBookingTable"

@@ -9,15 +9,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import vn.ontaxi.constant.BooleanConstants;
-import vn.ontaxi.constant.CarTypes;
-import vn.ontaxi.jpa.entity.Booking;
-import vn.ontaxi.jpa.entity.PriceConfiguration;
-import vn.ontaxi.jpa.repository.PriceConfigurationRepository;
-import vn.ontaxi.service.PriceCalculator;
-import vn.ontaxi.service.SMSService;
-import vn.ontaxi.utils.PriceUtils;
-import vn.ontaxi.utils.SMSContentBuilder;
+import vn.ontaxi.common.constant.BooleanConstants;
+import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.jpa.entity.Booking;
+import vn.ontaxi.common.jpa.entity.PriceConfiguration;
+import vn.ontaxi.common.jpa.repository.PriceConfigurationRepository;
+import vn.ontaxi.common.service.PriceCalculator;
+import vn.ontaxi.common.service.SMSService;
+import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.rest.utils.SMSContentBuilder;
 
 @SpringBootTest(classes = {SMSService.class, PriceCalculator.class, PriceConfigurationRepository.class})
 @RunWith(SpringJUnit4ClassRunner.class)
