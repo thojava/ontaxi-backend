@@ -15,8 +15,8 @@
         <h:outputStylesheet name="css/taxi.css"/>
         <h:outputScript name="js/starter.js"/>
     </h:head>
-    <h:body style="margin-left: 10px">
-        <p:ajaxStatus style="display:none">
+    <h:body styleClass="skin-blue layout-top-nav">
+        <p:ajaxStatus style="display: none">
             <f:facet name="start">
                 <p:graphicImage name="/images/ajaxloading.gif" />
             </f:facet>
@@ -28,8 +28,16 @@
         </p:dialog>
         <ui:include src="header.xhtml"/>
         <p:spacer height="50px"/>
-        <ui:insert name="content" >
-        </ui:insert>
+        <div style="margin-left: 15px; margin-right: 15px">
+            <ui:insert name="content" >
+            </ui:insert>
+        </div>
     </h:body>
+
+    <h:outputScript library="primefaces" name="jquery/jquery.js" target="head"/>
+    <h:outputScript library="js" name="bootstrap.min.js" target="head"/>
+    <h:outputScript library="js" name="admin-lte.min.js" target="head"/>
+    <h:outputScript library="js" name="admintemplate.js" target="head"/>
+    <h:outputScript library="js" name="slimscroll.min.js" target="head"/>
 </f:view>
 </html>

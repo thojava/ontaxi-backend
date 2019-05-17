@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html
+        xmlns="http://www.w3.org/1999/xhtml"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -18,226 +19,238 @@
             <!--@elvariable id="newOrderComponent" type="vn.ontaxi.hub.component.NewOrderComponent"-->
             <!--@elvariable id="selectItemGenerator" type="vn.ontaxi.hub.component.SelectItemGenerator"-->
             <p:growl id="growl" showDetail="true" sticky="true"/>
-            <table cellspacing="5px">
-                <tr>
-                    <td class="label">
-                        Mobile
-                    </td>
-                    <td>
-                        <p:inputText id="mobile" label="#{msg.mobile}" type="text"
-                                     value="#{newOrderComponent.booking.mobile}" required="true"/>
-                        <p:message for="mobile"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.customer_name}
-                    </td>
-                    <td>
-                        <p:inputText id="name" label="#{msg.name}" type="text" value="#{newOrderComponent.booking.name}"
-                                     required="false"/>
-                        <p:message for="name"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.returned_customer}
-                    </td>
-                    <td>
-                        <p:selectBooleanCheckbox id="returnCustomer" value="#{newOrderComponent.booking.returnedCustomer}" onchange="function updatePromotionPercentage() {
-                            if(document.getElementById('newOrderForm:returnCustomer_input').checked) {
-                                PF('promotionPercentageSelect').selectValue('4.0');
-                            } else {
-                                PF('promotionPercentageSelect').selectValue('0.0');
-                            }
+            <div class="ui-g">
+                <div class="ui-g-8">
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>Mobile</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <p:inputText id="mobile" label="#{msg.mobile}" type="text"
+                                         value="#{newOrderComponent.booking.mobile}" required="true"/>
+                            <p:message for="mobile"/>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.customer_name}</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <p:inputText id="name" label="#{msg.name}" type="text" value="#{newOrderComponent.booking.name}"
+                                         required="false"/>
+                            <p:message for="name"/>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.returned_customer}</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <p:selectBooleanCheckbox id="returnCustomer" value="#{newOrderComponent.booking.returnedCustomer}" onchange="function updatePromotionPercentage() {
+                        if(document.getElementById('newOrderForm:returnCustomer_input').checked) {
+                            PF('promotionPercentageSelect').selectValue('4.0');
+                        } else {
+                            PF('promotionPercentageSelect').selectValue('0.0');
                         }
-                        updatePromotionPercentage();"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.loai_xe}
-                    </td>
-                    <td>
-                        <p:selectOneMenu value="#{newOrderComponent.booking.car_type}">
-                            <f:selectItem itemLabel="4 Cho" itemValue="N4"/>
-                            <f:selectItem itemLabel="4 Cho Vios" itemValue="G4"/>
-                            <f:selectItem itemLabel="7 Cho" itemValue="N7"/>
-                        </p:selectOneMenu>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.diem_di}
-                    </td>
-                    <td colspan="3">
-                        <p:inputText id="fromLocation" value="#{newOrderComponent.booking.from_location}"
-                                     required="true" style="width: 600px"/>
-                        <p:message for="fromLocation"/>
-                        <p:inputText type="hidden" id="fromCity" class="administrative_area_level_1"
-                                     value="#{newOrderComponent.booking.from_city}"/>
-                        <p:inputText type="hidden" id="fromDistrict" class="administrative_area_level_2"
-                                     value="#{newOrderComponent.booking.from_district}"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.diem_den}
-                    </td>
-                    <td colspan="3">
-                        <p:inputText id="toLocation" value="#{newOrderComponent.booking.to_location}" required="true"
-                                     style="width: 600px"/>
-                        <p:message for="toLocation"/>
-                        <p:inputText type="hidden" id="toCity" class="administrative_area_level_1"
-                                     value="#{newOrderComponent.booking.to_city}"/>
-                        <p:inputText type="hidden" id="toDistrict" class="administrative_area_level_2"
-                                     value="#{newOrderComponent.booking.to_district}"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.khoi_hanh}
-                    </td>
-                    <td>
-                        <p:calendar id="departureDate" value="#{newOrderComponent.booking.departure_time}"
-                                    pattern="MM/dd/yyyy HH:mm" required="true"/>
-                        <p:message for="departureDate"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.hai_chieu}
-                    </td>
-                    <td>
-                        <p:selectBooleanCheckbox value="#{newOrderComponent.booking.roundTrip}">
-                            <p:ajax update="waitingHourText"/>
-                        </p:selectBooleanCheckbox>
-                    </td>
-                    <td class="label">
-                        #{msg.gio_cho}
-                    </td>
-                    <td>
-                        <p:inputText id="waitingHourText" type="text" value="#{newOrderComponent.booking.wait_hours}"
-                                     style="width: 60px" disabled="#{not newOrderComponent.booking.roundTrip}"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        Khách Hợp Đồng
-                    </td>
-                    <td>
-                        <div><p:selectBooleanCheckbox value="#{newOrderComponent.booking.laterPaid}"
-                                                      style="vertical-align: super; padding-right: 10px">
-                            <p:ajax update="debitorOption"/>
-                        </p:selectBooleanCheckbox>
-                            <p:selectOneMenu id="debitorOption" value="#{newOrderComponent.booking.debtor}" disabled="#{!newOrderComponent.booking.laterPaid}">
-                                <f:selectItems value="#{selectItemGenerator.debtorSelectItems}"/>
-                            </p:selectOneMenu></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        Trọn Gói
-                    </td>
-                    <td>
-                        <div>
-                            <p:selectBooleanCheckbox value="#{newOrderComponent.booking.fixedPrice}"
-                                                     style="vertical-align: middle; padding-right: 10px">
-                                <p:ajax update="fixedPriceText, transportFeeText"/>
-                            </p:selectBooleanCheckbox>
-                            <p:inputText id="fixedPriceText" type="text" value="#{newOrderComponent.booking.total_price}"
-                                         style="width: 60px" disabled="#{not newOrderComponent.booking.fixedPrice}">
-                                <f:convertNumber pattern="#,###"/>
-                                <p:ajax event="blur" update="fixedPriceText"/>
-                            </p:inputText>
+                    }
+                    updatePromotionPercentage();"/>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        Phí Cầu Đường
-                    </td>
-                    <td>
-                        <div>
-                            <p:inputText id="transportFeeText" type="text" value="#{newOrderComponent.booking.transport_fee}"
-                                         style="width: 60px" disabled="#{not newOrderComponent.booking.fixedPrice}">
-                                <f:convertNumber pattern="#,###"/>
-                                <p:ajax event="blur" update="transportFeeText"/>
-                            </p:inputText>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.loai_xe}</label>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.promotion}
-                    </td>
-                    <td>
-                        <p:selectOneMenu id="promotionPercentage" value="#{newOrderComponent.booking.promotionPercentage}" widgetVar="promotionPercentageSelect">
-                            <f:selectItems value="#{newOrderComponent.promotionPercentageSelectItems}"/>
-                            <p:ajax update="promotionPercentage"/>
-                        </p:selectOneMenu>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        Phần Trăm Thu
-                    </td>
-                    <td>
-                        <p:selectOneMenu id="feePercentage" value="#{newOrderComponent.booking.fee_percentage}">
-                            <f:selectItems value="#{newOrderComponent.feePercentageSelectItems}"/>
-                            <p:ajax update="feePercentage"/>
-                        </p:selectOneMenu>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
-                        #{msg.driver_group_option}
-                    </td>
-                    <td>
-                        <p:selectOneRadio value="#{newOrderComponent.sendToGroupOption}">
-                            <f:selectItems value="#{newOrderComponent.sendToDriverGroupsOptions}"/>
-                            <p:ajax update="chooseDriverMenu"/>
-                        </p:selectOneRadio>
-                    </td>
-                </tr>
-                <tr>
-                    <td/>
-                    <td>
-                        <!--@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"-->
-                        <p:selectManyMenu id="chooseDriverMenu" style="width: 500px" disabled="#{!newOrderComponent.sendToIndividual}"
-                                          value="#{newOrderComponent.selectedDrivers}"
-                                          converter="#{driverConverter}" validator="#{newOrderComponent.validateSelectDriver}"
-                                          var="d" filter="true" filterMatchMode="contains" showCheckbox="true">
-                            <f:selectItems value="#{newOrderComponent.drivers}" var="driver" itemValue="#{driver}"
-                                           itemLabel="#{driver.name}"/>
-                            <p:column>
-                                <h:outputText value="#{d.name}"/>
-                            </p:column>
-                            <p:column>
-                                <h:outputText value="#{d.mobile}"/>
-                            </p:column>
-                            <p:column>
-                                <h:outputText value="#{d.carType}"/>
-                            </p:column>
-                            <p:ajax/>
-                        </p:selectManyMenu>
-                        <h:message for="chooseDriverMenu"/>
-                    </td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <td>
-                        <p:commandButton value="#{msg.schedule}" action="#{newOrderComponent.scheduleBooking}" update="newOrderForm"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="#{msg.send_to_driver}" action="#{newOrderComponent.postBooking}" update="newOrderForm"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="#{msg.danh_sach}" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
-                    </td>
-                </tr>
-            </table>
+                        <div class="ui-g-9">
+                            <p:selectOneMenu value="#{newOrderComponent.booking.car_type}">
+                                <f:selectItem itemLabel="4 Cho" itemValue="N4"/>
+                                <f:selectItem itemLabel="4 Cho Vios" itemValue="G4"/>
+                                <f:selectItem itemLabel="7 Cho" itemValue="N7"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.diem_di}</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <p:inputText id="fromLocation" value="#{newOrderComponent.booking.from_location}"
+                                         required="true" style="width: 600px"/>
+                            <p:message for="fromLocation"/>
+                            <p:inputText type="hidden" id="fromCity" class="administrative_area_level_1"
+                                         value="#{newOrderComponent.booking.from_city}"/>
+                            <p:inputText type="hidden" id="fromDistrict" class="administrative_area_level_2"
+                                         value="#{newOrderComponent.booking.from_district}"/>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.diem_den}</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <p:inputText id="toLocation" value="#{newOrderComponent.booking.to_location}" required="true"
+                                         style="width: 600px"/>
+                            <p:message for="toLocation"/>
+                            <p:inputText type="hidden" id="toCity" class="administrative_area_level_1"
+                                         value="#{newOrderComponent.booking.to_city}"/>
+                            <p:inputText type="hidden" id="toDistrict" class="administrative_area_level_2"
+                                         value="#{newOrderComponent.booking.to_district}"/>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.khoi_hanh}</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <div class="ui-g">
+                                <div class="ui-g-4">
+                                    <p:calendar id="departureDate" value="#{newOrderComponent.booking.departure_time}"
+                                                pattern="MM/dd/yyyy HH:mm" required="true"/>
+                                    <p:message for="departureDate"/>
+                                </div>
+                                <div class="ui-g-4">
+                                    <div class="ui-g">
+                                        <div class="ui-g-6">
+                                            <label>#{msg.hai_chieu}</label>
+                                        </div>
+                                        <div class="ui-g-6">
+                                            <p:selectBooleanCheckbox value="#{newOrderComponent.booking.roundTrip}">
+                                                <p:ajax update="waitingHourText"/>
+                                            </p:selectBooleanCheckbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ui-g-4">
+                                    <div class="ui-g">
+                                        <div class="ui-g-6">
+                                            <label> #{msg.gio_cho}</label>
+                                        </div>
+                                        <div class="ui-g-6">
+                                            <p:inputText id="waitingHourText" type="text" value="#{newOrderComponent.booking.wait_hours}"
+                                                         style="width: 60px" disabled="#{not newOrderComponent.booking.roundTrip}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>Khách Hợp Đồng</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <div class="ui-g">
+                                <div class="ui-g-1">
+                                    <p:selectBooleanCheckbox value="#{newOrderComponent.booking.laterPaid}"
+                                                             style="vertical-align: super; padding-right: 10px">
+                                        <p:ajax update="debitorOption"/>
+                                    </p:selectBooleanCheckbox>
+                                </div>
+                                <div class="ui-g-11">
+                                    <p:selectOneMenu id="debitorOption" value="#{newOrderComponent.booking.debtor}" disabled="#{!newOrderComponent.booking.laterPaid}">
+                                        <f:selectItems value="#{selectItemGenerator.debtorSelectItems}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>Trọn Gói</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <div class="ui-g">
+                                <div class="ui-g-1">
+                                    <p:selectBooleanCheckbox value="#{newOrderComponent.booking.fixedPrice}"
+                                                             style="vertical-align: middle; padding-right: 10px">
+                                        <p:ajax update="fixedPriceText, transportFeeText"/>
+                                    </p:selectBooleanCheckbox>
+                                </div>
+                                <div class="ui-g-11">
+                                    <p:inputText id="fixedPriceText" type="text" value="#{newOrderComponent.booking.total_price}"
+                                                 style="width: 60px" disabled="#{not newOrderComponent.booking.fixedPrice}">
+                                        <f:convertNumber pattern="#,###"/>
+                                        <p:ajax event="blur" update="fixedPriceText"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>Phí Cầu Đường</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <div>
+                                <p:inputText id="transportFeeText" type="text" value="#{newOrderComponent.booking.transport_fee}"
+                                             style="width: 60px" disabled="#{not newOrderComponent.booking.fixedPrice}">
+                                    <f:convertNumber pattern="#,###"/>
+                                    <p:ajax event="blur" update="transportFeeText"/>
+                                </p:inputText>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.promotion}</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <p:selectOneMenu id="promotionPercentage" value="#{newOrderComponent.booking.promotionPercentage}" widgetVar="promotionPercentageSelect">
+                                <f:selectItems value="#{newOrderComponent.promotionPercentageSelectItems}"/>
+                                <p:ajax update="promotionPercentage"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>Phần Trăm Thu</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <p:selectOneMenu id="feePercentage" value="#{newOrderComponent.booking.fee_percentage}">
+                                <f:selectItems value="#{newOrderComponent.feePercentageSelectItems}"/>
+                                <p:ajax update="feePercentage"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-3">
+                            <label>#{msg.driver_group_option}</label>
+                        </div>
+                        <div class="ui-g-9">
+                            <div class="ui-g">
+                                <p:selectOneRadio value="#{newOrderComponent.sendToGroupOption}">
+                                    <f:selectItems value="#{newOrderComponent.sendToDriverGroupsOptions}"/>
+                                    <p:ajax update="chooseDriverMenu"/>
+                                </p:selectOneRadio>
+                            </div>
+                            <div class="ui-g">
+                                <p:selectManyMenu id="chooseDriverMenu" style="width: 500px" disabled="#{!newOrderComponent.sendToIndividual}"
+                                                  value="#{newOrderComponent.selectedDrivers}"
+                                                  converter="#{driverConverter}" validator="#{newOrderComponent.validateSelectDriver}"
+                                                  var="d" filter="true" filterMatchMode="contains" showCheckbox="true">
+                                    <f:selectItems value="#{newOrderComponent.drivers}" var="driver" itemValue="#{driver}"
+                                                   itemLabel="#{driver.name}"/>
+                                    <p:column>
+                                        <h:outputText value="#{d.name}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{d.mobile}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{d.carType}"/>
+                                    </p:column>
+                                    <p:ajax/>
+                                </p:selectManyMenu>
+                                <h:message for="chooseDriverMenu"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-g" style="margin-bottom: 40px">
+                <p:commandButton styleClass="btn-primary" value="#{msg.schedule}" action="#{newOrderComponent.scheduleBooking}" update="newOrderForm"/>
+                <p:commandButton styleClass="btn-teal" value="#{msg.send_to_driver}" action="#{newOrderComponent.postBooking}" update="newOrderForm"/>
+                <p:commandButton styleClass="btn-warning" value="#{msg.danh_sach}" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+            </div>
         </h:form>
         <!-- admin@ontaxi.vn key -->
         <script type="text/javascript"

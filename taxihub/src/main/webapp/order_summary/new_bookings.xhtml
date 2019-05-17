@@ -65,13 +65,15 @@
         </p:column>
 
         <f:facet name="footer">
-            <table>
-                <h:commandButton value="#{msg.order_moi}" disabled="true"/>
-                <h:commandButton styleClass="coming_soon_order" value="#{msg.order_sap_toi}"
-                                 disabled="true"/>
-                <h:commandButton styleClass="out_of_date_order" value="#{msg.order_da_qua_han}"
-                                 disabled="true"/>
-            </table>
+            <div class="ui-g">
+                <div class="ui-g-offset-4 ui-g-4">
+                    <p:commandButton value="#{msg.order_moi}" disabled="true" styleClass="btn-primary"/>
+                    <p:commandButton styleClass="btn-teal" value="#{msg.order_sap_toi}"
+                                     disabled="true"/>
+                    <p:commandButton styleClass="btn-warning" value="#{msg.order_da_qua_han}"
+                                     disabled="true"/>
+                </div>
+            </div>
         </f:facet>
     </p:dataTable>
 </ui:composition>

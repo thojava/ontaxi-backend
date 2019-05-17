@@ -18,8 +18,8 @@
     <p:spacer height="10px"/>
 
     <h:form rendered="#{not userCredentialComponent.customer}">
-        <p:commandButton value="#{msg.tao_moi}" action="new_order.jsf?faces-redirect=true" ajax="false"/>
-        <p:commandButton value="#{msg.huy_order}" action="#{bookingListComponent.cancelBooking}"
+        <p:commandButton value="#{msg.tao_moi}" action="new_order.jsf?faces-redirect=true" styleClass="btn-primary" ajax="false"/>
+        <p:commandButton value="#{msg.huy_order}" action="#{bookingListComponent.cancelBooking}" styleClass="btn-primary"
                          update="mainForm:bookingTabView"/>
     </h:form>
 
