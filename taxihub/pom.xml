@@ -15,7 +15,6 @@
     <description>The Taxi Hub to manage the booking, driver, user</description>
 
     <properties>
-        <pmd.excludeFromFailureFile>${check.dir}/pmd/pmd-exclude.properties</pmd.excludeFromFailureFile>
         <cobertura.totalLineRate>100</cobertura.totalLineRate>
         <cobertura.packageLineRate>100</cobertura.packageLineRate>
         <cobertura.lineRate>100</cobertura.lineRate>
