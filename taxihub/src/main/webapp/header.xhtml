@@ -17,37 +17,41 @@
     <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
     <span style="position: relative; float: left">
         <h:form>
-            <table>
-                <tr>
-                    <td>
-                         <p:commandButton value="Danh sách đơn hàng" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="Danh sách lái xe" action="driver.jsf?faces-redirect=true" ajax="false" immediate="true"
-                        rendered="#{not userCredentialComponent.customer}"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="Khảo sát khách hàng" action="customer_survey.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                         rendered="#{not userCredentialComponent.customer}"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="Báo Cáo" action="report.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                         rendered="#{not userCredentialComponent.customer}"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="#{msg.statistic}" action="statistic.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                         rendered="#{not userCredentialComponent.customer}"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="#{msg.configuration}" action="configuration.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                         rendered="#{not userCredentialComponent.customer}"/>
-                    </td>
-                    <td>
-                        <p:commandButton value="Trạng Thái Website" action="marketing.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                         rendered="#{not userCredentialComponent.customer}"/>
-                    </td>
-                </tr>
-            </table>
+            <p:menubar>
+                <p:submenu label="Đơn Hàng">
+                    <p:menuitem value="Danh Sách" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                    <p:menuitem value="Tạo Mới" action="new_order.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"/>
+                </p:submenu>
+
+                <p:submenu label="Tài Xế">
+                    <p:menuitem value="Danh Sách" action="driver.jsf?faces-redirect=true" ajax="false" immediate="true"
+                                rendered="#{not userCredentialComponent.customer}"/>
+                    <p:menuitem value="Tạo Mới" action="driver_detail.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"/>
+                    <p:menuitem value="Bản Đồ Vị Trí" url="#"/>
+                </p:submenu>
+
+                <p:submenu label="Khách Hàng">
+                    <p:menuitem value="Danh Sách" url="#"/>
+                    <p:menuitem value="Tạo Mới" url="#"/>
+                </p:submenu>
+
+                <p:submenu label="Báo Cáo">
+                    <p:menuitem value="Báo Cáo" action="report.jsf?faces-redirect=true" ajax="false" immediate="true"
+                                rendered="#{not userCredentialComponent.customer}"/>
+                    <p:menuitem value="Thống Kê" action="statistic.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"
+                                rendered="#{not userCredentialComponent.customer}"/>
+                </p:submenu>
+
+                <p:submenu label="Cài Đặt">
+                    <p:menuitem value="Cài Đặt Chung" action="configuration.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"
+                                rendered="#{not userCredentialComponent.customer}"/>
+                </p:submenu>
+
+            </p:menubar>
         </h:form>
     </span>
 </div>
