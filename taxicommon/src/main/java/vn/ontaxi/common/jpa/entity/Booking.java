@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 public class Booking extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String from_location;
     private String from_city;

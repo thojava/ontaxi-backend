@@ -1,6 +1,6 @@
 package vn.ontaxi.rest.utils;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.utils.DateUtils;
@@ -24,7 +24,7 @@ public class SMSContentBuilder {
 
 
     public static String buildCompleteOrderSMSContent(Booking booking) {
-        String fromLocation = org.apache.commons.lang3.StringUtils.defaultIfBlank(booking.getFrom_city(), booking.getFrom_location());
+        String fromLocation = StringUtils.defaultIfBlank(booking.getFrom_city(), booking.getFrom_location());
         String toLocation = StringUtils.defaultIfBlank(booking.getTo_city(), booking.getTo_location());
         int pricePerKm = (int) booking.getUnit_price();
         if (!booking.isRoundTrip()) {

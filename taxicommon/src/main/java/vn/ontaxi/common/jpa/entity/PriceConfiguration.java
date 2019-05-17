@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class PriceConfiguration {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private double normal_4;
     private double good_4;

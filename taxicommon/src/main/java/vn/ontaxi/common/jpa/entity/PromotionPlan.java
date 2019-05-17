@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 public class PromotionPlan extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private double from_distance;
     private double to_distance;

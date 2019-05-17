@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 public class Customer extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private long id;
     private String phone;

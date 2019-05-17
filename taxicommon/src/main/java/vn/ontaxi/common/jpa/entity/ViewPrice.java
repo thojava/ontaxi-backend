@@ -8,7 +8,7 @@ import java.util.Date;
 @Entity
 public class ViewPrice extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String from_location;
     private String to_location;

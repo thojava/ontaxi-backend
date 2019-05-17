@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 public class Driver extends AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private long id;
     private String email;
