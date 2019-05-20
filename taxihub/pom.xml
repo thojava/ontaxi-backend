@@ -80,12 +80,6 @@
             <artifactId>primefaces-extensions</artifactId>
             <version>${version.primefaces}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.adminfaces</groupId>
-            <artifactId>admin-theme</artifactId>
-            <version>1.0.0</version>
-            <!--<classifier>dev</classifier> uncompressed theme.css-->
-        </dependency>
         <!-- omnifaces -->
         <dependency>
             <groupId>org.omnifaces</groupId>
