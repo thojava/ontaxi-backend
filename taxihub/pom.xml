@@ -21,7 +21,7 @@
         <cobertura.totalBranchRate>85</cobertura.totalBranchRate>
         <cobertura.packageBranchRate>85</cobertura.packageBranchRate>
         <cobertura.branchRate>50</cobertura.branchRate>
-        <version.weld-servlet>2.2.14.Final</version.weld-servlet>
+        <version.weld-servlet>2.4.8.Final</version.weld-servlet>
         <version.jandex>1.2.2.Final</version.jandex>
     </properties>
 
