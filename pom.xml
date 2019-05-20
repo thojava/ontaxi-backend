@@ -17,7 +17,7 @@
         <version.apache-poi>3.15</version.apache-poi>
         <version.jsf>2.2.12</version.jsf>
         <version.primefaces>7.0</version.primefaces>
-        <version.omnifaces>2.2</version.omnifaces>
+        <version.omnifaces>2.7</version.omnifaces>
         <version.servlet-api>3.1.0</version.servlet-api>
         <version.jsp-api>2.1</version.jsp-api>
         <version.commons-lang>2.6</version.commons-lang>
