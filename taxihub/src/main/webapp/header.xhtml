@@ -16,12 +16,12 @@
                                 immediate="true"/>
                 </p:submenu>
 
-                <p:submenu label="Tài Xế">
+                <p:submenu label="Lái Xe">
                     <p:menuitem value="Danh Sách" action="driver.jsf?faces-redirect=true" ajax="false" immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
                     <p:menuitem value="Tạo Mới" action="driver_detail.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"/>
-                    <p:menuitem value="Bản Đồ Vị Trí" url="#"/>
+                    <p:menuitem value="Bản Đồ Vị Trí" action="driver_map.jsf?faces-redirect=true" ajax="false" immediate="true"/>
                 </p:submenu>
 
                 <p:submenu label="Khách Hàng">
