@@ -127,6 +127,12 @@
             <version>${version.commons-io}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.maps/google-maps-services -->
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>${version.jasper-report}</version>
+        </dependency>
     </dependencies>
 
 </project>
