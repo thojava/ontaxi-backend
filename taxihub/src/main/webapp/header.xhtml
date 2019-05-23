@@ -1,54 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <header class="main-header">
+        <nav class="navbar navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a href="/hub/" class="navbar-brand">
+                        ONTAXI
+                    </a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar-collapse">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Đơn Hàng
+                                <span class="caret"></span>
+                                <i class="fa fa-car"></i>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <p:link href="index.jsf?faces-redirect=true">
+                                        <span>Danh Sách</span>
+                                    </p:link>
+                                </li>
+                                <li>
+                                    <p:link href="new_order.jsf?faces-redirect=true">
+                                        <span>Tạo Mới</span>
+                                    </p:link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Tài Xế
+                                <span class="caret"></span>
+                                <i class="fa fa-car"></i>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <p:link href="driver.jsf?faces-redirect=true">
+                                        <span>Danh Sách</span>
+                                    </p:link>
+                                </li>
+                                <li>
+                                    <p:link href="driver_detail.jsf?faces-redirect=true">
+                                        <span>Tạo Mới</span>
+                                    </p:link>
+                                </li>
+                                <li>
+                                    <p:link href="#">
+                                        <span>Bản Đồ Vị Trí</span>
+                                    </p:link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Khách Hàng
+                                <span class="caret"></span>
+                                <i class="fa fa-car"></i>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <p:link href="customer_summary.jsf?faces-redirect=true">
+                                        <span>Danh Sách</span>
+                                    </p:link>
+                                </li>
+                                <li>
+                                    <p:link href="customer_detail.jsf?faces-redirect=true">
+                                        <span>Tạo Mới</span>
+                                    </p:link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Báo Cáo
+                                <span class="caret"></span>
+                                <i class="fa fa-car"></i>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <p:link href="report.jsf?faces-redirect=true">
+                                        <span>Báo Cáo</span>
+                                    </p:link>
+                                </li>
+                                <li>
+                                    <p:link href="statistic.jsf?faces-redirect=true">
+                                        <span>Thống Kê</span>
+                                    </p:link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Cài Đặt
+                                <span class="caret"></span>
+                                <i class="fa fa-car"></i>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <p:link href="configuration.jsf?faces-redirect=true">
+                                        <span>Cài Đặt Chung</span>
+                                    </p:link>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-<!--@elvariable id="userCredentialComponent" type="vn.ontaxi.hub.component.UserCredentialComponent"-->
-<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-<div align="right">
-    <span style="position: relative">
-        <h:form>
-            <p:menubar autoDisplay="false">
-                <p:submenu label="Đơn Hàng">
-                    <p:menuitem value="Danh Sách" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
-                    <p:menuitem value="Tạo Mới" action="new_order.jsf?faces-redirect=true" ajax="false"
-                                immediate="true"/>
-                </p:submenu>
-
-                <p:submenu label="Lái Xe">
-                    <p:menuitem value="Danh Sách" action="driver.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                rendered="#{not userCredentialComponent.customer}"/>
-                    <p:menuitem value="Tạo Mới" action="driver_detail.jsf?faces-redirect=true" ajax="false"
-                                immediate="true"/>
-                    <p:menuitem value="Bản Đồ Vị Trí" action="driver_map.jsf?faces-redirect=true" ajax="false" immediate="true"/>
-                </p:submenu>
-
-                <p:submenu label="Khách Hàng">
-                    <p:menuitem value="Danh Sách" url="#"/>
-                    <p:menuitem value="Tạo Mới" url="#"/>
-                </p:submenu>
-
-                <p:submenu label="Báo Cáo">
-                    <p:menuitem value="Báo Cáo" action="report.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                rendered="#{not userCredentialComponent.customer}"/>
-                    <p:menuitem value="Thống Kê" action="statistic.jsf?faces-redirect=true" ajax="false"
-                                immediate="true"
-                                rendered="#{not userCredentialComponent.customer}"/>
-                </p:submenu>
-
-                <p:submenu label="Cài Đặt">
-                    <p:menuitem value="Cài Đặt Chung" action="configuration.jsf?faces-redirect=true" ajax="false"
-                                immediate="true"
-                                rendered="#{not userCredentialComponent.customer}"/>
-                </p:submenu>
-
-                <p:submenu label="Tài Khoản: #{userCredentialComponent.userName}">
-                    <p:menuitem value="Thoát" action="/logout"/>
-                </p:submenu>
-            </p:menubar>
-        </h:form>
-    </span>
-</div>
-
-</html>
+</ui:composition>
