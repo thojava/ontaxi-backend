@@ -1,10 +1,8 @@
 package vn.ontaxi.hub.component;
 
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.constant.BookingOrder;
-import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.hub.component.viewmodel.TaxiLazyDataModel;
