@@ -1,5 +1,6 @@
 package vn.ontaxi.hub.component;
 
+import vn.ontaxi.common.jpa.repository.*;
 import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
 import vn.ontaxi.common.constant.BookingTypes;
 import vn.ontaxi.common.constant.BooleanConstants;
@@ -7,14 +8,11 @@ import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.constant.SendToGroupOptions;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.Driver;
-import vn.ontaxi.common.jpa.repository.BookingRepository;
-import vn.ontaxi.common.jpa.repository.DriverRepository;
-import vn.ontaxi.common.jpa.repository.PersistentCustomerRepository;
-import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
 import vn.ontaxi.common.service.DistanceMatrixService;
 import vn.ontaxi.common.service.FCMService;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.BookingUtils;
+import vn.ontaxi.hub.service.CustomerService;
 import vn.ontaxi.hub.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -39,11 +37,12 @@ public class NewOrderComponent extends AbstractOrderComponent {
     private final PromotionPlanRepository promotionPlanRepository;
     private final UserCredentialComponent userCredentialComponent;
     private final PriceCalculator priceCalculator;
+    private final CustomerService customerService;
 
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator) {
+    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService) {
         super(messageSource, persistentCustomerRepository);
         this.driverRepository = driverRepository;
         this.bookingRepository = bookingRepository;
@@ -51,6 +50,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         this.fcmService = fcmService;
         this.promotionPlanRepository = promotionPlanRepository;
         this.priceCalculator = priceCalculator;
+        this.customerService = customerService;
     }
 
     @PostConstruct
@@ -75,6 +75,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         booking.setViewed(BooleanConstants.YES);
         booking.setCreatedBy(userCredentialComponent.getUserName());
         booking = bookingRepository.saveAndFlush(booking);
+
         return "index.jsf?faces-redirect=true";
     }
 
@@ -94,6 +95,8 @@ public class NewOrderComponent extends AbstractOrderComponent {
         booking = bookingRepository.saveAndFlush(booking);
 
         fcmService.postNewTaxiOrder(booking);
+
+        customerService.updateCustomerInfo(booking);
 
         return "index.jsf?faces-redirect=true";
     }

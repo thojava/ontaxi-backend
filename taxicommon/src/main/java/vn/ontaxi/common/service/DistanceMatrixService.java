@@ -1,6 +1,10 @@
 package vn.ontaxi.common.service;
 
 import com.google.gson.Gson;
+import com.google.maps.DistanceMatrixApi;
+import com.google.maps.DistanceMatrixApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
 import org.apache.commons.lang3.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -10,9 +14,13 @@ import vn.ontaxi.common.model.Location;
 import vn.ontaxi.common.model.direction.GoogleDirections;
 import vn.ontaxi.common.utils.HttpUtils;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class DistanceMatrixService {
@@ -28,6 +36,23 @@ public class DistanceMatrixService {
     public DistanceMatrixService(ConfigurationService configurationService, Environment environment) {
         this.configurationService = configurationService;
         this.environment = environment;
+    }
+
+    public List<Long> getDistances(String origin, String[] destinations) {
+        GeoApiContext geoApiContext = new GeoApiContext.Builder().apiKey("AIzaSyC983JhXlUWUomd07jsfBkPjv7VpHA_eWQ")
+                .build();
+
+        DistanceMatrixApiRequest distanceMatrix = DistanceMatrixApi.getDistanceMatrix(geoApiContext, new String[]{origin}, destinations);
+        try {
+            com.google.maps.model.DistanceMatrix distances = distanceMatrix.await();
+            if (distances.rows != null && distances.rows.length > 0) {
+                return Stream.of(distances.rows[0].elements).map(ele -> ele.distance.inMeters).collect(Collectors.toList());
+            }
+        } catch (ApiException | InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>(Integer.MAX_VALUE);
     }
 
     /* Return distance by m */

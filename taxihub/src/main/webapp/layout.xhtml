@@ -21,10 +21,16 @@
                 <p:graphicImage name="/images/ajaxloading.gif" />
             </f:facet>
         </p:ajaxStatus>
-        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        <p:ajaxStatus onstart="startTimer();"
+                      onerror="PF('errorDialog').show();stopTimer();PF('statusDialog').hide()"
+                      onsuccess="PF('statusDialog').hide();stopTimer();" />
 
         <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
             <p:graphicImage name="/images/ajaxloading.gif" />
+        </p:dialog>
+        <p:dialog modal="true" widgetVar="errorDialog"
+                  header="Có lỗi xảy ra" draggable="false" closable="false" resizable="false">
+            Nhấn F5 để tải lại trang
         </p:dialog>
         <ui:include src="header.xhtml"/>
         <p:spacer height="50px"/>
@@ -32,6 +38,20 @@
             <ui:insert name="content" >
             </ui:insert>
         </div>
+
+
+        <script type="text/javascript">
+            var t;
+
+            function startTimer() {
+                t = setTimeout("PF('statusDialog').show()", 1000);
+            }
+
+            function stopTimer() {
+                clearTimeout(t);
+
+            }
+        </script>
     </h:body>
 
     <h:outputScript library="primefaces" name="jquery/jquery.js" target="head"/>
@@ -39,5 +59,6 @@
     <h:outputScript library="js" name="admin-lte.min.js" target="head"/>
     <h:outputScript library="js" name="admintemplate.js" target="head"/>
     <h:outputScript library="js" name="slimscroll.min.js" target="head"/>
+
 </f:view>
 </html>

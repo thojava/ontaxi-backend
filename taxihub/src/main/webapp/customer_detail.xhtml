@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+
+        <h1 align="center">
+            <p:outputLabel rendered="#{customerDetailComponent.currentCustomer.id != null}">Thông Tin Chi Tiết Khách Hàng</p:outputLabel>
+            <p:outputLabel rendered="#{customerDetailComponent.currentCustomer.id == null}">Thêm Khách Hàng</p:outputLabel>
+        </h1>
+        <p:spacer height="10px"/>
+
+        <h:form id="formId" prependId="false">
+            <p:growl showDetail="true" life="5000" globalOnly="true" autoUpdate="true" severity="error"/>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton value="Lưu Lại" update="@form" action="#{customerDetailComponent.saveCustomerInfo}" icon="fa fa-check" process="@this, @([id$=user_info]), @([id$=behavior])"
+                                         styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                        <!--<p:commandButton value="Delete" process="@this" update="@form"
+                                         icon="fa fa-trash"
+                                         styleClass="btn-danger">
+                            <p:confirm header="Xác nhận" message="Bạn có chắc chắn muốn xóa người dùng này không?" icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Xóa" type="button" styleClass="ui-confirmdialog-yes btn btn-danger" icon="pi pi-check" />
+                            <p:commandButton value="Không" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                        </p:confirmDialog>-->
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Quay lại" immediate="true" styleClass="btn-default"
+                                         action="/customer_summary.jsf?faces-redirect=true" process="@this"
+                                         ajax="false"
+                                         icon="fa fa-reply"/>
+                    </div>
+                    <p:separator/>
+                    <p:outputPanel class="ui-g ui-fluid" id="user_info">
+                        <div class="ui-sm-6 ui-g-4 ui-g-nopad">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:outputLabel for="name" value="Họ Tên"/>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:inputText id="name" maxlength="50" value="#{customerDetailComponent.currentCustomer.name}"
+                                             required="true" requiredMessage="Name is required."/>
+                                <span class="help-block">
+                                    <p:message for="name"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ui-sm-6 ui-g-4 ui-g-nopad">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:outputLabel for="phonenumber" value="SĐT"/>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:inputText id="phonenumber" maxlength="15" value="#{customerDetailComponent.currentCustomer.phone}"
+                                               required="true" requiredMessage="Phone number is required."/>
+                                <span class="help-block">
+                                    <p:message for="phonenumber"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ui-sm-6 ui-g-4 ui-g-nopad">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:outputLabel for="email" value="Email"/>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:inputText id="email" value="#{customerDetailComponent.currentCustomer.email}"/>
+                                <span class="help-block">
+                                    <p:message for="email" escape="false"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ui-sm-6 ui-g-4 ui-g-nopad">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:outputLabel for="sex" value="Giới Tính"/>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:selectOneRadio id="sex" value="#{customerDetailComponent.currentCustomer.gender}">
+                                    <f:selectItem itemLabel="Nam" itemValue="MALE"/>
+                                    <f:selectItem itemLabel="Nữ" itemValue="FEMALE"/>
+                                </p:selectOneRadio>
+                            </div>
+                        </div>
+                        <div class="ui-sm-6 ui-g-4 ui-g-nopad">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:outputLabel for="date" value="Ngày Sinh"/>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:datePicker id="date" value="#{customerDetailComponent.currentCustomer.birthDay}" showIcon="true" pattern="dd/MM/yyyy"/>
+                                <span class="help-block">
+                                    <p:message for="date"/>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="ui-g-4 ui-g-nopad">
+                            <div class="ui-g-12">
+                                <p:outputLabel for="job" value="Công việc"/>
+                            </div>
+                            <div class="ui-g-12">
+                                <p:inputText id="job" maxlength="500" value="#{customerDetailComponent.currentCustomer.job}"/>
+                                <span class="help-block">
+                                    <p:message for="job"/>
+                                </span>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                </div>
+                <div class="box-footer with-border">
+                    <p:tabView id="tabView">
+                        <p:tab title="Địa Chỉ" id="addressTab">
+                            <ui:repeat value="#{customerDetailComponent.currentCustomer.addresses}" var="address" varStatus="status">
+                                <p:panel style="margin-bottom: 15px" id="addressInfo">
+                                    <div class="ui-g ui-fluid">
+                                        <div class="ui-g-3 ui-g-nopad">
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:outputLabel for="addressType" value="Địa Chỉ"/>
+                                                <p:commandLink styleClass="delete_address" title="Xóa địa chỉ này" actionListener="#{customerDetailComponent.deleteAddress(address)}" process="@this" update="@([id$=tabView])">x</p:commandLink>
+                                            </div>
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:selectOneRadio id="addressType" value="#{address.addressType}" unselectable="true">
+                                                    <f:selectItem itemLabel="Nhà Ở" itemValue="HOME" />
+                                                    <f:selectItem itemLabel="Cơ Quan" itemValue="OFFICE" />
+                                                    <f:selectItem itemLabel="Khác" itemValue="OTHER" />
+                                                    <p:ajax process="@this" update="addressInfo, @([id$=addNewAddress])"/>
+                                                </p:selectOneRadio>
+                                            </div>
+                                        </div>
+                                        <p:outputPanel rendered="#{address.addressType != null}" id="addressInputPanel" styleClass="ui-g-3 ui-g-nopad">
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:outputLabel for="addressDetail" value="Nhập Địa Chỉ"/>
+                                                <p:commandLink style="margin-left: 15px; color: blue" actionListener="#{address.setShowMap(true)}" oncomplete="geocode(#{status.index})" rendered="#{!address.showMap}" process="@this" update="addressInfo">Hiển thị bản đồ</p:commandLink>
+                                                <p:commandLink style="margin-left: 15px; color: blue" actionListener="#{address.setShowMap(false)}" rendered="#{address.showMap}" process="@this" update="addressInfo">Ẩn bản đồ</p:commandLink>
+                                            </div>
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:autoComplete id="addressDetail" widgetVar="addressAutoComplete#{status.index}" queryDelay="500" minQueryLength="3" cache="true"
+                                                                cacheTimeout="30000" completeMethod="#{customerDetailComponent.recommendPlaces}" converter="stringTrimmer"
+                                                                value="#{address.address}" onchange="setTimeout(finishChange#{status.index}, 1000);">
+                                                    <p:ajax event="itemSelect" oncomplete="finishChange#{status.index}(); return false;"/>
+                                                </p:autoComplete>
+                                                <p:remoteCommand name="finishChange#{status.index}" process="@this, addressDetail" update="addressDetail, addressDetailHidden" oncomplete="geocode(#{status.index})"/>
+                                                <p:inputText style="display: none" id="addressDetailHidden" styleClass="addressDetailHidden" value="#{address.address}"/>
+                                            </div>
+                                        </p:outputPanel>
+                                        <p:outputPanel rendered="#{address.addressType != null and address.showMap}" styleClass="ui-g-6 ui-g-nopad">
+                                            <p:gmap id="geoGmap" widgetVar="geoMap#{status.index}" center="#{address.centerGeoMap}" zoom="16" type="ROADMAP" model="#{customerDetailComponent.lstGeoModels.get(status.index)}" style="width:100%;height:400px">
+                                                <p:ajax event="geocode" listener="#{customerDetailComponent.findLocation}" update="@this, @([id$=addressDetail])"/>
+                                                <p:ajax event="markerDrag" listener="#{customerDetailComponent.onMarkerDrag}"/>
+                                            </p:gmap>
+                                        </p:outputPanel>
+                                    </div>
+                                </p:panel>
+                            </ui:repeat>
+                            <p:commandButton id="addNewAddress" disabled="#{!customerDetailComponent.canAddNewAddress()}" process="@this" actionListener="#{customerDetailComponent.addNewAddress}" update="tabView" value="Thêm địa chỉ" />
+                        </p:tab>
+                        <p:tab title="Sở Thích">
+                            <p:selectManyMenu id="behavior" value="#{customerDetailComponent.currentCustomer.behaviors}"
+                                              collectionType="java.util.LinkedHashSet"
+                                              converter="omnifaces.SelectItemsConverter"
+                                              var="behavior" showCheckbox="true">
+                                <f:selectItems value="#{customerDetailComponent.lstBehaviors}" var="b" itemLabel="#{b.name}" itemValue="#{b}" />
+                                <p:column>
+                                    <h:outputText value="#{behavior.name}" />
+                                </p:column>
+                            </p:selectManyMenu>
+                        </p:tab>
+                    </p:tabView>
+                </div>
+            </div>
+        </h:form>
+        <script type="text/javascript"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW25lEAB7icCTEGm_WKVELX27nXn7e0Z4"/>
+        <script type="text/javascript">
+            function geocode(index) {
+                try {
+                    PF('geoMap' + index).geocode(document.getElementsByClassName('addressDetailHidden')[index].value);
+                } catch (e) {
+
+                }
+            }
+        </script>
+    </ui:define>
+</ui:composition>
+</html>
