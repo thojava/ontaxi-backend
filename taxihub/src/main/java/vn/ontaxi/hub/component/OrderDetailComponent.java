@@ -21,6 +21,7 @@ import vn.ontaxi.common.model.Location;
 import vn.ontaxi.common.model.direction.GoogleDirections;
 import vn.ontaxi.common.service.*;
 import vn.ontaxi.common.utils.BookingUtils;
+import vn.ontaxi.hub.service.CustomerService;
 import vn.ontaxi.hub.utils.PolyUtil;
 import vn.ontaxi.common.utils.PriceUtils;
 
@@ -43,13 +44,14 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     private final DistanceMatrixService distanceMatrixService;
     private final ConfigurationService configurationService;
     private final PriceCalculator priceCalculator;
+    private final CustomerService customerService;
 
     private boolean with_snap;
     private boolean display_outward_routes = true;
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public OrderDetailComponent(Environment env, BookingRepository bookingRepository, DriverRepository driverRepository, FCMService fcmService, DistanceMatrixService distanceMatrixService, ConfigurationService configurationService, MessageSource messageSource, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator) {
+    public OrderDetailComponent(Environment env, BookingRepository bookingRepository, DriverRepository driverRepository, FCMService fcmService, DistanceMatrixService distanceMatrixService, ConfigurationService configurationService, MessageSource messageSource, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService) {
         super(messageSource, persistentCustomerRepository);
         this.env = env;
         this.bookingRepository = bookingRepository;
@@ -58,6 +60,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
         this.distanceMatrixService = distanceMatrixService;
         this.configurationService = configurationService;
         this.priceCalculator = priceCalculator;
+        this.customerService = customerService;
     }
 
     @PostConstruct
@@ -112,6 +115,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
 
         fcmService.postNewTaxiOrder(booking);
 
+        customerService.updateCustomerInfo(booking);
         return "index.jsf?faces-redirect=true";
     }
 

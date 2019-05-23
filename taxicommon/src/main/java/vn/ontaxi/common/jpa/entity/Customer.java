@@ -1,20 +1,108 @@
 package vn.ontaxi.common.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Customer extends AbstractEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    private long id;
+    private Long id;
     private String phone;
     private String name;
+    private String email;
+    private String job;
+    private Date birthDay;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Transient
+    private Set<Behavior> behaviors;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    private List<Address> addresses;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    private Set<CustomerBehavior> customerBehaviors = new HashSet<>();
+
+    public Set<CustomerBehavior> getCustomerBehaviors() {
+        return customerBehaviors;
+    }
+
+    public void setCustomerBehaviors(Set<CustomerBehavior> customerBehaviors) {
+        this.customerBehaviors = customerBehaviors;
+    }
+
+    public Set<Behavior> getBehaviors() {
+        if (CollectionUtils.isEmpty(behaviors)) {
+            behaviors = new HashSet<>();
+            for (CustomerBehavior customerBehavior : customerBehaviors) {
+                behaviors.add(customerBehavior.getBehavior());
+            }
+        }
+
+        return behaviors;
+
+    }
+
+    public void setBehaviors(Set<Behavior> behaviors) {
+        this.behaviors = behaviors;
+        this.customerBehaviors.clear();
+        for (Behavior behavior : behaviors)
+            this.customerBehaviors.add(new CustomerBehavior(this, behavior));
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
+    }
 
     public String getPhone() {
         return phone;
@@ -24,11 +112,11 @@ public class Customer extends AbstractEntity {
         this.phone = phone;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
