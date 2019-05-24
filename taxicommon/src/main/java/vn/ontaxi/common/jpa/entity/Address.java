@@ -25,6 +25,7 @@ public class Address {
 
     public enum AddressType {
         HOME,
+        HOMETOWN,
         OFFICE,
         OTHER
     }
@@ -35,7 +36,7 @@ public class Address {
     private long id;
     private String address;
     @Enumerated(EnumType.STRING)
-    private AddressType addressType;
+    private AddressType addressType = AddressType.HOME;
     private double lat;
     private double lng;
     private int numOfBooking;
