@@ -25,18 +25,14 @@
                          rowsPerPageTemplate="5,10,15"
                          var="customer">
                 <f:facet name="header">
-                    <p:commandButton value="Tạo mới" style="float: left"
-                                     action="customer_detail.jsf?faces-redirect=true" ajax="false" immediate="true"
-                                     styleClass="btn btn-primary"/>
+                    <p:commandButton value="Tạo mới" style="float: left" action="#{customersComponent.newCustomer}" styleClass="btn btn-primary"/>
                     <div style="clear: both"></div>
                 </f:facet>
-                <!--<p:column style="width: 50px">
-                    <p:selectBooleanCheckbox value="#{customer.beanSelected}">
-                        <p:ajax/>
-                    </p:selectBooleanCheckbox>
-                </p:column>-->
+                <p:column headerText="Mã" width="20">
+                    <p:link value="#{customer.id}" href="customer_detail.jsf?id=#{customer.id}"/>
+                </p:column>
                 <p:column headerText="Tên" filterBy="#{customer.name}">
-                    <p:link value="#{customer.name}" href="customer_detail.jsf?faces-redirect=true&amp;id=#{customer.id}"/>
+                    <h:outputText value="#{customer.name}"/>
                 </p:column>
                 <p:column headerText="SĐT" filterBy="#{customer.phone}">
                     <h:outputText value="#{customer.phone}"/>
@@ -49,7 +45,7 @@
                 </p:column>
                 <p:column headerText="Ngày Sinh">
                     <h:outputText value="#{customer.birthDay}">
-                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputText>
                 </p:column>
             </p:dataTable>

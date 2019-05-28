@@ -28,4 +28,9 @@ public class CustomersComponent {
         return lstCustomers;
     }
 
+    public String newCustomer() {
+        Customer newCustomer = new Customer();
+        newCustomer = customerRepository.save(newCustomer);
+        return "customer_detail.jsf?faces-redirect=true&id=" + newCustomer.getId();
+    }
 }

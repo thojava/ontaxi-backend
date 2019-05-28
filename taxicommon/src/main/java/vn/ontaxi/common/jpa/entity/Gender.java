@@ -2,7 +2,7 @@ package vn.ontaxi.common.jpa.entity;
 
 public enum Gender {
     FEMALE("Nữ"),
-    MALE("Name");
+    MALE("Nam");
 
     private String gender;
     Gender(String gender) {

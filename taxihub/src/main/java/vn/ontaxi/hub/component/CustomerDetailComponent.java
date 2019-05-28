@@ -64,19 +64,14 @@ public class CustomerDetailComponent implements Serializable {
 
     @PostConstruct
     public void init() {
-        currentCustomer = new Customer();
         lstBehaviors = behaviorRepository.findAll(new Sort(Sort.Direction.ASC, "name"));
 
         GOOGLE_MAP_PLACE_API_KEY = env.getProperty("google_map_place_recommendation_key");
 
-        Map<String, String> params = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap();
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String customerId = params.get("id");
         if (StringUtils.isNotEmpty(customerId) && NumberUtils.isDigits(customerId)) {
             currentCustomer = customerRepository.findOne(Long.parseLong(customerId));
-
-        } else {
-            addNewAddress();
         }
     }
 
