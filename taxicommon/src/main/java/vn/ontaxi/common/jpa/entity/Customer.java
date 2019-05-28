@@ -6,10 +6,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Customer extends AbstractEntity {
@@ -31,7 +28,7 @@ public class Customer extends AbstractEntity {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<Address> addresses;
+    private List<Address> addresses = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)

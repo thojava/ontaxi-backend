@@ -8,6 +8,5 @@ import vn.ontaxi.common.jpa.entity.CustomerBehaviorId;
 
 public interface CustomerBehaviorRepository extends JpaRepository<CustomerBehavior, CustomerBehaviorId>, JpaSpecificationExecutor<CustomerBehaviorId> {
 
-    void deleteAllByCustomerId(Long customerId);
-
+    void deleteByCustomerId(long id);
 }

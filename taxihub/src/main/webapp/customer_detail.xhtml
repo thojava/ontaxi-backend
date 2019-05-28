@@ -122,7 +122,7 @@
                                                 <p:ajax event="itemSelect" oncomplete="finishChange#{status.index}(); return false;"/>
                                             </p:autoComplete>
                                             <p:remoteCommand name="finishChange#{status.index}" process="@this, addressDetail" update="addressDetail, addressDetailHidden"
-                                                             oncomplete="geocode(#{status.index})"/>
+                                                             oncomplete="geocode(#{status.index})" actionListener="#{addressRepository.save(address)}"/>
                                             <p:inputText style="display: none" id="addressDetailHidden" styleClass="addressDetailHidden" value="#{address.address}"/>
                                         </div>
                                     </p:outputPanel>
@@ -155,6 +155,7 @@
                                           converter="omnifaces.SelectItemsConverter"
                                           var="behavior" showCheckbox="true">
                             <f:selectItems value="#{customerDetailComponent.lstBehaviors}" var="b" itemLabel="#{b.name}" itemValue="#{b}"/>
+                            <p:ajax event="change" listener="#{customerDetailComponent.saveBehaviours}" />
                             <p:column>
                                 <h:outputText value="#{behavior.name}"/>
                             </p:column>

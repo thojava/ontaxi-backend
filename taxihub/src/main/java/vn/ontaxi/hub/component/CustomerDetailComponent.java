@@ -17,7 +17,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import vn.ontaxi.common.jpa.entity.*;
+import vn.ontaxi.common.jpa.entity.Address;
+import vn.ontaxi.common.jpa.entity.Behavior;
+import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.repository.AddressRepository;
 import vn.ontaxi.common.jpa.repository.BehaviorRepository;
 import vn.ontaxi.common.jpa.repository.CustomerBehaviorRepository;
@@ -63,23 +65,16 @@ public class CustomerDetailComponent implements Serializable {
     @PostConstruct
     public void init() {
         currentCustomer = new Customer();
-        lstGeoModels = new ArrayList<>();
         lstBehaviors = behaviorRepository.findAll(new Sort(Sort.Direction.ASC, "name"));
 
         GOOGLE_MAP_PLACE_API_KEY = env.getProperty("google_map_place_recommendation_key");
 
-        Map<String, String> params =FacesContext.getCurrentInstance().
+        Map<String, String> params = FacesContext.getCurrentInstance().
                 getExternalContext().getRequestParameterMap();
         String customerId = params.get("id");
         if (StringUtils.isNotEmpty(customerId) && NumberUtils.isDigits(customerId)) {
             currentCustomer = customerRepository.findOne(Long.parseLong(customerId));
-            currentCustomer.getAddresses().forEach(address -> {
-                MapModel defaultMapModel = new DefaultMapModel();
-                Marker marker = new Marker(new LatLng(address.getLat(), address.getLng()), address.getAddress());
-                marker.setDraggable(true);
-                defaultMapModel.addOverlay(marker);
-                lstGeoModels.add(defaultMapModel);
-            });
+
         } else {
             addNewAddress();
         }
@@ -123,7 +118,7 @@ public class CustomerDetailComponent implements Serializable {
 
     public void onMarkerDrag(MarkerDragEvent event) {
 
-        for (int i = 0 ; i < lstGeoModels.size() ; i++) {
+        for (int i = 0; i < lstGeoModels.size(); i++) {
             if (lstGeoModels.get(i).getMarkers().get(0) == event.getMarker()) {
                 Address address = currentCustomer.getAddresses().get(i);
                 address.setLat(event.getMarker().getLatlng().getLat());
@@ -138,11 +133,9 @@ public class CustomerDetailComponent implements Serializable {
     }
 
     public void deleteAddress(Address address) {
-        int i = currentCustomer.getAddresses().indexOf(address);
-        if (i >= 0) {
-            currentCustomer.getAddresses().remove(i);
-            lstGeoModels.remove(i);
-        }
+        addressRepository.delete(address);
+        currentCustomer.getAddresses().remove(address);
+        lstGeoModels = null;
     }
 
     @Transactional
@@ -162,30 +155,27 @@ public class CustomerDetailComponent implements Serializable {
                 address.setCustomer(savedCustomer);
         }
 
-        List<Address> lstOldAddress = addressRepository.findByCustomer(savedCustomer);
-        lstOldAddress = lstOldAddress.stream().filter(old -> !currentCustomer.getAddresses().contains(old)).collect(Collectors.toList());
-        addressRepository.delete(lstOldAddress);
-
-        addressRepository.save(currentCustomer.getAddresses());
-
-        customerBehaviorRepository.deleteAllByCustomerId(currentCustomer.getId());
-        customerBehaviorRepository.save(currentCustomer.getCustomerBehaviors());
-
         return "customer_summary.jsf?faces-redirect=true";
     }
 
     public boolean canAddNewAddress() {
-
-        if (currentCustomer != null && (CollectionUtils.isEmpty(currentCustomer.getAddresses()) || currentCustomer.getAddresses().stream().allMatch(address -> address.getAddressType() != null)))
-            return true;
-        return false;
+        return CollectionUtils.isEmpty(currentCustomer.getAddresses())
+                || currentCustomer.getAddresses().stream().allMatch(address -> address.getAddressType() != null);
     }
 
     public void addNewAddress() {
-        if (CollectionUtils.isEmpty(currentCustomer.getAddresses()))
-            currentCustomer.setAddresses(new ArrayList<>());
-        currentCustomer.getAddresses().add(new Address());
-        lstGeoModels.add(new DefaultMapModel());
+        Address newAddress = new Address();
+        newAddress.setCustomer(currentCustomer);
+        currentCustomer.getAddresses().add(newAddress);
+
+        addressRepository.save(newAddress);
+        lstGeoModels = null;
+    }
+
+    @Transactional
+    public void saveBehaviours() {
+        customerBehaviorRepository.deleteByCustomerId(this.currentCustomer.getId());
+        customerBehaviorRepository.save(this.currentCustomer.getCustomerBehaviors());
     }
 
     public List<Behavior> getLstBehaviors() {
@@ -205,10 +195,16 @@ public class CustomerDetailComponent implements Serializable {
     }
 
     public List<MapModel> getLstGeoModels() {
+        if (lstGeoModels == null) {
+            lstGeoModels = new ArrayList<>();
+            currentCustomer.getAddresses().forEach(address -> {
+                MapModel defaultMapModel = new DefaultMapModel();
+                Marker marker = new Marker(new LatLng(address.getLat(), address.getLng()), address.getAddress());
+                marker.setDraggable(true);
+                defaultMapModel.addOverlay(marker);
+                lstGeoModels.add(defaultMapModel);
+            });
+        }
         return lstGeoModels;
-    }
-
-    public void setLstGeoModels(List<MapModel> lstGeoModels) {
-        this.lstGeoModels = lstGeoModels;
     }
 }
