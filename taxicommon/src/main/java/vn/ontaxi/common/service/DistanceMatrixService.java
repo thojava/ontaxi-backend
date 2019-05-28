@@ -5,9 +5,7 @@ import com.google.maps.DistanceMatrixApi;
 import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
-import org.apache.commons.lang3.CharEncoding;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import vn.ontaxi.common.json.model.google.dm.DistanceMatrix;
 import vn.ontaxi.common.model.Location;
@@ -17,6 +15,7 @@ import vn.ontaxi.common.utils.HttpUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,12 +29,10 @@ public class DistanceMatrixService {
     private static final String OUTPUT_FORMAT = "json";
     private static final String UNIT = "metric";
     private final ConfigurationService configurationService;
-    private final Environment environment;
 
     @Autowired
-    public DistanceMatrixService(ConfigurationService configurationService, Environment environment) {
+    public DistanceMatrixService(ConfigurationService configurationService) {
         this.configurationService = configurationService;
-        this.environment = environment;
     }
 
     public List<Long> getDistances(String origin, String[] destinations) {
@@ -59,8 +56,8 @@ public class DistanceMatrixService {
     public static double getDistance(final String origins, final String destinations) {
         String encodedOrigin, encodedDest;
         try {
-            encodedOrigin = URLEncoder.encode(origins, CharEncoding.UTF_8);
-            encodedDest = URLEncoder.encode(destinations, CharEncoding.UTF_8);
+            encodedOrigin = URLEncoder.encode(origins, StandardCharsets.UTF_8.name());
+            encodedDest = URLEncoder.encode(destinations, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -82,8 +79,8 @@ public class DistanceMatrixService {
     public static GoogleDirections getGoogleDirection(final String origins, final String destinations, final String apiKey) {
         String encodedOrigin, encodedDest;
         try {
-            encodedOrigin = URLEncoder.encode(origins, CharEncoding.UTF_8);
-            encodedDest = URLEncoder.encode(destinations, CharEncoding.UTF_8);
+            encodedOrigin = URLEncoder.encode(origins, StandardCharsets.UTF_8.name());
+            encodedDest = URLEncoder.encode(destinations, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

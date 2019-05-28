@@ -1,6 +1,5 @@
 package vn.ontaxi.common.service;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class SMSService {
@@ -32,7 +32,7 @@ public class SMSService {
 
     public void sendSMS(String phoneNumber, String content) {
         try {
-            String fullRestURL = restBaseURL + "&Phone=" + phoneNumber + "&Content=" + URLEncoder.encode(content, CharEncoding.UTF_8);
+            String fullRestURL = restBaseURL + "&Phone=" + phoneNumber + "&Content=" + URLEncoder.encode(content, StandardCharsets.UTF_8.name());
             logger.debug("smsurl " + fullRestURL);
             new URL(fullRestURL).openConnection().getContent();
         } catch (IOException e) {
