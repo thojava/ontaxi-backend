@@ -15,17 +15,17 @@ public class UserCredentialComponent {
 
     public boolean hasViewAllPermission() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase(Role.ADMIN.toString())
-                || a.getAuthority().equalsIgnoreCase(Role.MANAGER.toString()));
+        return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase(Role.ROLE_ADMIN.toString())
+                || a.getAuthority().equalsIgnoreCase(Role.ROLE_MANAGER.toString()));
     }
 
     public boolean isManager() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase(Role.MANAGER.toString()));
+        return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase(Role.ROLE_MANAGER.toString()));
     }
 
     public boolean isCustomer() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase(Role.CUSTOMER.toString()));
+        return authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase(Role.ROLE_CUSTOMER.toString()));
     }
 }

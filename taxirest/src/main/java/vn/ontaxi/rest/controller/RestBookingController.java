@@ -220,19 +220,6 @@ public class RestBookingController {
         return restResult;
     }
 
-    @RequestMapping(path = "/validateLoginEmail/{email:.+}")
-    public RestResult validateLoginEmail(@PathVariable String email) {
-        RestResult restResult = new RestResult();
-        Driver driver = driverRepository.findByEmail(email);
-        if (driver == null) {
-            restResult.setSucceed(false);
-            restResult.setMessage(messageSource.getMessage("account_is_not_registered", new String[]{email}, Locale.getDefault()));
-            return restResult;
-        }
-
-        return restResult;
-    }
-
     @RequestMapping("/uploadCurrentLocation/{driverCode:.+}/{versionCode}")
     public void uploadCurrentLocation(@PathVariable String driverCode, @PathVariable int versionCode, @RequestBody Location currentLocation) {
 //        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());

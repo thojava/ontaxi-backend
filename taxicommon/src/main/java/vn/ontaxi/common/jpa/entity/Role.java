@@ -2,6 +2,6 @@ package vn.ontaxi.common.jpa.entity;
 
 public enum Role {
 
-    CUSTOMER, ADMIN, MANAGER
+    ROLE_CUSTOMER, ROLE_ADMIN, ROLE_MANAGER
 
 }

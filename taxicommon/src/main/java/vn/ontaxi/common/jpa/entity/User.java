@@ -8,6 +8,7 @@ import javax.persistence.*;
 public class User extends AbstractEntity {
     @Id
     private String userName;
+    @JsonIgnore
     private String password;
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
