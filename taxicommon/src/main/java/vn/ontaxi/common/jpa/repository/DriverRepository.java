@@ -8,6 +8,8 @@ import java.util.List;
 public interface DriverRepository extends JpaRepository<Driver, Long> {
     Driver findByEmail(String email);
 
+    Driver findByEmailAndBlockedFalse(String email);
+
     List<Driver> findAllByOrderByCarType();
 
     List<Driver> findByAirportFalseAndDeletedFalseOrderByCarType();

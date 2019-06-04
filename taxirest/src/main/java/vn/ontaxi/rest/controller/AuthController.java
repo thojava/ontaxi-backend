@@ -34,7 +34,7 @@ public class AuthController {
     @RequestMapping(path = "/validateLoginEmail/{email:.+}")
     public RestResult validateLoginEmail(@PathVariable String email) {
         RestResult restResult = new RestResult();
-        Driver driver = driverRepository.findByEmail(email);
+        Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
         if (driver == null) {
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("account_is_not_registered", new String[]{email}, Locale.getDefault()));
