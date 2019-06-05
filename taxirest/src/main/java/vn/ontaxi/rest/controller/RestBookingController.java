@@ -251,4 +251,13 @@ public class RestBookingController {
 
         return restResult;
     }
+
+    @RequestMapping(value = "/downloadHistory/{driverCode:.+}")
+    public RestResult getAllBooking(@PathVariable String driverCode) {
+
+        List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driverCode);
+        RestResult restResult = new RestResult();
+        restResult.setData(allBooking);
+        return restResult;
+    }
 }

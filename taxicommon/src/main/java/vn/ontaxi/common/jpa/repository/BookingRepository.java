@@ -47,6 +47,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpec
 
     List<Booking> findAllByOrderByIdDesc();
 
+    List<Booking> findByAcceptedByDriver(Driver driver);
+    List<Booking> findByAcceptedByDriver_Email(String email);
+
     List<Booking> findByDepartureTimeBetween(Date startDate, Date endDate);
 
     Long countByStatus(String status);
