@@ -19,9 +19,6 @@
 
         <h:form id="formId" prependId="false">
             <p:growl showDetail="true" life="5000" globalOnly="true" autoUpdate="true" severity="error"/>
-            <p:commandButton value="Lưu Lại" update="@form" action="#{customerDetailComponent.saveCustomerInfo}" icon="fa fa-check" process="@this, @([id$=user_info]), @([id$=behavior])"
-                             styleClass="btn-primary"/>
-            <p:spacer width="5"/>
             <p:commandButton value="Quay lại" immediate="true" styleClass="btn-default"
                              action="/customer_summary.jsf?faces-redirect=true" process="@this"
                              ajax="false"
@@ -34,8 +31,9 @@
                             <p:outputLabel for="name" value="Họ Tên"/>
                         </div>
                         <div class="ui-sm-12 ui-g-11">
-                            <p:inputText id="name" maxlength="50" value="#{customerDetailComponent.currentCustomer.name}"
-                                         required="true" requiredMessage="Name is required."/>
+                            <p:inputText id="name" maxlength="50" value="#{customerDetailComponent.currentCustomer.name}" required="true" requiredMessage="Name is required.">
+                                <p:ajax event="change" listener="#{customerRepository.save(customerDetailComponent.currentCustomer)}"/>
+                            </p:inputText>
                             <span class="help-block">
                                     <p:message for="name"/>
                                 </span>
@@ -47,7 +45,9 @@
                         </div>
                         <div class="ui-sm-12 ui-g-11">
                             <p:inputText id="phonenumber" maxlength="15" value="#{customerDetailComponent.currentCustomer.phone}"
-                                         required="true" requiredMessage="Phone number is required."/>
+                                         required="true" requiredMessage="Phone number is required.">
+                                <p:ajax event="change" listener="#{customerRepository.save(customerDetailComponent.currentCustomer)}"/>
+                            </p:inputText>
                             <span class="help-block">
                                     <p:message for="phonenumber"/>
                                 </span>
@@ -58,7 +58,9 @@
                             <p:outputLabel for="email" value="Email"/>
                         </div>
                         <div class="ui-sm-12 ui-g-11">
-                            <p:inputText id="email" value="#{customerDetailComponent.currentCustomer.email}"/>
+                            <p:inputText id="email" value="#{customerDetailComponent.currentCustomer.email}">
+                                <p:ajax event="change" listener="#{customerRepository.save(customerDetailComponent.currentCustomer)}"/>
+                            </p:inputText>
                             <span class="help-block">
                                     <p:message for="email" escape="false"/>
                                 </span>
@@ -72,6 +74,7 @@
                             <p:selectOneRadio id="sex" value="#{customerDetailComponent.currentCustomer.gender}">
                                 <f:selectItem itemLabel="Nam" itemValue="MALE"/>
                                 <f:selectItem itemLabel="Nữ" itemValue="FEMALE"/>
+                                <p:ajax event="change" listener="#{customerRepository.save(customerDetailComponent.currentCustomer)}"/>
                             </p:selectOneRadio>
                         </div>
                     </div>
@@ -80,7 +83,9 @@
                             <p:outputLabel for="date" value="Ngày Sinh"/>
                         </div>
                         <div class="ui-sm-12 ui-g-11">
-                            <p:datePicker id="date" value="#{customerDetailComponent.currentCustomer.birthDay}" showIcon="true" pattern="dd/MM/yyyy"/>
+                            <p:datePicker id="date" value="#{customerDetailComponent.currentCustomer.birthDay}" showIcon="true" pattern="dd/MM/yyyy">
+                                <p:ajax event="dateSelect" listener="#{customerRepository.save(customerDetailComponent.currentCustomer)}"/>
+                            </p:datePicker>
                             <span class="help-block">
                                     <p:message for="date"/>
                                 </span>
@@ -91,7 +96,9 @@
                             <p:outputLabel for="email" value="Nghề Nghiệp"/>
                         </div>
                         <div class="ui-sm-12 ui-g-11">
-                            <p:inputText id="job" value="#{customerDetailComponent.currentCustomer.job}"/>
+                            <p:inputText id="job" value="#{customerDetailComponent.currentCustomer.job}">
+                                <p:ajax event="change" listener="#{customerRepository.save(customerDetailComponent.currentCustomer)}"/>
+                            </p:inputText>
                             <span class="help-block">
                                     <p:message for="job" escape="false"/>
                                 </span>
@@ -153,15 +160,12 @@
                     <p:tab title="Sở Thích">
                         <p:pickList id="behavior" value="#{customerDetailComponent.dualListModel}"
                                     var="behavior" itemLabel="#{behavior.name}" itemValue="#{behavior}"
-                                    showCheckbox="true"
                                     escape="false"
                                     converter="omnifaces.ListConverter"
                                     showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">
-                            <p:ajax event="transfer" process="behavior" />
+                            <p:ajax event="transfer" listener="#{customerDetailComponent.saveBehaviours}"/>
                             <o:converter converterId="omnifaces.ListConverter" list="#{customerDetailComponent.lstBehaviors}" />
                         </p:pickList>
-
-                        <p:commandButton style="margin-top: 10px" actionListener="#{customerDetailComponent.saveBehaviours}" value="Save Behavior" process="@this, behavior"/>
                     </p:tab>
                     <p:tab title="Lịch sử chuyến đi">
                         <ui:include src="order_summary/completed_bookings.xhtml">
