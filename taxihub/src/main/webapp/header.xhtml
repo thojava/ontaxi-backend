@@ -28,6 +28,7 @@
                     <p:menuitem value="Danh Sách" action="customer_summary.jsf?faces-redirect=true" ajax="false" immediate="true"/>
                     <p:menuitem value="Tạo Mới" action="customer_detail.jsf?faces-redirect=true" ajax="false" immediate="true"/>
                     <p:menuitem value="Danh Sách Hành Vi" action="customer_behaviour.xhtml" ajax="false" immediate="true"/>
+                    <p:menuitem value="Nhóm khách hàng" action="customer_group.xhtml" ajax="false" immediate="true"/>
                 </p:submenu>
 
                 <p:submenu label="Báo Cáo">
@@ -40,6 +41,10 @@
 
                 <p:submenu label="Cài Đặt">
                     <p:menuitem value="Cài Đặt Chung" action="configuration.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"
+                                rendered="#{not userCredentialComponent.customer}"/>
+
+                    <p:menuitem value="Mẫu Email" action="email_template.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
                 </p:submenu>

@@ -181,6 +181,8 @@ public class CustomerDetailComponent implements Serializable {
         for (Behavior behavior : dualListModel.getTarget())
             currentCustomer.getCustomerBehaviors().add(new CustomerBehavior(currentCustomer, behavior));
         customerBehaviorRepository.save(this.currentCustomer.getCustomerBehaviors());
+
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Đã lưu sở thích"));
     }
 
     public List<Behavior> getLstBehaviors() {

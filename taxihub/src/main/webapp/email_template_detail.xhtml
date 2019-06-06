@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:o="http://omnifaces.org/ui"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:composition template="layout.xhtml">
+        <ui:define name="content">
+            <h1 align="center">Chi Tiết Email Mẫu</h1>
+            <p:spacer height="10px"/>
+            <h:form id="mainForm">
+
+                <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
+                <p:commandButton value="Lưu Lại" icon="fa fa-check"
+                                 actionListener="#{emailTemplateComponent.saveTemplate}"
+                                 process="@form"
+                                 update="message"
+                                 styleClass="btn-primary"/>
+                <p:spacer width="5"/>
+                <p:commandButton value="Quay lại" immediate="true" styleClass="btn-default"
+                                 ajax="false"
+                                 action="/email_template.jsf?faces-redirect=true"
+                                 icon="fa fa-reply"/>
+                <p:panel style="margin-top: 10px">
+                    <p:outputPanel class="ui-g ui-fluid">
+                    <div class="ui-g-6 ui-g-nopad">
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel for="name" value="Tên"/>
+                        </div>
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:inputText id="name" maxlength="100" value="#{emailTemplateComponent.currentEmailTemplate.name}"
+                                         required="true" requiredMessage="Name is required."/>
+                            <span class="help-block">
+                                        <p:message for="name"/>
+                                    </span>
+                        </div>
+                    </div>
+
+                    <div class="ui-g-6 ui-g-nopad">
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:outputLabel for="emailType" value="Thể Loại"/>
+                        </div>
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:selectOneMenu id="emailType" required="true" requiredMessage="Trường bắt buộc" value="#{emailTemplateComponent.currentEmailTemplate.emailType}">
+                                <f:selectItem itemLabel="--Lựa Chọn--" itemValue="#{null}" />
+                                <f:selectItem itemLabel="Thành Viên Mới" itemValue="WELCOME"/>
+                                <f:selectItem itemLabel="Hoàn Thành Chuyến Đi" itemValue="POST_ORDER"/>
+                                <f:selectItem itemLabel="Đặt Thành Công" itemValue="ORDER_SUCCESS"/>
+                            </p:selectOneMenu>
+                            <span class="help-block">
+                                <p:message for="emailType"/>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+                        <p:textEditor required="true" requiredMessage="Trường bắt buộc" widgetVar="editor" height="400" value="#{emailTemplateComponent.currentEmailTemplate.emailContent}" style="margin-bottom:10px"/>
+                    </div>
+                </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

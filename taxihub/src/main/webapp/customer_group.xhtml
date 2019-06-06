@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:o="http://omnifaces.org/ui"
+        xmlns:p="http://primefaces.org/ui">
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">Quản Lý Nhóm Khách Hàng</h1>
+        <p:spacer height="10px"/>
+
+        <h:form id="mainForm">
+            <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
+            <p:dataTable value="#{customerGroupComponent.lstCustomerGroups}"
+                         rows="10" widgetVar="customerGroupTable"
+                         paginator="true"
+                         rowKey="#{customerGroup.id}"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15"
+                         var="customerGroup">
+                <f:facet name="header">
+                    <p:commandButton value="Xóa" style="float: left" styleClass="btn btn-primary"
+                                     onclick="PF('confirmDelete').show()">
+                    </p:commandButton>
+                    <p:confirmDialog message="Bạn có chắc chắn muốn xóa những nhóm này?"
+                                     widgetVar="confirmDelete">
+                        <p:commandButton value="Có"
+                                         process="@this"
+                                         actionListener="#{customerGroupComponent.deleteCustomerGroup}"
+                                         update="@([id$=mainForm])"
+                                         oncomplete="PF('confirmDelete').hide()"/>
+                        <p:commandButton value="Không"
+                                         oncomplete="PF('confirmDelete').hide()"/>
+                    </p:confirmDialog>
+                    <p:commandButton value="Tạo mới" process="@this" update="@([id$=addNewGroup])" style="float: left"
+                                     actionListener="#{customerGroupComponent.createNewGroup}"
+                                     oncomplete="PF('addNewGroup').show()" styleClass="btn btn-primary"
+                                     resetValues="true"/>
+                    <div style="clear: both"></div>
+                </f:facet>
+                <p:column style="width: 20px">
+                    <p:selectBooleanCheckbox value="#{customerGroup.beanSelected}">
+                        <p:ajax/>
+                    </p:selectBooleanCheckbox>
+                </p:column>
+                <p:column headerText="Tên" filterBy="#{customerGroup.name}" sortBy="#{customerGroup.name}">
+                    <p:commandLink actionListener="#{customerGroupComponent.setCurrentCustomerGroup(customerGroup)}"
+                                   oncomplete="PF('addNewGroup').show()" update="@([id$=addNewGroup])">
+                        <h:outputText value="#{customerGroup.name}"/>
+                    </p:commandLink>
+                </p:column>
+                <p:column headerText="Câu Lệnh" filterBy="#{customerGroup.sqlContent}"
+                          sortBy="#{customerGroup.sqlContent}">
+                    <h:outputText value="#{customerGroup.sqlContent}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <p:dialog
+                header="Thông tin chi tiết" modal="true"
+                id="addNewGroup"
+                width="800"
+                height="400"
+                widgetVar="addNewGroup">
+            <h:form>
+                <p:panel>
+                    <p:outputPanel class="ui-g ui-fluid">
+                        <div class="ui-g-4 ui-g-nopad">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:outputLabel for="name" value="Tên nhóm"/>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:inputText id="name" maxlength="100"
+                                             value="#{customerGroupComponent.currentCustomerGroup.name}"
+                                             required="true" requiredMessage="Trường bắt buộc"/>
+                                <span class="help-block">
+                                <p:message for="name"/>
+                            </span>
+                            </div>
+                        </div>
+                        <div class="ui-g-8 ui-g-nopad">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:outputLabel for="sqlContent" value="Câu Lệnh"/>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:inputTextarea id="sqlContent" autoResize="true"
+                                                 value="#{customerGroupComponent.currentCustomerGroup.sqlContent}"
+                                                 required="true" requiredMessage="Trường bắt buộc"/>
+                                <span class="help-block">
+                                <p:message for="sqlContent"/>
+                            </span>
+                            </div>
+                        </div>
+                    </p:outputPanel>
+                    <p:outputPanel style="text-align: center">
+                        <p:commandButton value="Lưu Lại" actionListener="#{customerGroupComponent.saveGroup}"
+                                         process="@this, @form" update="@form, @([id$=mainForm])"
+                                         oncomplete="if (args &amp;&amp; !args.validationFailed) {PF('addNewGroup').hide();}"/>
+                        <p:commandButton value="Đóng Lại" oncomplete="PF('addNewGroup').hide()"/>
+                    </p:outputPanel>
+                </p:panel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:o="http://omnifaces.org/ui"
+        xmlns:p="http://primefaces.org/ui">
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">Quản Lý Email Mẫu</h1>
+        <p:spacer height="10px"/>
+        <p:tabView id="tabView">
+            <p:tab title="Danh Sách Mẫu">
+                <h:form id="mainForm">
+                    <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
+                    <p:dataTable value="#{emailTemplateComponent.lstEmailTemplates}"
+                                 rows="10" widgetVar="emailTemplate"
+                                 paginator="true"
+                                 rowKey="#{email.id}"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 var="email">
+                        <f:facet name="header">
+                            <p:commandButton value="Xóa" style="float: left" styleClass="btn btn-primary"
+                                             onclick="PF('confirmDelete').show()">
+                            </p:commandButton>
+                            <p:confirmDialog message="Bạn có chắc chắn muốn xóa những mẫu này?"
+                                             widgetVar="confirmDelete">
+                                <p:commandButton value="Có"
+                                                 process="@this"
+                                                 actionListener="#{emailTemplateComponent.deleteTemplates}"
+                                                 update="@([id$=mainForm])"
+                                                 oncomplete="PF('confirmDelete').hide()"/>
+                                <p:commandButton value="Không"
+                                                 oncomplete="PF('confirmDelete').hide()"/>
+                            </p:confirmDialog>
+
+
+                            <p:commandButton value="Tạo mới" style="float: left" action="#{emailTemplateComponent.createNewTemplate}" styleClass="btn btn-primary"/>
+                            <div style="clear: both"></div>
+                        </f:facet>
+                        <p:column style="width: 20px">
+                            <p:selectBooleanCheckbox value="#{email.beanSelected}">
+                                <p:ajax/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Id" width="50">
+                            <p:link value="#{email.id}" href="email_template_detail.jsf?id=#{email.id}"/>
+                        </p:column>
+                        <p:column headerText="Tên" filterBy="#{email.name}" sortBy="#{email.name}">
+                            <h:outputText value="#{email.name}"/>
+                        </p:column>
+                        <p:column headerText="Thể Loại" filterBy="#{email.emailType}" sortBy="#{email.emailType}" filterMatchMode="exact">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('emailTemplate').filter()" styleClass="custom-filter">
+                                    <f:selectItem itemLabel="--Lựa Chọn--" itemValue="#{null}" />
+                                    <f:selectItem itemLabel="Thành Viên Mới" itemValue="WELCOME"/>
+                                    <f:selectItem itemLabel="Hoàn Thành Chuyến Đi" itemValue="POST_ORDER"/>
+                                    <f:selectItem itemLabel="Đặt Thành Công" itemValue="ORDER_SUCCESS"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                            <h:outputText value="#{email.emailType.name}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:tab>
+            <p:tab title="Lịch gửi mail">
+                <p:growl showDetail="true" life="5000" globalOnly="true" id="messageForSchedule"/>
+                <p:dataTable value="#{emailTemplateComponent.lstEmailTemplates}"
+                             rows="10" widgetVar="emailTemplate"
+                             paginator="true"
+                             rowKey="#{email.id}"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="5,10,15"
+                             var="email">
+                    <f:facet name="header">
+                        <p:commandButton value="Xóa" style="float: left" styleClass="btn btn-primary"
+                                         onclick="PF('confirmDelete').show()">
+                        </p:commandButton>
+                        <p:confirmDialog message="Bạn có chắc chắn muốn xóa những mẫu này?"
+                                         widgetVar="confirmDelete">
+                            <p:commandButton value="Có"
+                                             process="@this"
+                                             actionListener="#{emailTemplateComponent.deleteTemplates}"
+                                             update="@([id$=mainForm])"
+                                             oncomplete="PF('confirmDelete').hide()"/>
+                            <p:commandButton value="Không"
+                                             oncomplete="PF('confirmDelete').hide()"/>
+                        </p:confirmDialog>
+
+
+                        <p:commandButton value="Tạo mới" style="float: left" action="#{emailTemplateComponent.createNewTemplate}" styleClass="btn btn-primary"/>
+                        <div style="clear: both"></div>
+                    </f:facet>
+                    <p:column style="width: 20px">
+                        <p:selectBooleanCheckbox value="#{email.beanSelected}">
+                            <p:ajax/>
+                        </p:selectBooleanCheckbox>
+                    </p:column>
+                    <p:column headerText="Id" width="50">
+                        <p:link value="#{email.id}" href="email_template_detail.jsf?id=#{email.id}"/>
+                    </p:column>
+                    <p:column headerText="Tên" filterBy="#{email.name}" sortBy="#{email.name}">
+                        <h:outputText value="#{email.name}"/>
+                    </p:column>
+                    <p:column headerText="Thể Loại" filterBy="#{email.emailType}" sortBy="#{email.emailType}" filterMatchMode="exact">
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('emailTemplate').filter()" styleClass="custom-filter">
+                                <f:selectItem itemLabel="--Lựa Chọn--" itemValue="#{null}" />
+                                <f:selectItem itemLabel="Thành Viên Mới" itemValue="WELCOME"/>
+                                <f:selectItem itemLabel="Hoàn Thành Chuyến Đi" itemValue="POST_ORDER"/>
+                                <f:selectItem itemLabel="Đặt Thành Công" itemValue="ORDER_SUCCESS"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputText value="#{email.emailType.name}"/>
+                    </p:column>
+                </p:dataTable>
+
+                <p:dialog
+                        header="Thông tin chi tiết" modal="true"
+                        id="emailSchedule"
+                        width="800"
+                        height="600"
+                        widgetVar="emailSchedule">
+
+                </p:dialog>
+
+            </p:tab>
+        </p:tabView>
+    </ui:define>
+</ui:composition>
+</html>

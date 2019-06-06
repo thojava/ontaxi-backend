@@ -18,9 +18,13 @@
         <p:spacer height="10px"/>
 
         <h:form id="formId" prependId="false">
+            <p:growl showDetail="true" life="5000" globalOnly="true" autoUpdate="true" id="message"/>
+            <p:commandButton value="Lưu Lại" update="@form" action="#{customerDetailComponent.saveCustomerInfo}" icon="fa fa-check" process="@this, @([id$=user_info]), @([id$=behavior])"
+                             styleClass="btn-primary"/>
+            <p:spacer width="5"/>
             <p:growl showDetail="true" life="5000" globalOnly="true" autoUpdate="true" severity="error"/>
             <p:commandButton value="Quay lại" immediate="true" styleClass="btn-default"
-                             action="/customer_summary.jsf?faces-redirect=true" process="@this"
+                             action="/customer_summary.jsf?faces-redirect=true"
                              ajax="false"
                              icon="fa fa-reply"/>
 
@@ -166,8 +170,10 @@
                             <p:ajax event="transfer" listener="#{customerDetailComponent.saveBehaviours}"/>
                             <o:converter converterId="omnifaces.ListConverter" list="#{customerDetailComponent.lstBehaviors}" />
                         </p:pickList>
+
+                        <p:commandButton style="margin-top: 10px" actionListener="#{customerDetailComponent.saveBehaviours}" update="@([id$=message])" value="Lưu Sở Thích" process="@this, behavior"/>
                     </p:tab>
-                    <p:tab title="Lịch sử chuyến đi">
+                    <p:tab title="Lịch sử chuyến đi" rendered="#{not empty customerDetailComponent.currentCustomer.phone}">
                         <ui:include src="order_summary/completed_bookings.xhtml">
                             <ui:param name="customerPhone" value="#{customerDetailComponent.currentCustomer.phone}" />
                         </ui:include>
