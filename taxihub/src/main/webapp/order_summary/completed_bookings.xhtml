@@ -22,7 +22,7 @@
     </div>
 
     <p:spacer height="10px"/>
-    <p:dataTable value="#{bookingListComponent.completedBookings}"
+    <p:dataTable value="#{not empty customerPhone ? bookingListComponent.getCompletedBookingsForCustomer(customerPhone) : bookingListComponent.completedBookings}"
                  var="booking"
                  rows="10"
                  paginator="true"

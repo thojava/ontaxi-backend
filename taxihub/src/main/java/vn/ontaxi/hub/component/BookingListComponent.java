@@ -163,6 +163,19 @@ public class BookingListComponent {
         return completedBookings;
     }
 
+    public TaxiLazyDataModel<Booking> getCompletedBookingsForCustomer(String phoneNumber) {
+        if (completedBookings == null) {
+            completedBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.ARRIVAL_TIME_DESC);
+            completedBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.equal(root.get("status"), OrderStatus.COMPLETED)));
+            completedBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.equal(root.get("mobile"), phoneNumber)));
+            if (filterFromDate != null && filterToDate != null) {
+                completedBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.between(root.get("arrivalTime"), DateUtils.getStartOfDay(filterFromDate), DateUtils.getEndOfDay(filterToDate))));
+            }
+        }
+
+        return completedBookings;
+    }
+
     public Long getCompletedBookingSize() {
         return getCompletedBookings().getTotalSize();
     }

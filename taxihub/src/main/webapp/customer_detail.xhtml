@@ -6,6 +6,7 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:o="http://omnifaces.org/ui"
         xmlns:p="http://primefaces.org/ui">
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
@@ -150,16 +151,22 @@
                                          update="tabView" value="Thêm địa chỉ"/>
                     </p:tab>
                     <p:tab title="Sở Thích">
-                        <p:selectManyMenu id="behavior" value="#{customerDetailComponent.currentCustomer.behaviors}"
-                                          collectionType="java.util.LinkedHashSet"
-                                          converter="omnifaces.SelectItemsConverter"
-                                          var="behavior" showCheckbox="true">
-                            <f:selectItems value="#{customerDetailComponent.lstBehaviors}" var="b" itemLabel="#{b.name}" itemValue="#{b}"/>
-                            <p:ajax event="change" listener="#{customerDetailComponent.saveBehaviours}" />
-                            <p:column>
-                                <h:outputText value="#{behavior.name}"/>
-                            </p:column>
-                        </p:selectManyMenu>
+                        <p:pickList id="behavior" value="#{customerDetailComponent.dualListModel}"
+                                    var="behavior" itemLabel="#{behavior.name}" itemValue="#{behavior}"
+                                    showCheckbox="true"
+                                    escape="false"
+                                    converter="omnifaces.ListConverter"
+                                    showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">
+                            <p:ajax event="transfer" process="behavior" />
+                            <o:converter converterId="omnifaces.ListConverter" list="#{customerDetailComponent.lstBehaviors}" />
+                        </p:pickList>
+
+                        <p:commandButton style="margin-top: 10px" actionListener="#{customerDetailComponent.saveBehaviours}" value="Save Behavior" process="@this, behavior"/>
+                    </p:tab>
+                    <p:tab title="Lịch sử chuyến đi">
+                        <ui:include src="order_summary/completed_bookings.xhtml">
+                            <ui:param name="customerPhone" value="#{customerDetailComponent.currentCustomer.phone}" />
+                        </ui:include>
                     </p:tab>
                 </p:tabView>
 

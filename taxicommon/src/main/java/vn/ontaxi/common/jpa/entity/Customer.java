@@ -44,14 +44,13 @@ public class Customer extends AbstractEntity {
 
     public Set<Behavior> getBehaviors() {
         if (CollectionUtils.isEmpty(behaviors)) {
-            behaviors = new HashSet<>();
+            behaviors = new TreeSet<>();
             for (CustomerBehavior customerBehavior : customerBehaviors) {
                 behaviors.add(customerBehavior.getBehavior());
             }
         }
 
         return behaviors;
-
     }
 
     public void setBehaviors(Set<Behavior> behaviors) {

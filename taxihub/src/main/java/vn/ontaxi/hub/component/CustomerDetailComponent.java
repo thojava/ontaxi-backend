@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.primefaces.event.map.GeocodeEvent;
 import org.primefaces.event.map.MarkerDragEvent;
+import org.primefaces.model.DualListModel;
 import org.primefaces.model.map.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.ontaxi.common.jpa.entity.Address;
 import vn.ontaxi.common.jpa.entity.Behavior;
 import vn.ontaxi.common.jpa.entity.Customer;
+import vn.ontaxi.common.jpa.entity.CustomerBehavior;
 import vn.ontaxi.common.jpa.repository.AddressRepository;
 import vn.ontaxi.common.jpa.repository.BehaviorRepository;
 import vn.ontaxi.common.jpa.repository.CustomerBehaviorRepository;
@@ -43,6 +45,7 @@ import java.util.stream.Stream;
 public class CustomerDetailComponent implements Serializable {
 
     private Customer currentCustomer;
+    private DualListModel<Behavior> dualListModel;
     private List<MapModel> lstGeoModels;
     private List<Behavior> lstBehaviors;
     private final Environment env;
@@ -72,6 +75,10 @@ public class CustomerDetailComponent implements Serializable {
         String customerId = params.get("id");
         if (StringUtils.isNotEmpty(customerId) && NumberUtils.isDigits(customerId)) {
             currentCustomer = customerRepository.findOne(Long.parseLong(customerId));
+            List<Behavior> lstOldBehaviors = new ArrayList<>(currentCustomer.getBehaviors());
+            List<Behavior> temp = new ArrayList<>(lstBehaviors);
+            temp.removeAll(lstOldBehaviors);
+            dualListModel = new DualListModel<>(temp, lstOldBehaviors);
         }
     }
 
@@ -170,6 +177,9 @@ public class CustomerDetailComponent implements Serializable {
     @Transactional
     public void saveBehaviours() {
         customerBehaviorRepository.deleteByCustomerId(this.currentCustomer.getId());
+        currentCustomer.getCustomerBehaviors().clear();
+        for (Behavior behavior : dualListModel.getTarget())
+            currentCustomer.getCustomerBehaviors().add(new CustomerBehavior(currentCustomer, behavior));
         customerBehaviorRepository.save(this.currentCustomer.getCustomerBehaviors());
     }
 
@@ -201,5 +211,13 @@ public class CustomerDetailComponent implements Serializable {
             });
         }
         return lstGeoModels;
+    }
+
+    public DualListModel<Behavior> getDualListModel() {
+        return dualListModel;
+    }
+
+    public void setDualListModel(DualListModel<Behavior> dualListModel) {
+        this.dualListModel = dualListModel;
     }
 }

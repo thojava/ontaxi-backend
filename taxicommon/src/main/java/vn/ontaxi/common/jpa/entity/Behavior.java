@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
-public class Behavior implements Serializable {
+public class Behavior implements Serializable, Comparable<Behavior> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,5 +44,10 @@ public class Behavior implements Serializable {
         if (that.getId() == null || id == null)
             return false;
         return id.equals(that.getId());
+    }
+
+    @Override
+    public int compareTo(Behavior o) {
+        return this.name.compareTo(o.name);
     }
 }
