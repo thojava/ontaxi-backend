@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 @Configuration
-@PropertySource("classpath:fcm.properties")
+@PropertySource("classpath:config.properties")
 public class FCMClientFactory {
     @Autowired
     private Environment env;

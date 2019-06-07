@@ -42,4 +42,22 @@ public class CustomerGroup extends AbstractEntity {
     public String getKey() {
         return id.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        CustomerGroup that = (CustomerGroup) obj;
+
+        if (that.getId() == null || id == null)
+            return false;
+        return this.getId().equals(that.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "CustomerGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

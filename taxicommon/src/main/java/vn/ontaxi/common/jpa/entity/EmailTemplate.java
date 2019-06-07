@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class EmailTemplate extends AbstractEntity{
 
-    public enum Type {
+    /*public enum Type {
         WELCOME("Welcome"),
         POST_ORDER("Post Order"),
         ORDER_SUCCESS("Order Success");
@@ -19,15 +19,15 @@ public class EmailTemplate extends AbstractEntity{
         public String getName(){
             return name;
         }
-    }
+    }*/
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String emailContent;
-    @Enumerated(EnumType.STRING)
-    private Type emailType;
+    //@Enumerated(EnumType.STRING)
+    //private Type emailType;
 
     public String getName() {
         return name;
@@ -53,16 +53,34 @@ public class EmailTemplate extends AbstractEntity{
         this.emailContent = emailContent;
     }
 
-    public Type getEmailType() {
+    /*public Type getEmailType() {
         return emailType;
     }
 
     public void setEmailType(Type emailType) {
         this.emailType = emailType;
-    }
+    }*/
 
     @Override
     public String getKey() {
         return getId() + "";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        EmailTemplate that = (EmailTemplate) obj;
+
+        if (that.getId() == null || id == null)
+            return false;
+        return this.getId().equals(that.getId());
+    }
+
+    @Override
+    public String toString() {
+        return "EmailTemplate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
