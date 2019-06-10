@@ -3,7 +3,7 @@ package vn.ontaxi.hub.jasper;
 import net.sf.jasperreports.engine.JRPrintHyperlink;
 import net.sf.jasperreports.engine.JRPrintHyperlinkParameter;
 import net.sf.jasperreports.engine.export.JRHyperlinkProducer;
-import vn.ontaxi.hub.utils.StringUtils;
+import vn.ontaxi.common.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;

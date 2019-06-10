@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.Driver;
 
 import java.util.Date;
@@ -14,6 +15,8 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+    public static final String DRIVER = "driver";
+    public static final String CUSTOMER = "customer";
 
     @Value("${app.jwtSecret}")
     private String jwtSecret;
@@ -23,13 +26,22 @@ public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
 
-        Driver driver = (Driver) authentication.getPrincipal();
+        String accountType = null;
+        String email = null;
+        if (authentication.getPrincipal() instanceof Customer) {
+            accountType = CUSTOMER;
+            email = ((Customer) authentication.getPrincipal()).getEmail();
+        } else if (authentication.getPrincipal() instanceof Driver) {
+            accountType = DRIVER;
+            email = ((Driver) authentication.getPrincipal()).getEmail();
+        }
 
         // Date now = new Date();
         //Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(driver.getEmail())
+                .setSubject(email)
+                .setAudience(accountType)
                 .setIssuedAt(new Date())
                 //.setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -41,8 +53,15 @@ public class JwtTokenProvider {
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-
         return claims.getSubject();
+    }
+
+    public String getAccountTypeFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getAudience();
     }
 
     public boolean validateToken(String authToken) {

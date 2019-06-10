@@ -15,7 +15,7 @@ import net.sf.jasperreports.engine.util.JRElementsVisitor;
 import net.sf.jasperreports.engine.util.JRVisitorSupport;
 import net.sf.jasperreports.export.*;
 import org.apache.commons.lang3.Validate;
-import vn.ontaxi.hub.utils.StringUtils;
+import vn.ontaxi.common.utils.StringUtils;
 
 import java.awt.*;
 import java.io.File;

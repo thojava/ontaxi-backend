@@ -35,7 +35,7 @@ public class EmailSchedulerService {
                 startDate = emailScheduler.getStartTime();
 
             scheduler.schedule(() -> {
-                scheduledFutures.put(emailScheduler.getKey(), start(() -> emailSenderService.sendEmailScheduler(emailScheduler), "0 1/3 * * * *"));
+                scheduledFutures.put(emailScheduler.getKey(), start(() -> emailSenderService.sendEmailScheduler(emailScheduler), emailScheduler.getCronJob()));
             }, startDate);
 
             if (emailScheduler.getEndTime() != null) {

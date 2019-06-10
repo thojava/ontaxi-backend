@@ -1,8 +1,10 @@
-package vn.ontaxi.hub.utils;
+package vn.ontaxi.common.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils {
     public static String removeFileExtension(final String fileName) {
@@ -28,5 +30,14 @@ public class StringUtils {
         }
 
         return stringBuilder.toString();
+    }
+
+    public static String fillRegexParams(String content, Map<String, String> params) {
+
+        for (String strPattern : params.keySet()) {
+            content = content.replaceAll(strPattern, params.get(strPattern));
+        }
+
+        return content;
     }
 }

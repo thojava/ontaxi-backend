@@ -17,6 +17,7 @@
         <p:spacer height="10px"/>
 
         <h:form id="mainForm">
+            <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
             <p:dataTable value="#{customersComponent.customers}"
                          lazy="true"
                          rows="10"
@@ -47,6 +48,9 @@
                     <h:outputText value="#{customer.birthDay}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputText>
+                </p:column>
+                <p:column headerText="Tạo Tài Khoản" style="width: 70px">
+                    <p:commandButton value="Tạo" process="@this" actionListener="#{customersComponent.createAccountForCustomer(customer)}" update="@([id$=message])"/>
                 </p:column>
             </p:dataTable>
         </h:form>

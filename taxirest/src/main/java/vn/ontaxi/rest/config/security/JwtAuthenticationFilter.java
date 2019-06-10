@@ -4,11 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.Driver;
+import vn.ontaxi.common.jpa.entity.Role;
+import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.DriverRepository;
 import vn.ontaxi.rest.utils.JwtTokenProvider;
 
@@ -17,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -26,6 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private DriverRepository driverRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Override
@@ -34,12 +42,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                String accountType = tokenProvider.getAccountTypeFromJWT(jwt);
                 String email = tokenProvider.getEmailFromJWT(jwt);
-                Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
-                if (driver != null) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(driver, null, null);
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (accountType.equalsIgnoreCase(JwtTokenProvider.DRIVER)) {
+                    Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
+                    if (driver != null) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DIRVER.name())));
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                } else if (accountType.equalsIgnoreCase(JwtTokenProvider.CUSTOMER)) {
+                    Customer customer = customerRepository.findByPhoneOrEmail(email, email);
+                    if (customer != null) {
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(customer, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name())));
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
             }
         } catch (Exception ex) {

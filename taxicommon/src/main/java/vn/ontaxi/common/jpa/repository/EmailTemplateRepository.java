@@ -4,4 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import vn.ontaxi.common.jpa.entity.EmailTemplate;
 
 public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Long> {
+
+    EmailTemplate findByCode(String code);
+
 }

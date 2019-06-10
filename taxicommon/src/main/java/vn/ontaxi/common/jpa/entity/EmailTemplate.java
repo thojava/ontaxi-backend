@@ -1,33 +1,26 @@
 package vn.ontaxi.common.jpa.entity;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.*;
 
 @Entity
 public class EmailTemplate extends AbstractEntity{
 
-    /*public enum Type {
-        WELCOME("Welcome"),
-        POST_ORDER("Post Order"),
-        ORDER_SUCCESS("Order Success");
-
-        private String name;
-
-        Type(String name) {
-            this.name = name;
-        }
-
-        public String getName(){
-            return name;
-        }
-    }*/
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String code;
     private String emailContent;
-    //@Enumerated(EnumType.STRING)
-    //private Type emailType;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getName() {
         return name;
@@ -60,6 +53,11 @@ public class EmailTemplate extends AbstractEntity{
     public void setEmailType(Type emailType) {
         this.emailType = emailType;
     }*/
+
+    @Transient
+    public boolean isCanDelete() {
+        return !StringUtils.isNotEmpty(code);
+    }
 
     @Override
     public String getKey() {

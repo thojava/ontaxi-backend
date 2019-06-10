@@ -27,7 +27,7 @@
                                  icon="fa fa-reply"/>
                 <p:panel style="margin-top: 10px">
                     <p:outputPanel class="ui-g ui-fluid">
-                    <div class="ui-g-12 ui-g-nopad">
+                    <div class="ui-g-6 ui-g-nopad">
                         <div class="ui-g-1">
                             <p:outputLabel for="name" value="Tên"/>
                         </div>
@@ -40,22 +40,17 @@
                         </div>
                     </div>
 
-                    <!--<div class="ui-g-6 ui-g-nopad">
-                        <div class="ui-sm-12 ui-g-11">
-                            <p:outputLabel for="emailType" value="Thể Loại"/>
+                    <div class="ui-g-6 ui-g-nopad">
+                        <div class="ui-g-1">
+                            <p:outputLabel for="code" value="Mã"/>
                         </div>
-                        <div class="ui-sm-12 ui-g-11">
-                            <p:selectOneMenu id="emailType" required="true" requiredMessage="Trường bắt buộc" value="#{emailTemplateComponent.currentEmailTemplate.emailType}">
-                                <f:selectItem itemLabel="&#45;&#45;Lựa Chọn&#45;&#45;" itemValue="#{null}" />
-                                <f:selectItem itemLabel="Thành Viên Mới" itemValue="WELCOME"/>
-                                <f:selectItem itemLabel="Hoàn Thành Chuyến Đi" itemValue="POST_ORDER"/>
-                                <f:selectItem itemLabel="Đặt Thành Công" itemValue="ORDER_SUCCESS"/>
-                            </p:selectOneMenu>
+                        <div class="ui-g-11">
+                            <p:inputText id="code" maxlength="100" value="#{emailTemplateComponent.currentEmailTemplate.code}"/>
                             <span class="help-block">
-                                <p:message for="emailType"/>
-                            </span>
+                            <p:message for="code"/>
+                        </span>
                         </div>
-                    </div>-->
+                    </div>
                     <div class="ui-g-12 ui-g-nopad">
                         <p:textEditor required="true" requiredMessage="Trường bắt buộc" widgetVar="editor" height="400" value="#{emailTemplateComponent.currentEmailTemplate.emailContent}" style="margin-bottom:10px"/>
                     </div>

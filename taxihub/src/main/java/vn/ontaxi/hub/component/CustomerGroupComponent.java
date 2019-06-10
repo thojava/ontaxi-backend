@@ -1,6 +1,7 @@
 package vn.ontaxi.hub.component;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.jpa.entity.AbstractEntity;
@@ -49,10 +50,15 @@ public class CustomerGroupComponent {
     }
 
     public void deleteCustomerGroup() {
-        List<CustomerGroup> deleteGroups = lstCustomerGroups.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
-        customerGroupRepository.delete(deleteGroups);
-        lstCustomerGroups = null;
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s nhóm", deleteGroups.size())));
+        try {
+            List<CustomerGroup> deleteGroups = lstCustomerGroups.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
+            customerGroupRepository.delete(deleteGroups);
+            lstCustomerGroups = null;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s nhóm", deleteGroups.size())));
+        } catch (DataIntegrityViolationException ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Lỗi tham chiếu trong sql"));
+        }
     }
 
     public void setLstCustomerGroups(List<CustomerGroup> lstCustomerGroups) {

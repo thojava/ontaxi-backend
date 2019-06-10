@@ -13,7 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import vn.ontaxi.common.jpa.entity.Role;
 
 @Configuration
 @EnableWebSecurity
@@ -43,6 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             return null;
         }
     }
+
+    @Bean
+    public static BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) {
@@ -82,10 +91,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/**/auth/**")
                 .permitAll()
-                .antMatchers("/api/user/checkUsernameAvailability", "/api/user/checkEmailAvailability")
+                .antMatchers("/**/customer/resetPassword/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/polls/**", "/api/users/**")
+                .antMatchers("/**/customer/createCustomerInfo", "/**/customer/setPassword")
                 .permitAll()
+                .antMatchers("/**/booking/**").hasAnyRole(Role.ROLE_DIRVER.name())
                 .anyRequest()
                 .authenticated();
 

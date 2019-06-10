@@ -3,6 +3,7 @@ package vn.ontaxi.hub.component;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.jpa.entity.CustomerGroup;
@@ -17,6 +18,7 @@ import vn.ontaxi.hub.utils.CronJobUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,10 +66,15 @@ public class EmailTemplateComponent {
     }
 
     public void deleteTemplates() {
-        List<EmailTemplate> deletedTemplates = lstEmailTemplates.stream().filter(email -> email.isBeanSelected()).collect(Collectors.toList());
-        emailTemplateRepository.delete(deletedTemplates);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s email mẫu", deletedTemplates.size())));
-        lstEmailTemplates = null;
+        try {
+            List<EmailTemplate> deletedTemplates = lstEmailTemplates.stream().filter(email -> email.isBeanSelected()).collect(Collectors.toList());
+            emailTemplateRepository.delete(deletedTemplates);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s email mẫu", deletedTemplates.size())));
+            lstEmailTemplates = null;
+        } catch (DataIntegrityViolationException ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Lỗi tham chiếu trong sql"));
+        }
     }
 
     public String createNewTemplate() {

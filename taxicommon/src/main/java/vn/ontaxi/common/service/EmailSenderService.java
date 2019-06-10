@@ -2,15 +2,12 @@ package vn.ontaxi.common.service;
 
 import com.sendgrid.Method;
 import com.sendgrid.Request;
+import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import com.sendgrid.helpers.mail.objects.Personalization;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -23,8 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,13 +36,17 @@ public class EmailSenderService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private VelocityEngine velocityEngine;
-
-    public EmailSenderService(Environment env, EmailSchedulerVsCustomerRepository emailSchedulerVsCustomerRepository, VelocityEngine velocityEngine) {
+    public EmailSenderService(Environment env, EmailSchedulerVsCustomerRepository emailSchedulerVsCustomerRepository) {
         this.env = env;
         sendgridApiKey = env.getProperty("sendgrid.key");
         this.emailSchedulerVsCustomerRepository = emailSchedulerVsCustomerRepository;
+    }
+
+    public void sendEmail(String subject, String to, String content) throws IOException {
+        Email from = new Email(env.getProperty("ontaxi.mail"));
+        Content htmlContent = new Content("text/html", content);
+
+        sendEmail(subject, from, new Email(to), htmlContent);
     }
 
     public void sendEmail(String subject, Email from, Email to, Content content) throws IOException {
@@ -61,7 +60,8 @@ public class EmailSenderService {
         request.setMethod(Method.POST);
         request.setEndpoint("mail/send");
         request.setBody(mail.build());
-        sg.api(request);
+        Response api = sg.api(request);
+        System.out.println();
     }
 
     public void sendEmailScheduler(EmailScheduler emailScheduler) {
@@ -91,7 +91,10 @@ public class EmailSenderService {
                 }
 
                 if (sendEmail) {
-                    Content content = new Content("text/html", emailScheduler.getEmailTemplate().getEmailContent());
+                    String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(emailScheduler.getEmailTemplate().getEmailContent(), new HashMap<String, String>() {{
+                        put("\\$\\{name\\}", customer.getName());
+                    }});
+                    Content content = new Content("text/html", emailContent);
                     Mail mail = new Mail(from, subject, new Email(customer.getEmail()), content);
                     lstMails.put(customer.getId(), mail);
                 }
