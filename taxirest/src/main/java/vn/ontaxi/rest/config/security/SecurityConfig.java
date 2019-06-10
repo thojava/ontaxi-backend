@@ -3,7 +3,6 @@ package vn.ontaxi.rest.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import vn.ontaxi.common.jpa.entity.Role;
 
@@ -89,13 +87,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/**/auth/**")
+                .antMatchers("/auth/**")
                 .permitAll()
-                .antMatchers("/**/customer/resetPassword/**")
+                .antMatchers("/customer/resetPassword/**")
                 .permitAll()
-                .antMatchers("/**/customer/createCustomerInfo", "/**/customer/setPassword")
+                .antMatchers("/customer/createCustomerInfo", "/customer/setPassword")
                 .permitAll()
-                .antMatchers("/**/booking/**").hasAnyRole(Role.ROLE_DIRVER.name())
+                .antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
+                .antMatchers("/booking/**").hasAnyRole(Role.ROLE_DIRVER.name())
                 .anyRequest()
                 .authenticated();
 
