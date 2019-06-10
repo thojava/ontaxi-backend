@@ -83,6 +83,7 @@ public class CustomerController {
             return restResult;
         }
 
+        customerAccount.setToken("");
         customerAccount.setActived(true);
         customerAccount.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
         customerAccountRepository.save(customerAccount);
