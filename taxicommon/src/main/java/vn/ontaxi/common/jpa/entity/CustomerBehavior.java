@@ -1,5 +1,7 @@
 package vn.ontaxi.common.jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,10 +14,12 @@ public class CustomerBehavior implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("customerId")
+    @JsonIgnore
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("behaviorId")
+    @JsonIgnore
     private Behavior behavior;
 
     public CustomerBehavior() {

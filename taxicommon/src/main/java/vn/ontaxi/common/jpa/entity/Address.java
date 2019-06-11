@@ -42,6 +42,7 @@ public class Address {
     private int numOfBooking;
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
     @Transient

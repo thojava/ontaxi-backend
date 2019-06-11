@@ -93,8 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/customer/createCustomerInfo", "/customer/setPassword")
                 .permitAll()
-                .antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
-                .antMatchers("/booking/**").hasAnyRole(Role.ROLE_DIRVER.name())
+                //.antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
+                //.antMatchers("/booking/**").hasAnyRole(Role.ROLE_DIRVER.name())
                 .anyRequest()
                 .authenticated();
 

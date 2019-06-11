@@ -22,9 +22,11 @@ import vn.ontaxi.common.jpa.repository.ViewPriceRepository;
 import vn.ontaxi.common.model.Location;
 import vn.ontaxi.common.model.LocationWithDriver;
 import vn.ontaxi.common.service.*;
+import vn.ontaxi.rest.payload.dto.BookingDTO;
 import vn.ontaxi.rest.service.*;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.rest.utils.BaseMapper;
 import vn.ontaxi.rest.utils.SMSContentBuilder;
 
 import javax.annotation.PostConstruct;
@@ -42,6 +44,7 @@ import static reactor.bus.selector.Selectors.$;
 @RequestMapping("/booking")
 public class RestBookingController {
     private static final Logger logger = LoggerFactory.getLogger(RestBookingController.class);
+    private BaseMapper<Booking, BookingDTO> mapper = new BaseMapper<>(Booking.class, BookingDTO.class);
 
     @PersistenceContext
     private EntityManager em;
@@ -162,13 +165,13 @@ public class RestBookingController {
         }
 
         RestResult restResult = new RestResult();
-        restResult.setData(persistedBooking);
+        restResult.setData(mapper.toDtoBean(persistedBooking));
         return restResult;
     }
 
     @CrossOrigin
     @RequestMapping(path = "/firstCalculateDistanceAndPrice")
-    public Booking firstCalculateDistanceAndPrice(@RequestBody Booking booking) {
+    public BookingDTO firstCalculateDistanceAndPrice(@RequestBody Booking booking) {
         booking = calculateDistanceAndPrice(booking);
 
         ViewPrice viewPrice = new ViewPrice();
@@ -179,7 +182,7 @@ public class RestBookingController {
         viewPrice.setCar_type(booking.getCar_type().name());
         viewPriceRepository.saveAndFlush(viewPrice);
 
-        return booking;
+        return mapper.toDtoBean(booking);
     }
 
     @CrossOrigin
@@ -200,7 +203,8 @@ public class RestBookingController {
 
     @CrossOrigin
     @RequestMapping(path = "/postBookingFromWebsite")
-    public Booking postBookingFromWebsite(@RequestBody Booking booking) {
+    public Booking postBookingFromWebsite(@RequestBody BookingDTO bookingDTO) {
+        Booking booking = mapper.toPersistenceBean(bookingDTO);
         booking.setCreatedBy("site");
         booking.setStatus(OrderStatus.ORDERED);
 
@@ -214,7 +218,6 @@ public class RestBookingController {
         return booking;
     }
 
-    @Secured("ROLE_DRIVER")
     @RequestMapping(path = "/getDriverDetail/{email:.+}")
     public RestResult getDriverDetail(@PathVariable String email) {
         RestResult restResult = new RestResult();
@@ -240,7 +243,7 @@ public class RestBookingController {
             }
         }
         RestResult restResult = new RestResult();
-        restResult.setData(updatedBookings);
+        restResult.setData(mapper.toDtoBean(updatedBookings));
 
         return restResult;
     }
@@ -249,7 +252,7 @@ public class RestBookingController {
     public RestResult getNewBooking(@PathVariable String driverCode) {
         List<Booking> newBooking = bookingRepository.findByStatus(OrderStatus.NEW);
         RestResult restResult = new RestResult();
-        restResult.setData(newBooking);
+        restResult.setData(mapper.toDtoBean(newBooking));
 
         return restResult;
     }
@@ -259,7 +262,7 @@ public class RestBookingController {
 
         List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driverCode);
         RestResult restResult = new RestResult();
-        restResult.setData(allBooking);
+        restResult.setData(mapper.toDtoBean(allBooking));
         return restResult;
     }
 }

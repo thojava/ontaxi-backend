@@ -34,6 +34,7 @@ public class Customer extends AbstractEntity {
     @Fetch(FetchMode.SELECT)
     private List<Address> addresses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<CustomerBehavior> customerBehaviors = new HashSet<>();

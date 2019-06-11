@@ -1,9 +1,9 @@
 package vn.ontaxi.rest.controller;
 
-public class RestResult {
+public class RestResult<T> {
     private boolean succeed = true;
     private String message;
-    private Object data;
+    private T data;
 
     public String getMessage() {
         return message;
@@ -21,11 +21,11 @@ public class RestResult {
         this.succeed = succeed;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

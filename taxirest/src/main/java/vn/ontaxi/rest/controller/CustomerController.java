@@ -11,7 +11,10 @@ import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
 import vn.ontaxi.common.service.EmailSenderService;
+import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.SetPasswordRequest;
+import vn.ontaxi.rest.payload.dto.CustomerDTO;
+import vn.ontaxi.rest.utils.BaseMapper;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -21,6 +24,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
+
+    private BaseMapper<Customer, CustomerDTO> mapper = new BaseMapper<>(Customer.class, CustomerDTO.class);
 
     private final CustomerRepository customerRepository;
     private final CustomerAccountRepository customerAccountRepository;
@@ -111,6 +116,13 @@ public class CustomerController {
 
         emailSenderService.sendEmail("Yêu cầu reset mật khẩu", customerEmail.getCustomer().getEmail(), emailContent);
         restResult.setData(customerEmail.getToken());
+        return restResult;
+    }
+
+    @RequestMapping(path = "/getDetail", method = RequestMethod.GET)
+    public RestResult getCustomerDetail(@CurrentUser Customer customer) {
+        RestResult restResult = new RestResult();
+        restResult.setData(mapper.toDtoBean(customer));
         return restResult;
     }
 

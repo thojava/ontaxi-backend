@@ -8,13 +8,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.CustomerAccount;
 import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.Role;
 import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.DriverRepository;
+import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.CustomerLogin;
 import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
+import vn.ontaxi.rest.payload.dto.CustomerDTO;
 import vn.ontaxi.rest.utils.JwtTokenProvider;
 
 import javax.validation.Valid;
