@@ -27,7 +27,7 @@
                          var="customer">
                 <f:facet name="header">
                     <p:commandButton value="Tạo mới" style="float: left" action="#{customersComponent.newCustomer}" styleClass="btn btn-primary"/>
-                    <p:commandButton value="Xóa" style="float: left" action="#{customersComponent.removeCustomer}" styleClass="btn btn-primary"/>
+                    <p:commandButton value="Xóa" style="float: left" action="#{customersComponent.deleteCustomers}" update="mainForm" styleClass="btn btn-primary"/>
                     <div style="clear: both"></div>
                 </f:facet>
                 <p:column headerText="Mã" width="20">
@@ -54,7 +54,7 @@
                     <p:commandButton value="Tạo" process="@this" actionListener="#{customersComponent.createAccountForCustomer(customer)}" update="@([id$=message])"/>
                 </p:column>
                 <p:column headerText="Xóa" width="20">
-                    <p:selectBooleanCheckbox value="#{customer.beanSelected}">
+                    <p:selectBooleanCheckbox value="#{customer.beanSelected}" disabled="#{not empty customer.name}">
                         <p:ajax/>
                     </p:selectBooleanCheckbox>
                 </p:column>

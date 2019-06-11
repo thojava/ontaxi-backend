@@ -13,6 +13,7 @@ import vn.ontaxi.hub.service.LazyDataService;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -55,6 +56,16 @@ public class CustomersComponent {
 
         customerAccountRepository.save(temp);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Thành công! Vui lòng yêu cầu khách hàng truy cập email để hoàn tất cài đặt"));
+    }
+
+    public void deleteCustomers() {
+        List<Customer> wrappedData = lstCustomers.getWrappedData();
+        for (Customer customer : wrappedData) {
+            if (customer.isBeanSelected())
+                customerRepository.delete(customer);
+        }
+
+        lstCustomers = null;
     }
 
     public String newCustomer() {
