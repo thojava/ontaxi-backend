@@ -1,12 +1,11 @@
 package vn.ontaxi.hub.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 import vn.ontaxi.common.jpa.entity.EmailScheduler;
 import vn.ontaxi.common.jpa.repository.EmailScheduleRepository;
-import vn.ontaxi.common.service.EmailSenderService;
+import vn.ontaxi.common.service.EmailService;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -18,14 +17,17 @@ public class EmailSchedulerService {
 
     private Map<String, ScheduledFuture<?>> scheduledFutures = new HashMap<>();
 
-    @Autowired
-    private EmailSenderService emailSenderService;
+    private final EmailService emailService;
 
-    @Autowired
-    private ThreadPoolTaskScheduler scheduler;
+    private final ThreadPoolTaskScheduler scheduler;
 
-    @Autowired
-    private EmailScheduleRepository emailScheduleRepository;
+    private final EmailScheduleRepository emailScheduleRepository;
+
+    public EmailSchedulerService(EmailService emailService, ThreadPoolTaskScheduler scheduler, EmailScheduleRepository emailScheduleRepository) {
+        this.emailService = emailService;
+        this.scheduler = scheduler;
+        this.emailScheduleRepository = emailScheduleRepository;
+    }
 
     public void scheduleEmail(EmailScheduler emailScheduler) {
         Date startDate = new Date();
@@ -34,9 +36,8 @@ public class EmailSchedulerService {
             if (startDate.before(emailScheduler.getStartTime()))
                 startDate = emailScheduler.getStartTime();
 
-            scheduler.schedule(() -> {
-                scheduledFutures.put(emailScheduler.getKey(), start(() -> emailSenderService.sendEmailScheduler(emailScheduler), emailScheduler.getCronJob()));
-            }, startDate);
+            scheduler.schedule(() -> scheduledFutures.put(emailScheduler.getKey(),
+                    start(() -> emailService.sendEmailScheduler(emailScheduler), emailScheduler.getCronJob())), startDate);
 
             if (emailScheduler.getEndTime() != null) {
                 scheduledFutures.put(emailScheduler.getKey() + "endTime", scheduler.schedule(() -> {
@@ -62,7 +63,7 @@ public class EmailSchedulerService {
         }
     }
 
-    public ScheduledFuture<?> start(Runnable task, String scheduleExpression) {
+    private ScheduledFuture<?> start(Runnable task, String scheduleExpression) {
         return scheduler.schedule(task, new CronTrigger(scheduleExpression));
     }
 

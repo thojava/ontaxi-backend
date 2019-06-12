@@ -8,6 +8,7 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -26,48 +27,48 @@ import java.util.Map;
 
 @Service
 @PropertySource("classpath:config.properties")
-public class EmailSenderService {
-
-    private final Environment env;
+public class EmailService {
+    private Logger logger = Logger.getLogger(EmailService.class);
     private final EmailSchedulerVsCustomerRepository emailSchedulerVsCustomerRepository;
 
-    private String sendgridApiKey;
+    private String sendGridApiKey;
+    private Email fromEmail;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public EmailSenderService(Environment env, EmailSchedulerVsCustomerRepository emailSchedulerVsCustomerRepository) {
-        this.env = env;
-        sendgridApiKey = env.getProperty("sendgrid.key");
+    public EmailService(Environment env, EmailSchedulerVsCustomerRepository emailSchedulerVsCustomerRepository) {
+        sendGridApiKey = env.getProperty("sendgrid.key");
+        fromEmail = new Email(env.getProperty("from.mail"), env.getProperty("from.name"));
         this.emailSchedulerVsCustomerRepository = emailSchedulerVsCustomerRepository;
     }
 
     public void sendEmail(String subject, String to, String content) throws IOException {
-        Email from = new Email(env.getProperty("ontaxi.mail"));
         Content htmlContent = new Content("text/html", content);
 
-        sendEmail(subject, from, new Email(to), htmlContent);
+        sendEmail(subject, new Email(to), htmlContent);
     }
 
-    public void sendEmail(String subject, Email from, Email to, Content content) throws IOException {
-        Mail mail = new Mail(from, subject, to, content);
+    private void sendEmail(String subject, Email to, Content content) throws IOException {
+        Mail mail = new Mail(fromEmail, subject, to, content);
         sendEmail(mail);
     }
 
     private void sendEmail(Mail mail) throws IOException {
-        SendGrid sg = new SendGrid(sendgridApiKey);
+        SendGrid sendGrid = new SendGrid(sendGridApiKey);
         Request request = new Request();
         request.setMethod(Method.POST);
         request.setEndpoint("mail/send");
-        request.setBody(mail.build());
-        Response api = sg.api(request);
-        System.out.println();
+        String emailContent = mail.build();
+        request.setBody(emailContent);
+
+        Response response = sendGrid.api(request);
+        logger.debug("Send mail to " + emailContent + " with status " + response.getStatusCode() + " " + response.getBody());
     }
 
     public void sendEmailScheduler(EmailScheduler emailScheduler) {
         Map<Long, Mail> lstMails = new HashMap<>();
         String subject = emailScheduler.getSubject();
-        Email from = new Email(env.getProperty("ontaxi.mail"));
 
         Query nativeQuery = entityManager.createNativeQuery(emailScheduler.getCustomerGroup().getSqlContent(), Customer.class);
         List<Customer> resultList = nativeQuery.getResultList();
@@ -95,7 +96,7 @@ public class EmailSenderService {
                         put("\\$\\{name\\}", customer.getName());
                     }});
                     Content content = new Content("text/html", emailContent);
-                    Mail mail = new Mail(from, subject, new Email(customer.getEmail()), content);
+                    Mail mail = new Mail(fromEmail, subject, new Email(customer.getEmail()), content);
                     lstMails.put(customer.getId(), mail);
                 }
             }

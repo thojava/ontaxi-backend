@@ -47,6 +47,10 @@
                     <p:menuitem value="Mẫu Email" action="email_template.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
+
+                    <p:menuitem value="Lập Lịch Gửi Email" action="emaill_scheduler.jsf" ajax="false"
+                                immediate="true"
+                                rendered="#{not userCredentialComponent.customer}"/>
                 </p:submenu>
 
                 <p:submenu label="Tài Khoản: #{userCredentialComponent.userName}">
