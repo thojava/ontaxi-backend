@@ -10,7 +10,7 @@ import vn.ontaxi.common.jpa.entity.EmailTemplate;
 import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
-import vn.ontaxi.common.service.EmailSenderService;
+import vn.ontaxi.common.service.EmailService;
 import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.SetPasswordRequest;
 import vn.ontaxi.rest.payload.dto.CustomerDTO;
@@ -31,14 +31,14 @@ public class CustomerController {
     private final CustomerAccountRepository customerAccountRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailTemplateRepository emailTemplateRepository;
-    private final EmailSenderService emailSenderService;
+    private final EmailService emailService;
 
-    public CustomerController(CustomerRepository customerRepository, CustomerAccountRepository customerAccountRepository, PasswordEncoder passwordEncoder, EmailTemplateRepository emailTemplateRepository, EmailSenderService emailSenderService) {
+    public CustomerController(CustomerRepository customerRepository, CustomerAccountRepository customerAccountRepository, PasswordEncoder passwordEncoder, EmailTemplateRepository emailTemplateRepository, EmailService emailService) {
         this.customerRepository = customerRepository;
         this.customerAccountRepository = customerAccountRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailTemplateRepository = emailTemplateRepository;
-        this.emailSenderService = emailSenderService;
+        this.emailService = emailService;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -73,7 +73,7 @@ public class CustomerController {
             put("\\$\\{activate_link\\}", customerAccount.getToken());
         }});
 
-        emailSenderService.sendEmail("Hoàn tất quá trình tạo tài khoản trên hệ thống OnTaxi", customer.getEmail(), emailContent);
+        emailService.sendEmail("Hoàn tất quá trình tạo tài khoản trên hệ thống OnTaxi", customer.getEmail(), emailContent);
 
         return restResult;
     }
@@ -114,7 +114,7 @@ public class CustomerController {
             put("\\$\\{reset_password_link\\}", customerEmail.getToken());
         }});
 
-        emailSenderService.sendEmail("Yêu cầu reset mật khẩu", customerEmail.getCustomer().getEmail(), emailContent);
+        emailService.sendEmail("Yêu cầu reset mật khẩu", customerEmail.getCustomer().getEmail(), emailContent);
         restResult.setData(customerEmail.getToken());
         return restResult;
     }

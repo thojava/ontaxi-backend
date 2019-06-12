@@ -14,7 +14,7 @@
         <p:spacer height="10px"/>
         <h:form id="emailScheduleForm">
             <p:growl showDetail="true" life="5000" globalOnly="true" id="messageForSchedule"/>
-            <p:dataTable value="#{emailTemplateComponent.lstEmailSchedulers}"
+            <p:dataTable value="#{emailSchedulerComponent.lstEmailSchedulers}"
                          rows="10" widgetVar="emailTemplate"
                          id="emailTemplate"
                          paginator="true"
@@ -30,14 +30,14 @@
                                      widgetVar="confirmDeleteSchedule">
                         <p:commandButton value="Có"
                                          process="@this"
-                                         actionListener="#{emailTemplateComponent.deleteEmailScheduler}"
+                                         actionListener="#{emailSchedulerComponent.deleteEmailScheduler}"
                                          update="@([id$=emailScheduleForm])"
                                          oncomplete="PF('confirmDeleteSchedule').hide()"/>
                         <p:commandButton value="Không"
                                          oncomplete="PF('confirmDeleteSchedule').hide()"/>
                     </p:confirmDialog>
 
-                    <p:commandButton value="Tạo mới" style="float: left" update="@([id$=emailScheduler])" actionListener="#{emailTemplateComponent.openDialogCreateNewEmailSchedule}" oncomplete="PF('emailScheduler').show(); return false;" styleClass="btn btn-primary"/>
+                    <p:commandButton value="Tạo mới" style="float: left" update="@([id$=emailScheduler])" actionListener="#{emailSchedulerComponent.openDialogCreateNewEmailSchedule}" oncomplete="PF('emailScheduler').show(); return false;" styleClass="btn btn-primary"/>
                     <div style="clear: both"></div>
                 </f:facet>
                 <p:column style="width: 20px">
@@ -46,7 +46,7 @@
                     </p:selectBooleanCheckbox>
                 </p:column>
                 <p:column headerText="Id" style="width: 50px">
-                    <p:commandLink value="#{emailScheduler.id}" actionListener="#{emailTemplateComponent.setCurrentEmailScheduler(emailScheduler)}" process="@this" oncomplete="PF('emailScheduler').show()" update="@([id$=emailScheduler])"/>
+                    <p:commandLink value="#{emailScheduler.id}" actionListener="#{emailSchedulerComponent.setCurrentEmailScheduler(emailScheduler)}" process="@this" oncomplete="PF('emailScheduler').show()" update="@([id$=emailScheduler])"/>
                 </p:column>
                 <p:column headerText="Email mẫu" filterBy="#{emailScheduler.emailTemplate.name}" sortBy="#{emailScheduler.emailTemplate.name}">
                     <p:link value="#{emailScheduler.emailTemplate.name}" target="_blank" href="email_template_detail.jsf?id=#{emailScheduler.emailTemplate.id}"/>
@@ -69,11 +69,131 @@
                 </p:column>
                 <p:column headerText="Hoạt động" style="width: 100px">
                     <p:selectBooleanCheckbox value="#{emailScheduler.enable}" disabled="#{not emailScheduler.canChangeState}">
-                        <p:ajax listener="#{emailTemplateComponent.toggleEmailSchedulerState(emailScheduler)}"/>
+                        <p:ajax listener="#{emailSchedulerComponent.toggleEmailSchedulerState(emailScheduler)}"/>
                     </p:selectBooleanCheckbox>
                 </p:column>
             </p:dataTable>
         </h:form>
+
+        <p:dialog
+                header="Thông tin chi tiết" modal="true"
+                id="emailScheduler"
+                width="800"
+                height="600"
+                widgetVar="emailScheduler">
+
+            <h:form id="createEmailSchedule">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-2">
+                        <p:outputLabel value="Tiêu đề mail" />
+                    </div>
+                    <div class="ui-g-10">
+                        <p:inputText required="true" value="#{emailSchedulerComponent.currentEmailScheduler.subject}" />
+                    </div>
+                </div>
+                <div class="ui-g ui-fluid" style="margin-top: 20px">
+                    <div class="ui-g-6 ui-g-nopad">
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-11 ui-g-nopad">
+                                <p:outputLabel value="Email Mẫu" for="email_template" />
+                            </div>
+                        </div>
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-11 ui-g-nopad">
+                                <p:selectOneListbox required="true" converter="omnifaces.SelectItemsConverter" id="email_template" value="#{emailSchedulerComponent.currentEmailScheduler.emailTemplate}" filter="true" filterMatchMode="contains">
+                                    <f:selectItems value="#{emailTemplateComponent.lstEmailTemplates}" var="emailTemplate" itemLabel="#{emailTemplate.name}" itemValue="#{emailTemplate}" />
+                                </p:selectOneListbox>
+                                <p:message for="email_template" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g-6 ui-g-nopad">
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-11 ui-g-nopad">
+                                <p:outputLabel value="Nhóm Khách Hàng" for="customer_group" />
+                            </div>
+                        </div>
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-11 ui-g-nopad">
+                                <p:selectOneListbox required="true" converter="omnifaces.SelectItemsConverter" id="customer_group" value="#{emailSchedulerComponent.currentEmailScheduler.customerGroup}" filter="true" filterMatchMode="contains">
+                                    <f:selectItems value="#{customerGroupComponent.lstCustomerGroups}" var="customerGroup" itemLabel="#{customerGroup.name}" itemValue="#{customerGroup}" />
+                                </p:selectOneListbox>
+                                <p:message for="customer_group" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-g ui-fluid" style="margin-top: 20px">
+                    <p:fieldset legend="Lịch gửi email">
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-4">
+                                <div class="ui-g ui-fluid">
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:outputLabel for="startTime" value="Thời gian bắt đầu" />
+                                    </div>
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:calendar id="startTime" required="true" value="#{emailSchedulerComponent.currentEmailScheduler.startTime}" pattern="dd/MM/yyyy HH:mm" />
+                                        <p:message for="startTime" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-g-4">
+                                <div class="ui-g ui-fluid">
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:outputLabel for="endTime" value="Thời gian kết thúc" />
+                                    </div>
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:calendar id="endTime" value="#{emailSchedulerComponent.currentEmailScheduler.endTime}" pattern="dd/MM/yyyy HH:mm" />
+                                    </div>
+                                </div>
+                            </div>
+                            <p:outputPanel class="ui-g-4">
+                                <p:outputPanel class="ui-g ui-fluid">
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:outputLabel value="Chọn kiểu lặp" for="reccuring_type"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:selectOneMenu id="reccuring_type" value="#{emailSchedulerComponent.currentEmailScheduler.recurringType}">
+                                            <f:selectItem itemLabel="--Lựa Chọn--" itemValue="NONE"/>
+                                            <f:selectItem itemLabel="Hàng Ngày" itemValue="DAY"/>
+                                            <f:selectItem itemLabel="Hàng Tuần" itemValue="WEEK"/>
+                                            <f:selectItem itemLabel="Hàng Tháng" itemValue="MONTH"/>
+                                            <f:selectItem itemLabel="Hàng Năm" itemValue="YEAR"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="reccuring_type" />
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                            <p:outputPanel class="ui-g-4">
+                                <p:outputPanel class="ui-g ui-fluid">
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:outputLabel value="Lặp lại nhiều lần/khách hàng"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:selectBooleanCheckbox value="#{emailSchedulerComponent.currentEmailScheduler.multipleTimePerCustomer}" />
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                            <p:outputPanel class="ui-g-4">
+                                <p:outputPanel class="ui-g ui-fluid">
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:outputLabel value="Hoạt động"/>
+                                    </div>
+                                    <div class="ui-g-12 ui-g-nopad">
+                                        <p:selectBooleanCheckbox value="#{emailSchedulerComponent.currentEmailScheduler.enable}" />
+                                    </div>
+                                </p:outputPanel>
+                            </p:outputPanel>
+                        </div>
+                    </p:fieldset>
+                </div>
+                <div style="text-align: center; margin-top: 20px">
+                    <p:commandButton value="Lưu Lại" process="@this, createEmailSchedule" update="@([id$=emailTemplate]), createEmailSchedule, @([id$=message])" actionListener="#{emailSchedulerComponent.saveEmailScheduler}" oncomplete="if (args &amp;&amp; !args.validationFailed) {PF('emailScheduler').hide();}"/>
+                    <p:commandButton value="Đóng" immediate="true" oncomplete="PF('emailScheduler').hide();" />
+                </div>
+            </h:form>
+
+        </p:dialog>
     </ui:define>
 </ui:composition>
 </html>
