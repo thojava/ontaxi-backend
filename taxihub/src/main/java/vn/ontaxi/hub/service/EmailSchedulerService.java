@@ -1,70 +1,87 @@
 package vn.ontaxi.hub.service;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
+import org.quartz.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.ontaxi.common.jpa.entity.EmailScheduler;
-import vn.ontaxi.common.jpa.repository.EmailScheduleRepository;
-import vn.ontaxi.common.service.EmailService;
+import vn.ontaxi.hub.quartz.EmailJob;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 
 @Service
 public class EmailSchedulerService {
 
-    private Map<String, ScheduledFuture<?>> scheduledFutures = new HashMap<>();
+    @Autowired
+    private Scheduler scheduler;
 
-    private final EmailService emailService;
+    private final String JOB_GROUP = "email-jobs";
+    private final String TRIGGER_GROUP = "email-triggers";
 
-    private final ThreadPoolTaskScheduler scheduler;
+    public void addOrUpdateEmailScheduler(EmailScheduler emailScheduler) throws SchedulerException {
+        if (emailScheduler.isEnable() && (emailScheduler.getEndTime() == null || (emailScheduler.getEndTime() != null && emailScheduler.getEndTime().after(new Date())))) {
+            JobDetail jobDetail = buildJobDetail(emailScheduler);
+            Trigger trigger = buildJobTrigger(jobDetail, emailScheduler);
+            if (scheduler.checkExists(trigger.getKey()))
+                scheduler.rescheduleJob(trigger.getKey(), trigger);
+            else if (scheduler.checkExists(trigger.getJobKey())) {
+                scheduler.scheduleJob(trigger);
+            } else
+                scheduler.scheduleJob(jobDetail, trigger);
+        }
 
-    private final EmailScheduleRepository emailScheduleRepository;
-
-    public EmailSchedulerService(EmailService emailService, ThreadPoolTaskScheduler scheduler, EmailScheduleRepository emailScheduleRepository) {
-        this.emailService = emailService;
-        this.scheduler = scheduler;
-        this.emailScheduleRepository = emailScheduleRepository;
     }
 
-    public void scheduleEmail(EmailScheduler emailScheduler) {
-        Date startDate = new Date();
-        if (emailScheduler.isEnable() && (emailScheduler.getEndTime() == null || startDate.before(emailScheduler.getEndTime()))) {
-            stopAndRemoveSchedule(emailScheduler.getKey());
-            if (startDate.before(emailScheduler.getStartTime()))
-                startDate = emailScheduler.getStartTime();
-
-            scheduler.schedule(() -> scheduledFutures.put(emailScheduler.getKey(),
-                    start(() -> emailService.sendEmailScheduler(emailScheduler), emailScheduler.getCronJob())), startDate);
-
-            if (emailScheduler.getEndTime() != null) {
-                scheduledFutures.put(emailScheduler.getKey() + "endTime", scheduler.schedule(() -> {
-                    stopAndRemoveSchedule(emailScheduler.getKey());
-                    emailScheduler.setEnable(false);
-                    emailScheduleRepository.save(emailScheduler);
-                }, emailScheduler.getEndTime()));
-            }
+    public void pauseEmailScheduler(EmailScheduler emailScheduler) throws SchedulerException {
+        TriggerKey triggerKey = new TriggerKey(emailScheduler.getKey(), TRIGGER_GROUP);
+        if (scheduler.checkExists(triggerKey)){
+            scheduler.unscheduleJob(triggerKey);
         }
     }
 
-    public void stopAndRemoveSchedule(String key) {
-        ScheduledFuture<?> scheduledFuture = scheduledFutures.get(key);
-        if (scheduledFuture != null) {
-            scheduledFuture.cancel(true);
-            scheduledFutures.remove(key);
-        }
-
-        ScheduledFuture<?> scheduledFutureEndTime = scheduledFutures.get(key + "endTime");
-        if (scheduledFutureEndTime != null) {
-            scheduledFutureEndTime.cancel(true);
-            scheduledFutures.remove(key + "endTime");
-        }
+    public void resumeEmailScheduler(EmailScheduler emailScheduler) throws SchedulerException {
+        addOrUpdateEmailScheduler(emailScheduler);
     }
 
-    private ScheduledFuture<?> start(Runnable task, String scheduleExpression) {
-        return scheduler.schedule(task, new CronTrigger(scheduleExpression));
+    public void deleteEmailScheduler(EmailScheduler emailScheduler) throws SchedulerException {
+        TriggerKey triggerKey = new TriggerKey(emailScheduler.getKey(), TRIGGER_GROUP);
+        if (scheduler.checkExists(triggerKey)){
+            scheduler.unscheduleJob(triggerKey);
+        }
+        JobKey jobKey = new JobKey(emailScheduler.getKey(), JOB_GROUP);
+        if (scheduler.checkExists(jobKey))
+            scheduler.deleteJob(jobKey);
+    }
+
+    private JobDetail buildJobDetail(EmailScheduler emailScheduler) {
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("emailSchedulerId", emailScheduler.getId());
+
+        return JobBuilder.newJob(EmailJob.class)
+                .withIdentity(emailScheduler.getKey(), JOB_GROUP)
+                .withDescription("Send Email Job")
+                .usingJobData(jobDataMap)
+                .storeDurably()
+                .build();
+    }
+
+    private Trigger buildJobTrigger(JobDetail jobDetail, EmailScheduler emailScheduler) {
+
+        Date startAt = new Date();
+        if (emailScheduler.getStartTime().after(startAt))
+            startAt = emailScheduler.getStartTime();
+
+        TriggerBuilder<CronTrigger> emailTrigger = TriggerBuilder.newTrigger()
+                .forJob(jobDetail)
+                .withIdentity(jobDetail.getKey().getName(), TRIGGER_GROUP)
+                .withDescription("Send Email Trigger")
+                .startAt(startAt)
+                .withSchedule(CronScheduleBuilder.cronSchedule(emailScheduler.getCronJob()));
+
+        if (emailScheduler.getEndTime() != null)
+            emailTrigger.endAt(emailScheduler.getEndTime());
+
+        return emailTrigger.build();
+
     }
 
 }

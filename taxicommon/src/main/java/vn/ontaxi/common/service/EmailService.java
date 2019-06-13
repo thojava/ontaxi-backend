@@ -67,6 +67,7 @@ public class EmailService {
     }
 
     public void sendEmailScheduler(EmailScheduler emailScheduler) {
+
         Map<Long, Mail> lstMails = new HashMap<>();
         String subject = emailScheduler.getSubject();
 
