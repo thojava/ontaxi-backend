@@ -9,7 +9,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.jpa.entity.EmailScheduler;
 import vn.ontaxi.common.jpa.repository.EmailScheduleRepository;
-import vn.ontaxi.common.service.EmailSenderService;
+import vn.ontaxi.common.service.EmailService;
 
 @Component
 public class EmailJob extends QuartzJobBean {
@@ -19,7 +19,7 @@ public class EmailJob extends QuartzJobBean {
     EmailScheduleRepository emailScheduleRepository;
 
     @Autowired
-    EmailSenderService emailSenderService;
+    EmailService emailService;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
@@ -29,7 +29,7 @@ public class EmailJob extends QuartzJobBean {
         Long emailSchedulerId = jobDataMap.getLong("emailSchedulerId");
         EmailScheduler emailScheduler = emailScheduleRepository.findOne(emailSchedulerId);
         if (emailScheduler != null)
-            emailSenderService.sendEmailScheduler(emailScheduler);
+            emailService.sendEmailScheduler(emailScheduler);
 
     }
 

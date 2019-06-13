@@ -19,6 +19,7 @@
                          id="emailTemplate"
                          paginator="true"
                          rowKey="#{emailScheduler.id}"
+                         rowStyleClass="#{emailScheduler.enable ? 'green' : ''}"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="5,10,15"
                          var="emailScheduler">
@@ -68,9 +69,11 @@
                     <p:outputLabel value="#{emailScheduler.recurringType.name}" />
                 </p:column>
                 <p:column headerText="Hoạt động" style="width: 100px">
-                    <p:selectBooleanCheckbox value="#{emailScheduler.enable}" disabled="#{not emailScheduler.canChangeState}">
-                        <p:ajax listener="#{emailSchedulerComponent.toggleEmailSchedulerState(emailScheduler)}"/>
-                    </p:selectBooleanCheckbox>
+                    <p:selectOneRadio value="#{emailScheduler.enable}" disabled="#{not emailScheduler.canChangeState}" >
+                        <f:selectItem itemLabel="Bật" itemValue="#{true}" />
+                        <f:selectItem itemLabel="Tắt" itemValue="#{false}" />
+                        <p:ajax listener="#{emailSchedulerComponent.toggleEmailSchedulerState(emailScheduler)}" update="emailTemplate"/>
+                    </p:selectOneRadio>
                 </p:column>
             </p:dataTable>
         </h:form>
@@ -100,7 +103,7 @@
                         </div>
                         <div class="ui-g ui-fluid">
                             <div class="ui-g-11 ui-g-nopad">
-                                <p:selectOneListbox required="true" converter="omnifaces.SelectItemsConverter" id="email_template" value="#{emailSchedulerComponent.currentEmailScheduler.emailTemplate}" filter="true" filterMatchMode="contains">
+                                <p:selectOneListbox scrollHeight="120" required="true" converter="omnifaces.SelectItemsConverter" id="email_template" value="#{emailSchedulerComponent.currentEmailScheduler.emailTemplate}" filter="true" filterMatchMode="contains">
                                     <f:selectItems value="#{emailTemplateComponent.lstEmailTemplates}" var="emailTemplate" itemLabel="#{emailTemplate.name}" itemValue="#{emailTemplate}" />
                                 </p:selectOneListbox>
                                 <p:message for="email_template" />
@@ -115,7 +118,7 @@
                         </div>
                         <div class="ui-g ui-fluid">
                             <div class="ui-g-11 ui-g-nopad">
-                                <p:selectOneListbox required="true" converter="omnifaces.SelectItemsConverter" id="customer_group" value="#{emailSchedulerComponent.currentEmailScheduler.customerGroup}" filter="true" filterMatchMode="contains">
+                                <p:selectOneListbox scrollHeight="120" required="true" converter="omnifaces.SelectItemsConverter" id="customer_group" value="#{emailSchedulerComponent.currentEmailScheduler.customerGroup}" filter="true" filterMatchMode="contains">
                                     <f:selectItems value="#{customerGroupComponent.lstCustomerGroups}" var="customerGroup" itemLabel="#{customerGroup.name}" itemValue="#{customerGroup}" />
                                 </p:selectOneListbox>
                                 <p:message for="customer_group" />
@@ -132,7 +135,10 @@
                                         <p:outputLabel for="startTime" value="Thời gian bắt đầu" />
                                     </div>
                                     <div class="ui-g-12 ui-g-nopad">
-                                        <p:calendar id="startTime" required="true" value="#{emailSchedulerComponent.currentEmailScheduler.startTime}" pattern="dd/MM/yyyy HH:mm" />
+                                        <p:calendar id="startTime" required="true"
+                                                    defaultHour="#{emailSchedulerComponent.currentEmailScheduler.startTime == null ? 0 : emailSchedulerComponent.currentEmailScheduler.startTime.hours}"
+                                                    defaultMinute="#{emailSchedulerComponent.currentEmailScheduler.startTime == null ? 0 : emailSchedulerComponent.currentEmailScheduler.startTime.minutes}"
+                                                    value="#{emailSchedulerComponent.currentEmailScheduler.startTime}" pattern="dd/MM/yyyy HH:mm" />
                                         <p:message for="startTime" />
                                     </div>
                                 </div>
@@ -143,7 +149,10 @@
                                         <p:outputLabel for="endTime" value="Thời gian kết thúc" />
                                     </div>
                                     <div class="ui-g-12 ui-g-nopad">
-                                        <p:calendar id="endTime" value="#{emailSchedulerComponent.currentEmailScheduler.endTime}" pattern="dd/MM/yyyy HH:mm" />
+                                        <p:calendar id="endTime"
+                                                    defaultHour="#{emailSchedulerComponent.currentEmailScheduler.endTime == null ? 0 : emailSchedulerComponent.currentEmailScheduler.endTime.hours}"
+                                                    defaultMinute="#{emailSchedulerComponent.currentEmailScheduler.endTime == null ? 0 : emailSchedulerComponent.currentEmailScheduler.endTime.minutes}"
+                                                    value="#{emailSchedulerComponent.currentEmailScheduler.endTime}" pattern="dd/MM/yyyy HH:mm" />
                                     </div>
                                 </div>
                             </div>
