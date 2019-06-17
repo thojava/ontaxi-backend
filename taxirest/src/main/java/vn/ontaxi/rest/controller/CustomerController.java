@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import vn.ontaxi.common.constant.EmailType;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.CustomerAccount;
 import vn.ontaxi.common.jpa.entity.EmailTemplate;
@@ -67,13 +68,13 @@ public class CustomerController {
 
         restResult.setData(customerAccount.getToken());
 
-        EmailTemplate setPasswordTemplate = emailTemplateRepository.findByCode("SET_PASSWORD_TEMPLATE");
+        EmailTemplate setPasswordTemplate = emailTemplateRepository.findByEmailType(EmailType.SET_PASSWORD);
         String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(setPasswordTemplate.getEmailContent(), new HashMap<String, String>() {{
             put("\\$\\{name\\}", customer.getName());
             put("\\$\\{activate_link\\}", customerAccount.getToken());
         }});
 
-        emailService.sendEmail("Hoàn tất quá trình tạo tài khoản trên hệ thống OnTaxi", customer.getEmail(), emailContent);
+        emailService.sendEmail(setPasswordTemplate.getSubject(), customer.getEmail(), emailContent);
 
         return restResult;
     }
@@ -108,13 +109,13 @@ public class CustomerController {
         }
         customerEmail.setToken(UUID.randomUUID().toString());
         customerAccountRepository.save(customerEmail);
-        EmailTemplate resetPassword = emailTemplateRepository.findByCode("RESET_PASSWORD");
+        EmailTemplate resetPassword = emailTemplateRepository.findByEmailType(EmailType.RESET_PASSWORD);
         String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(resetPassword.getEmailContent(), new HashMap<String, String>() {{
             put("\\$\\{name\\}", customerEmail.getCustomer().getName());
             put("\\$\\{reset_password_link\\}", customerEmail.getToken());
         }});
 
-        emailService.sendEmail("Yêu cầu reset mật khẩu", customerEmail.getCustomer().getEmail(), emailContent);
+        emailService.sendEmail(resetPassword.getSubject(), customerEmail.getCustomer().getEmail(), emailContent);
         restResult.setData(customerEmail.getToken());
         return restResult;
     }

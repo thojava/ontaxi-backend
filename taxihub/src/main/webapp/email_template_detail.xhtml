@@ -6,7 +6,6 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:o="http://omnifaces.org/ui"
         xmlns:p="http://primefaces.org/ui">
     <ui:composition template="layout.xhtml">
         <ui:define name="content">
@@ -16,23 +15,17 @@
 
                 <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
                 <p:commandButton value="Lưu Lại" icon="fa fa-check"
-                                 actionListener="#{emailTemplateComponent.saveTemplate}"
+                                 action="#{emailTemplateComponent.saveTemplate}"
                                  process="@form"
-                                 update="message"
                                  styleClass="btn-primary"/>
-                <p:spacer width="5"/>
-                <p:commandButton value="Quay lại" immediate="true" styleClass="btn-default"
-                                 ajax="false"
-                                 action="/email_template.jsf?faces-redirect=true"
-                                 icon="fa fa-reply"/>
                 <p:panel style="margin-top: 10px">
                     <p:outputPanel class="ui-g ui-fluid">
                     <div class="ui-g-6 ui-g-nopad">
-                        <div class="ui-g-1">
-                            <p:outputLabel for="name" value="Tên"/>
+                        <div class="ui-g-2">
+                            <p:outputLabel for="name" value="Tiêu Đề"/>
                         </div>
-                        <div class="ui-g-11">
-                            <p:inputText id="name" maxlength="100" value="#{emailTemplateComponent.currentEmailTemplate.name}"
+                        <div class="ui-g-10">
+                            <p:inputText id="name" maxlength="100" value="#{emailTemplateComponent.currentEmailTemplate.subject}"
                                          required="true" requiredMessage="Name is required."/>
                             <span class="help-block">
                                 <p:message for="name"/>
@@ -41,14 +34,13 @@
                     </div>
 
                     <div class="ui-g-6 ui-g-nopad">
-                        <div class="ui-g-1">
-                            <p:outputLabel for="code" value="Mã"/>
+                        <div class="ui-g-2">
+                            <p:outputLabel for="mailType" value="Phân Loại"/>
                         </div>
-                        <div class="ui-g-11">
-                            <p:inputText id="code" maxlength="100" value="#{emailTemplateComponent.currentEmailTemplate.code}"/>
-                            <span class="help-block">
-                            <p:message for="code"/>
-                        </span>
+                        <div class="ui-g-10">
+                            <p:selectOneMenu value="#{emailTemplateComponent.currentEmailTemplate.emailType}" id="mailType">
+                                <f:selectItems value="#{selectItemGenerator.emailTypeSelectItems}"/>
+                            </p:selectOneMenu>
                         </div>
                     </div>
                     <div class="ui-g-12 ui-g-nopad">

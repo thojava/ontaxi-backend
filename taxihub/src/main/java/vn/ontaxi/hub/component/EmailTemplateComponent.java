@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import vn.ontaxi.common.jpa.entity.AbstractEntity;
 import vn.ontaxi.common.jpa.entity.EmailTemplate;
 import vn.ontaxi.common.jpa.repository.CustomerGroupRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
@@ -45,14 +46,14 @@ public class EmailTemplateComponent {
     public List<EmailTemplate> getLstEmailTemplates() {
 
         if (lstEmailTemplates == null)
-            lstEmailTemplates = emailTemplateRepository.findAll(new Sort(Sort.Direction.ASC, "name"));
+            lstEmailTemplates = emailTemplateRepository.findAll(new Sort(Sort.Direction.ASC, "subject"));
 
         return lstEmailTemplates;
     }
 
     public void deleteTemplates() {
         try {
-            List<EmailTemplate> deletedTemplates = lstEmailTemplates.stream().filter(email -> email.isBeanSelected()).collect(Collectors.toList());
+            List<EmailTemplate> deletedTemplates = lstEmailTemplates.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
             emailTemplateRepository.delete(deletedTemplates);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s email mẫu", deletedTemplates.size())));
             lstEmailTemplates = null;
@@ -68,9 +69,9 @@ public class EmailTemplateComponent {
         return "email_template_detail.jsf?faces-redirect=true&id=" + save.getId();
     }
 
-    public void saveTemplate() {
+    public String saveTemplate() {
         emailTemplateRepository.save(currentEmailTemplate);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Đã lưu"));
+        return "email_template.jsf?faces-redirect=true";
     }
 
     public void setLstEmailTemplates(List<EmailTemplate> lstEmailTemplates) {

@@ -36,8 +36,6 @@ public class EmailScheduler extends AbstractEntity {
     @JoinColumn(name = "customer_group_id")
     private CustomerGroup customerGroup;
 
-    private String subject;
-
     private boolean multipleTimePerCustomer;
     private boolean enable = true;
 
@@ -126,14 +124,6 @@ public class EmailScheduler extends AbstractEntity {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
     }
 
     @Override

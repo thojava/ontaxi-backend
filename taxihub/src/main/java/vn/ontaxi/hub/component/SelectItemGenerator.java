@@ -3,6 +3,7 @@ package vn.ontaxi.hub.component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.EmailType;
 import vn.ontaxi.common.jpa.entity.PersistentCustomer;
 import vn.ontaxi.common.jpa.repository.PersistentCustomerRepository;
 
@@ -27,5 +28,9 @@ public class SelectItemGenerator {
 
     public List<SelectItem> getCarTypeSelectItems() {
         return Arrays.stream(CarTypes.values()).map(c -> new SelectItem(c, c.getDescription())).collect(Collectors.toList());
+    }
+
+    public List<SelectItem> getEmailTypeSelectItems() {
+        return Arrays.stream(EmailType.values()).map(c -> new SelectItem(c, c.getDescription())).collect(Collectors.toList());
     }
 }

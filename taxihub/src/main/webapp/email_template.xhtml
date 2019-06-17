@@ -45,18 +45,18 @@
                             <div style="clear: both"></div>
                         </f:facet>
                         <p:column style="width: 20px">
-                            <p:selectBooleanCheckbox value="#{email.beanSelected}" disabled="#{not email.canDelete}">
+                            <p:selectBooleanCheckbox value="#{email.beanSelected}">
                                 <p:ajax/>
                             </p:selectBooleanCheckbox>
                         </p:column>
                         <p:column headerText="Id" width="50">
                             <p:link value="#{email.id}" href="email_template_detail.jsf?id=#{email.id}"/>
                         </p:column>
-                        <p:column headerText="Tên" filterBy="#{email.name}" sortBy="#{email.name}">
-                            <h:outputText value="#{email.name}"/>
+                        <p:column headerText="Tiêu Đề" filterBy="#{email.subject}" sortBy="#{email.subject}">
+                            <h:outputText value="#{email.subject}"/>
                         </p:column>
-                        <p:column headerText="Mã" filterBy="#{email.code}" sortBy="#{email.code}">
-                            <h:outputText value="#{email.code}"/>
+                        <p:column headerText="Phân Loại" filterBy="#{email.emailType.description}" sortBy="#{email.emailType.description}">
+                            <h:outputText value="#{email.emailType.description}"/>
                         </p:column>
                     </p:dataTable>
                 </h:form>

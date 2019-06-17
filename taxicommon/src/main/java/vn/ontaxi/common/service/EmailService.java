@@ -69,7 +69,7 @@ public class EmailService {
     public void sendEmailScheduler(EmailScheduler emailScheduler) {
 
         Map<Long, Mail> lstMails = new HashMap<>();
-        String subject = emailScheduler.getSubject();
+        String subject = emailScheduler.getEmailTemplate().getSubject();
 
         Query nativeQuery = entityManager.createNativeQuery(emailScheduler.getCustomerGroup().getSqlContent(), Customer.class);
         List<Customer> resultList = nativeQuery.getResultList();

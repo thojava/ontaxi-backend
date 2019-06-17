@@ -1,6 +1,7 @@
 package vn.ontaxi.common.jpa.entity;
 
 import org.apache.commons.lang3.StringUtils;
+import vn.ontaxi.common.constant.EmailType;
 
 import javax.persistence.*;
 
@@ -10,25 +11,9 @@ public class EmailTemplate extends AbstractEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String code;
+    private String subject;
     private String emailContent;
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private EmailType emailType;
 
     public Long getId() {
         return id;
@@ -36,6 +21,14 @@ public class EmailTemplate extends AbstractEntity{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getEmailContent() {
@@ -46,17 +39,12 @@ public class EmailTemplate extends AbstractEntity{
         this.emailContent = emailContent;
     }
 
-    /*public Type getEmailType() {
+    public EmailType getEmailType() {
         return emailType;
     }
 
-    public void setEmailType(Type emailType) {
+    public void setEmailType(EmailType emailType) {
         this.emailType = emailType;
-    }*/
-
-    @Transient
-    public boolean isCanDelete() {
-        return !StringUtils.isNotEmpty(code);
     }
 
     @Override
@@ -78,7 +66,7 @@ public class EmailTemplate extends AbstractEntity{
     public String toString() {
         return "EmailTemplate{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + subject + '\'' +
                 '}';
     }
 }
