@@ -4,38 +4,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:pe="http://primefaces.org/ui/extensions">
+      xmlns:p="http://primefaces.org/ui">
 <f:view contentType="text/html">
     <h:head>
         <title>Taxi Hub</title>
         <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
-        <link href="#{resource['images/On_Taxi.png']}" rel="shortcut icon"/>
+        <link href="#{resource['images/shortcut_icon.png']}" rel="shortcut icon"/>
         <h:outputStylesheet name="css/starter.css"/>
     </h:head>
 
     <h:body>
-        <pe:layout fullPage="true">
-            <pe:layoutPane position="center">
-                <h:form prependId="false">
-                    <div id="starterDiv" class="ui-fluid">
-                        <center>
-                            <p:outputLabel value="Connection failed: user and/or password are wrong."
-                                           rendered="${!empty param['error']}"/>
-                            <p:focus/>
-                            <p:panelGrid columns="2" layout="grid">
-                                <h:outputText value="Tên"/>
-                                <p:inputText id="username"/>
-                                <h:outputText value="Mật Khẩu"/>
-                                <p:password id="password"/>
-                            </p:panelGrid>
-
-                            <p:commandButton id="submit" value="#{msg.dang_nhap}" ajax="false"/>
-                        </center>
-                    </div>
-                </h:form>
-            </pe:layoutPane>
-        </pe:layout>
+        <h:form prependId="false">
+            <p:panel id="loginPnl" header="OnTaxi.vn" style="width: 350px; margin: 0 auto;">
+                <f:facet name="header" >
+                    <p:graphicImage url="#{resource['images/logo_black.png']}" height="50px"/>
+                </f:facet>
+                <h:panelGrid columns="1" width="100%">
+                    <p:outputLabel value="#{msg.login_failed_message}" style="color: red" rendered="${!empty param['error']}"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2" cellpadding="5" width="100%">
+                    <h:outputText value="${msg.user_name}"/>
+                    <p:inputText id="username"/>
+                    <h:outputText value="${msg.password}"/>
+                    <p:password id="password"/>
+                    <h:outputText value=""/>
+                    <p:commandButton id="submit" value="#{msg.dang_nhap}" ajax="false" style="margin-top: 10px"/>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
     </h:body>
 </f:view>
 </html>
