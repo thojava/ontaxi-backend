@@ -1,6 +1,5 @@
 package vn.ontaxi.hub.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +18,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import vn.ontaxi.hub.scope.ViewScope;
 
 import javax.sql.DataSource;
@@ -37,13 +36,16 @@ import java.util.Properties;
 @EnableAsync
 @ComponentScan(basePackages = "vn.ontaxi")
 @EnableJpaRepositories(basePackages = "vn.ontaxi.common.jpa.repository")
-public class WebConfiguration extends WebMvcConfigurerAdapter {
+public class WebConfiguration implements WebMvcConfigurer {
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+
+    public WebConfiguration(DataSource dataSource, ApplicationContext applicationContext) {
+        this.dataSource = dataSource;
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
     public static CustomScopeConfigurer customScope() {
@@ -66,7 +68,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         configurer.favorPathExtension(true).
                 favorParameter(false).
                 ignoreAcceptHeader(true).
-                useJaf(false).
+                useRegisteredExtensionsOnly(true).
                 defaultContentType(MediaType.APPLICATION_JSON);
     }
 
@@ -87,7 +89,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         return f;
     }
 
-    public Properties quartzProperties() throws IOException
+    private Properties quartzProperties() throws IOException
     {
         PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
         propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
