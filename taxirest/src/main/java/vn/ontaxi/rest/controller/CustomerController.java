@@ -44,7 +44,7 @@ public class CustomerController {
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "/createCustomerInfo", method = RequestMethod.POST)
-    public RestResult createCustomerInfo(@Valid @RequestBody Customer customer) throws IOException {
+    public RestResult createCustomerInfo(@Valid @RequestBody Customer customer) {
         RestResult restResult = new RestResult();
         if (StringUtils.isEmpty(customer.getEmail()) || StringUtils.isEmpty(customer.getPhone())) {
             restResult.setSucceed(false);
@@ -99,7 +99,7 @@ public class CustomerController {
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(path = "/resetPassword/{email:.+}")
-    public RestResult customerRequestResetPassword(@PathVariable String email) throws IOException {
+    public RestResult customerRequestResetPassword(@PathVariable String email) {
         RestResult restResult = new RestResult();
         CustomerAccount customerEmail = customerAccountRepository.findByCustomerEmail(email);
         if (customerEmail == null) {
