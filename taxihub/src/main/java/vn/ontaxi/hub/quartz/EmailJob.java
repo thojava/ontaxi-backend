@@ -4,22 +4,24 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.jpa.entity.EmailScheduler;
 import vn.ontaxi.common.jpa.repository.EmailScheduleRepository;
-import vn.ontaxi.common.service.EmailService;
+import vn.ontaxi.hub.service.EmailSchedulerService;
 
 @Component
 public class EmailJob extends QuartzJobBean {
     private static final Logger logger = LoggerFactory.getLogger(EmailJob.class);
 
-    @Autowired
-    EmailScheduleRepository emailScheduleRepository;
+    private final EmailScheduleRepository emailScheduleRepository;
 
-    @Autowired
-    EmailService emailService;
+    private final EmailSchedulerService emailSchedulerService;
+
+    public EmailJob(EmailScheduleRepository emailScheduleRepository, EmailSchedulerService emailSchedulerService) {
+        this.emailScheduleRepository = emailScheduleRepository;
+        this.emailSchedulerService = emailSchedulerService;
+    }
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
@@ -29,8 +31,7 @@ public class EmailJob extends QuartzJobBean {
         Long emailSchedulerId = jobDataMap.getLong("emailSchedulerId");
         EmailScheduler emailScheduler = emailScheduleRepository.findOne(emailSchedulerId);
         if (emailScheduler != null)
-            emailService.sendEmailScheduler(emailScheduler);
+            emailSchedulerService.sendEmailScheduler(emailScheduler);
 
     }
-
 }
