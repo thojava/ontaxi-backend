@@ -11,6 +11,4 @@ public interface CustomerAccountRepository extends JpaRepository<CustomerAccount
     CustomerAccount findByCustomerEmailOrCustomerPhone(String email, String phone);
 
     CustomerAccount findByCustomerEmail(String email);
-
-    CustomerAccount findByPhoneOrEmail(String phone, String email);
 }
