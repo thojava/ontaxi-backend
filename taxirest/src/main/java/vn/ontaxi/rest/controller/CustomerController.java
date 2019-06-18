@@ -1,6 +1,5 @@
 package vn.ontaxi.rest.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +11,7 @@ import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
 import vn.ontaxi.common.service.EmailService;
+import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.SetPasswordRequest;
 import vn.ontaxi.rest.payload.dto.CustomerDTO;
@@ -71,7 +71,7 @@ public class CustomerController {
 
 
         EmailTemplate setPasswordTemplate = emailTemplateRepository.findByEmailType(EmailType.SET_PASSWORD);
-        String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(setPasswordTemplate.getEmailContent(), new HashMap<String, String>() {{
+        String emailContent = StringUtils.fillRegexParams(setPasswordTemplate.getEmailContent(), new HashMap<String, String>() {{
             put("\\$\\{name\\}", customer.getName());
             put("\\$\\{activate_link\\}", customerAccount.getToken());
         }});
