@@ -51,30 +51,33 @@ public class CustomerController {
             return restResult;
         }
 
-        Customer byPhoneOrEmail = customerRepository.findByPhoneOrEmail(customer.getPhone(), customer.getEmail());
-        if (byPhoneOrEmail != null) {
+        CustomerAccount foundCustomerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customer.getPhone(), customer.getEmail());
+        if (foundCustomerAccount != null) {
             restResult.setSucceed(false);
             restResult.setMessage("Email hoặc số điện thoại đã được đăng ký trước đó");
             return restResult;
         }
 
-        Customer savedCustomer = customerRepository.save(customer);
+        Customer persistedCustomer = customerRepository.findByPhoneOrEmail(customer.getPhone(), customer.getEmail());
+        if(persistedCustomer == null) {
+            persistedCustomer = customerRepository.save(customer);
+        }
+
         CustomerAccount customerAccount = new CustomerAccount();
-        customerAccount.setCustomer(savedCustomer);
+        customerAccount.setCustomer(persistedCustomer);
         customerAccount.setActived(false);
         customerAccount.setToken(UUID.randomUUID().toString());
         customerAccountRepository.save(customerAccount);
 
-        restResult.setData(customerAccount.getToken());
 
         EmailTemplate setPasswordTemplate = emailTemplateRepository.findByEmailType(EmailType.SET_PASSWORD);
         String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(setPasswordTemplate.getEmailContent(), new HashMap<String, String>() {{
             put("\\$\\{name\\}", customer.getName());
             put("\\$\\{activate_link\\}", customerAccount.getToken());
         }});
-
         emailService.sendEmail(setPasswordTemplate.getSubject(), customer.getEmail(), emailContent);
 
+        restResult.setData(customerAccount.getToken());
         return restResult;
     }
 
