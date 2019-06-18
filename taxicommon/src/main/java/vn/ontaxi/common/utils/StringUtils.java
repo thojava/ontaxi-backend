@@ -3,10 +3,8 @@ package vn.ontaxi.common.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class StringUtils {
+public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static String removeFileExtension(final String fileName) {
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
