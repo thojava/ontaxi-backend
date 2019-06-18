@@ -91,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/customer/resetPassword/**")
                 .permitAll()
-                .antMatchers("/customer/createCustomerInfo", "/customer/setPassword")
+                .antMatchers("/customer/createCustomerAccount", "/customer/setPassword")
                 .permitAll()
                 //.antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
                 //.antMatchers("/booking/**").hasAnyRole(Role.ROLE_DIRVER.name())

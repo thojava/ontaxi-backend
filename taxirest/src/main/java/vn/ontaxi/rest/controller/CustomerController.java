@@ -18,7 +18,6 @@ import vn.ontaxi.rest.payload.dto.CustomerDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -43,9 +42,9 @@ public class CustomerController {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(value = "/createCustomerInfo", method = RequestMethod.POST)
-    public RestResult createCustomerInfo(@Valid @RequestBody Customer customer) {
-        RestResult restResult = new RestResult();
+    @RequestMapping(value = "/createCustomerAccount", method = RequestMethod.POST)
+    public RestResult<String> createCustomerAccount(@Valid @RequestBody Customer customer) {
+        RestResult<String> restResult = new RestResult<>();
         if (StringUtils.isEmpty(customer.getEmail()) || StringUtils.isEmpty(customer.getPhone())) {
             restResult.setSucceed(false);
             restResult.setMessage("Email và số điện thoại không được để trống");
@@ -80,9 +79,9 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/setPassword", method = RequestMethod.POST)
-    public RestResult setPassword(@Valid @RequestBody SetPasswordRequest setPasswordRequest) {
+    public RestResult<Void> setPassword(@Valid @RequestBody SetPasswordRequest setPasswordRequest) {
         CustomerAccount customerAccount = customerAccountRepository.findByToken(setPasswordRequest.getToken());
-        RestResult restResult = new RestResult();
+        RestResult<Void> restResult = new RestResult<>();
         if (customerAccount == null) {
             restResult.setSucceed(false);
             restResult.setMessage("Khách hàng không tồn tại trên hệ thống");
@@ -99,8 +98,8 @@ public class CustomerController {
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(path = "/resetPassword/{email:.+}")
-    public RestResult customerRequestResetPassword(@PathVariable String email) {
-        RestResult restResult = new RestResult();
+    public RestResult<String> customerRequestResetPassword(@PathVariable String email) {
+        RestResult<String> restResult = new RestResult<>();
         CustomerAccount customerEmail = customerAccountRepository.findByCustomerEmail(email);
         if (customerEmail == null) {
             restResult.setSucceed(false);
@@ -121,8 +120,8 @@ public class CustomerController {
     }
 
     @RequestMapping(path = "/getDetail", method = RequestMethod.GET)
-    public RestResult getCustomerDetail(@CurrentUser Customer customer) {
-        RestResult restResult = new RestResult();
+    public RestResult<CustomerDTO> getCustomerDetail(@CurrentUser Customer customer) {
+        RestResult<CustomerDTO> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(customer));
         return restResult;
     }
