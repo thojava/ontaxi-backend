@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+    <h:outputScript name="js/jquery-3.4.1.min.js"/>
+    <h:outputScript name="js/socket.io-2.2.0.js"/>
+    <h:outputScript name="js/StringeeSDK-1.5.10.js"/>
+
+    <script type="text/javascript">
+
+        function settingCallEvent(call1) {
+
+            call1.on('signalingstate', function (state) {
+                console.log('signalingstate ', state);
+                var reason = state.reason;
+                $('#callStatus').html(reason);
+            });
+
+            call1.on('mediastate', function (state) {
+                console.log('mediastate ', state);
+            });
+
+            call1.on('info', function (info) {
+                console.log('on info:' + JSON.stringify(info));
+            });
+
+            call1.on('otherdeviceauthen', function (info) {
+                console.log('on info:' + JSON.stringify(info));
+            });
+        }
+
+        //check isWebRTCSupported
+        console.log('StringeeUtil.isWebRTCSupported: ' + StringeeUtil.isWebRTCSupported());
+
+        var client = new StringeeClient();
+        client.connect("eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTS3hXRVVWeUZZeWVQaEtvdlRNNHRNRGFHWDM1ZDZVdkItMTU2MTAwMzUxNCIsImlzcyI6IlNLeFdFVVZ5Rll5ZVBoS292VE00dE1EYUdYMzVkNlV2QiIsImV4cCI6MTU2MTAwNzExNCwidXNlcklkIjoiaG9wbnYifQ.MDXTiRt_-Yd7b3WHKPGr_HSIcYNwo6ouwvwnnSHWyOY");
+
+        client.on('connect', function () {
+            console.log('connected');
+        });
+
+        client.on('authen', function (res) {
+            console.log('authen', res);
+            $('#loggedUserId').html(res.userId);
+        });
+
+        var call = new StringeeCall(client, "02471008847", "0982632194", false);
+
+        settingCallEvent(call);
+        call.makeCall(function (res) {
+            console.log('make call callback: ' + JSON.stringify(res));
+        });
+
+    </script>
+
+</ui:composition>
+</html>

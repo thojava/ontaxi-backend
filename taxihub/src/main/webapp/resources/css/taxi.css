@@ -51,3 +51,11 @@ a.button {
     margin-left: 10px;
     font-size: 20px !important;
 }
+
+.call-btn {
+    background: linear-gradient(262.92deg, #66D54B 6.49%, #17C653 108.73%);
+    box-shadow: 0px 4px 24px rgba(50, 153, 150, 0.25);
+    border: none;
+    padding: 10px 20px;
+    color: white;
+}

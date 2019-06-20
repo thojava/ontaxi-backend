@@ -14,6 +14,9 @@
         <link href="#{resource['images/shortcut_icon.png']}" rel="shortcut icon"/>
         <h:outputStylesheet name="css/taxi.css"/>
         <h:outputScript name="js/starter.js"/>
+        <h:outputScript name="js/socket.io-2.2.0.js"/>
+        <h:outputScript name="js/StringeeSDK-1.5.10.js"/>
+        <h:outputScript name="js/StringeeSoftPhone-lastest.js" />
     </h:head>
     <h:body styleClass="skin-blue layout-top-nav">
         <p:ajaxStatus style="display: none">
@@ -39,6 +42,35 @@
             </ui:insert>
         </div>
 
+        <p:remoteCommand name="showCallDialog" actionListener="#{callManagementDialogComponent.updateCustomerInfoFromUI}" oncomplete="PF('callDialog').show()" update="@([id$=customerInfo])"/>
+
+        <p:dialog modal="true" widgetVar="callDialog"
+                  width="700"
+                  height="600"
+                  header="Cuộc gọi" draggable="true" closable="true" resizable="true">
+
+            <div class="ui-g">
+                <div class="ui-g-6">
+                    <div id="callPosition"></div>
+                </div>
+                <div class="ui-g-6">
+                    <h:form id="customerInfo">
+                        <h4>Khách hàng</h4>
+                        <p:fragment rendered="#{not empty callManagementDialogComponent.customerInfo.name}">
+                            <p:link href="customer_detail.jsf?id=#{callManagementDialogComponent.customerInfo.id}" target="_blank">#{callManagementDialogComponent.customerInfo.name}</p:link>
+                        </p:fragment>
+                        <p:fragment rendered="#{empty callManagementDialogComponent.customerInfo.name}">
+                            <p>Chưa có trong hệ thống</p>
+                        </p:fragment>
+                        <h4>Số điện thoại</h4>
+                        <p id="phoneNumber">#{callManagementDialogComponent.customerInfo.phone}</p>
+                        <input type="button" value="Gọi" class="call-btn" onclick="StringeeSoftPhone.makeCall('842471008847', $('#phoneNumber').text().replace(/^0/, '84')); return false;"/>
+                    </h:form>
+                </div>
+            </div>
+
+        </p:dialog>
+
 
         <script type="text/javascript">
             var t;
@@ -52,6 +84,44 @@
 
             }
         </script>
+
+        <script type="text/javascript">
+            var config = {
+                showMode: 'full',//full | min | none
+                top: 45,
+                left: 50,
+                //right: 810,
+                appendToElement: 'callPosition',
+                arrowLeft: 155,
+                arrowDisplay: 'top',//top | bottom | none
+
+                //list your Stringee Number
+                fromNumbers: [{alias: '02471008847', number: '842471008847'}]
+            };
+            StringeeSoftPhone.init(config);
+            var access_token2 = 'eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTS3hXRVVWeUZZeWVQaEtvdlRNNHRNRGFHWDM1ZDZVdkItMTU2MTAxMzgxNCIsImlzcyI6IlNLeFdFVVZ5Rll5ZVBoS292VE00dE1EYUdYMzVkNlV2QiIsImV4cCI6MTU2MzYwNTgxNCwidXNlcklkIjoiaG9wbnYifQ.f-VOq_pVDa0CUTrwjNARjGicUb4h3AGvUi92_bwBzVI';
+
+            StringeeSoftPhone.on('displayModeChange', function (event) {
+                console.log('displayModeChange', event);
+                if (event === 'min') {
+                    StringeeSoftPhone.config({arrowLeft: 75});
+                } else if (event === 'full') {
+                    StringeeSoftPhone.config({arrowLeft: 155});
+                }
+            });
+
+            StringeeSoftPhone.on('incomingCall', function (incomingcall) {
+                showCallDialog([{name:'phone', value:incomingcall.fromNumber}]);
+            });
+
+            StringeeSoftPhone.on('requestNewToken', function () {
+                console.log('requestNewToken+++++++');
+                StringeeSoftPhone.connect(access_token2);
+            });
+
+            StringeeSoftPhone.connect(access_token2);
+        </script>
+
     </h:body>
 
     <h:outputScript library="primefaces" name="jquery/jquery.js" target="head"/>

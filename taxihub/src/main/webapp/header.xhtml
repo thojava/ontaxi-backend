@@ -55,6 +55,7 @@
 
                 <p:submenu label="Tài Khoản: #{userCredentialComponent.userName}">
                     <p:menuitem value="Thoát" action="/logout"/>
+                    <p:menuitem value="Show call" onclick="PF('callDialog').show()"/>
                 </p:submenu>
             </p:menubar>
         </h:form>

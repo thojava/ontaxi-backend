@@ -23,7 +23,7 @@
             </p:selectBooleanCheckbox>
         </p:column>
 
-        <p:column headerText="Id" style="width: 50px">
+        <p:column headerText="Id" style="width: 30px">
             <p:commandLink value="#{booking.id}"
                            action="#{bookingListComponent.selectBooking(booking)}"
                            update="@all"/>
@@ -64,6 +64,9 @@
             <h:outputText value="#{booking.departure_time}">
                 <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
             </h:outputText>
+        </p:column>
+        <p:column headerText="" style="width: 70px">
+            <p:commandButton value="Gọi điện" process="@this" actionListener="#{callManagementDialogComponent.updateCustomerInfo(booking.mobile)}" update="@([id$=customerInfo])" oncomplete="PF('callDialog').show();"/>
         </p:column>
     </p:dataTable>
 </ui:composition>
