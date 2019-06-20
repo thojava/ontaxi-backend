@@ -12,6 +12,7 @@ public class EmailTemplate extends AbstractEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String subject;
+    @Lob
     private String emailContent;
     private EmailType emailType;
 
