@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import vn.ontaxi.common.constant.EmailType;
 import vn.ontaxi.common.jpa.entity.AbstractEntity;
 import vn.ontaxi.common.jpa.entity.EmailTemplate;
-import vn.ontaxi.common.jpa.repository.CustomerGroupRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
 
 import javax.annotation.PostConstruct;
@@ -21,16 +21,14 @@ import java.util.stream.Collectors;
 @Component
 @Scope("view")
 public class EmailTemplateComponent {
-
     private final EmailTemplateRepository emailTemplateRepository;
-    private final CustomerGroupRepository customerGroupRepository;
-    private List<EmailTemplate> lstEmailTemplates;
 
+    private List<EmailTemplate> marketingEmailTemplates;
+    private List<EmailTemplate> systemEmailTemplates;
     private EmailTemplate currentEmailTemplate;
 
-    public EmailTemplateComponent(EmailTemplateRepository emailTemplateRepository, CustomerGroupRepository customerGroupRepository) {
+    public EmailTemplateComponent(EmailTemplateRepository emailTemplateRepository) {
         this.emailTemplateRepository = emailTemplateRepository;
-        this.customerGroupRepository = customerGroupRepository;
         currentEmailTemplate = new EmailTemplate();
     }
 
@@ -43,20 +41,35 @@ public class EmailTemplateComponent {
         }
     }
 
-    public List<EmailTemplate> getLstEmailTemplates() {
+    public List<EmailTemplate> getMarketingEmailTemplates() {
+        if (marketingEmailTemplates == null)
+            marketingEmailTemplates = emailTemplateRepository.findByEmailTypeIn(new Sort(Sort.Direction.ASC, "subject"), EmailType.MARKETING);
 
-        if (lstEmailTemplates == null)
-            lstEmailTemplates = emailTemplateRepository.findAll(new Sort(Sort.Direction.ASC, "subject"));
-
-        return lstEmailTemplates;
+        return marketingEmailTemplates;
     }
 
-    public void deleteTemplates() {
+    public List<EmailTemplate> getSystemEmailTemplates() {
+        if (systemEmailTemplates == null)
+            systemEmailTemplates = emailTemplateRepository.findByEmailTypeNotIn(new Sort(Sort.Direction.ASC, "subject"), EmailType.MARKETING);
+
+        return systemEmailTemplates;
+    }
+
+    public void deleteMarketingTemplates() {
+        deleteTemplates(marketingEmailTemplates);
+        marketingEmailTemplates = null;
+    }
+
+    public void deleteSystemTemplates() {
+        deleteTemplates(systemEmailTemplates);
+        systemEmailTemplates = null;
+    }
+
+    private void deleteTemplates(List<EmailTemplate> emailTemplates) {
         try {
-            List<EmailTemplate> deletedTemplates = lstEmailTemplates.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
+            List<EmailTemplate> deletedTemplates = emailTemplates.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
             emailTemplateRepository.delete(deletedTemplates);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s email mẫu", deletedTemplates.size())));
-            lstEmailTemplates = null;
         } catch (DataIntegrityViolationException ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Lỗi tham chiếu trong sql"));
@@ -65,6 +78,7 @@ public class EmailTemplateComponent {
 
     public String createNewTemplate() {
         EmailTemplate emailTemplate = new EmailTemplate();
+        emailTemplate.setEmailType(EmailType.MARKETING);
         EmailTemplate save = emailTemplateRepository.save(emailTemplate);
         return "email_template_detail.jsf?faces-redirect=true&id=" + save.getId();
     }
@@ -74,8 +88,8 @@ public class EmailTemplateComponent {
         return "email_template.jsf?faces-redirect=true";
     }
 
-    public void setLstEmailTemplates(List<EmailTemplate> lstEmailTemplates) {
-        this.lstEmailTemplates = lstEmailTemplates;
+    public void setMarketingEmailTemplates(List<EmailTemplate> marketingEmailTemplates) {
+        this.marketingEmailTemplates = marketingEmailTemplates;
     }
 
     public EmailTemplate getCurrentEmailTemplate() {

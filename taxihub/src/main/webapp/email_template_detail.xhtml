@@ -17,6 +17,7 @@
                 <p:commandButton value="Lưu Lại" icon="fa fa-check"
                                  action="#{emailTemplateComponent.saveTemplate}"
                                  process="@form"
+                                 update="@form"
                                  styleClass="btn-primary"/>
                 <p:panel style="margin-top: 10px">
                     <p:outputPanel class="ui-g ui-fluid">
@@ -26,7 +27,7 @@
                         </div>
                         <div class="ui-g-10">
                             <p:inputText id="name" maxlength="100" value="#{emailTemplateComponent.currentEmailTemplate.subject}"
-                                         required="true" requiredMessage="Name is required."/>
+                                         required="true" requiredMessage="Hãy nhập tiêu đề"/>
                             <span class="help-block">
                                 <p:message for="name"/>
                             </span>
@@ -44,7 +45,10 @@
                         </div>
                     </div>
                     <div class="ui-g-12 ui-g-nopad">
-                        <p:textEditor required="true" requiredMessage="Trường bắt buộc" widgetVar="editor" height="400" value="#{emailTemplateComponent.currentEmailTemplate.emailContent}" style="margin-bottom:10px"/>
+                         <span class="help-block">
+                                <p:message for="mailContent"/>
+                            </span>
+                        <p:textEditor id="mailContent" required="true" requiredMessage="Hãy nhập nội dung mail" widgetVar="editor" height="400" value="#{emailTemplateComponent.currentEmailTemplate.emailContent}" style="margin-bottom:10px"/>
                     </div>
                 </p:outputPanel>
                 </p:panel>
