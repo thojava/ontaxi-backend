@@ -51,7 +51,7 @@ public class CustomerController {
             return restResult;
         }
 
-        CustomerAccount foundCustomerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customer.getPhone(), customer.getEmail());
+        CustomerAccount foundCustomerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customer.getEmail(), customer.getPhone());
         if (foundCustomerAccount != null) {
             restResult.setSucceed(false);
             restResult.setMessage("Email hoặc số điện thoại đã được đăng ký trước đó");
