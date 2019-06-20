@@ -59,7 +59,7 @@ public class CustomerController {
         }
 
         Customer persistedCustomer = customerRepository.findByPhoneOrEmail(customer.getPhone(), customer.getEmail());
-        if(persistedCustomer == null) {
+        if (persistedCustomer == null) {
             persistedCustomer = customerRepository.save(customer);
         }
 
@@ -69,15 +69,15 @@ public class CustomerController {
         customerAccount.setToken(UUID.randomUUID().toString());
         customerAccountRepository.save(customerAccount);
 
+        new Thread(() -> {
+            EmailTemplate setPasswordTemplate = emailTemplateRepository.findByEmailType(EmailType.SET_PASSWORD);
+            String emailContent = StringUtils.fillRegexParams(setPasswordTemplate.getEmailContent(), new HashMap<String, String>() {{
+                put("\\$\\{name\\}", customer.getName());
+                put("\\$\\{activate_link\\}", "https://ontaxi.vn/khach-hang/nhap-mat-khau?token=" + customerAccount.getToken());
+            }});
+            emailService.sendEmail(setPasswordTemplate.getSubject(), customer.getEmail(), emailContent);
+        }).start();
 
-        EmailTemplate setPasswordTemplate = emailTemplateRepository.findByEmailType(EmailType.SET_PASSWORD);
-        String emailContent = StringUtils.fillRegexParams(setPasswordTemplate.getEmailContent(), new HashMap<String, String>() {{
-            put("\\$\\{name\\}", customer.getName());
-            put("\\$\\{activate_link\\}", customerAccount.getToken());
-        }});
-        emailService.sendEmail(setPasswordTemplate.getSubject(), customer.getEmail(), emailContent);
-
-        restResult.setData(customerAccount.getToken());
         return restResult;
     }
 
