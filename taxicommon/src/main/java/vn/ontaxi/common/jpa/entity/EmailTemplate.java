@@ -1,12 +1,11 @@
 package vn.ontaxi.common.jpa.entity;
 
-import org.apache.commons.lang3.StringUtils;
 import vn.ontaxi.common.constant.EmailType;
 
 import javax.persistence.*;
 
 @Entity
-public class EmailTemplate extends AbstractEntity{
+public class EmailTemplate extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,12 +54,14 @@ public class EmailTemplate extends AbstractEntity{
 
     @Override
     public boolean equals(Object obj) {
+        if (obj instanceof EmailTemplate) {
+            EmailTemplate that = (EmailTemplate) obj;
 
-        EmailTemplate that = (EmailTemplate) obj;
-
-        if (that.getId() == null || id == null)
-            return false;
-        return this.getId().equals(that.getId());
+            if (that.getId() == null || id == null)
+                return false;
+            return this.getId().equals(that.getId());
+        }
+        return false;
     }
 
     @Override
