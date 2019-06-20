@@ -96,6 +96,14 @@ public class CustomerController {
         customerAccount.setPassword(passwordEncoder.encode(setPasswordRequest.getPassword()));
         customerAccountRepository.save(customerAccount);
 
+        new Thread(() -> {
+            EmailTemplate accountActivatedNotificationTemplate = emailTemplateRepository.findByEmailType(EmailType.ACCOUNT_ACTIVATED_NOTIFICATION);
+            String emailContent = StringUtils.fillRegexParams(accountActivatedNotificationTemplate.getEmailContent(), new HashMap<String, String>() {{
+                put("\\$\\{name\\}", customerAccount.getCustomer().getName());
+            }});
+            emailService.sendEmail(accountActivatedNotificationTemplate.getSubject(), customerAccount.getCustomer().getEmail(), emailContent);
+        }).start();
+
         return restResult;
     }
 
