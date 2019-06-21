@@ -16,7 +16,7 @@
         <h:outputScript name="js/starter.js"/>
         <h:outputScript name="js/socket.io-2.2.0.js"/>
         <h:outputScript name="js/StringeeSDK-1.5.10.js"/>
-        <h:outputScript name="js/StringeeSoftPhone-lastest.js" />
+        <script type="application/javascript" src="https://static.stringee.com/web_phone/lastest/js/StringeeSoftPhone-lastest.js" />
     </h:head>
     <h:body styleClass="skin-blue layout-top-nav">
         <p:ajaxStatus style="display: none">
@@ -99,7 +99,7 @@
                 fromNumbers: [{alias: '02471008847', number: '842471008847'}]
             };
             StringeeSoftPhone.init(config);
-            var access_token2 = 'eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTS3hXRVVWeUZZeWVQaEtvdlRNNHRNRGFHWDM1ZDZVdkItMTU2MTAxMzgxNCIsImlzcyI6IlNLeFdFVVZ5Rll5ZVBoS292VE00dE1EYUdYMzVkNlV2QiIsImV4cCI6MTU2MzYwNTgxNCwidXNlcklkIjoiaG9wbnYifQ.f-VOq_pVDa0CUTrwjNARjGicUb4h3AGvUi92_bwBzVI';
+            var access_token2 = 'eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTS3hXRVVWeUZZeWVQaEtvdlRNNHRNRGFHWDM1ZDZVdkItMTU2MTA4MzQ4NyIsImlzcyI6IlNLeFdFVVZ5Rll5ZVBoS292VE00dE1EYUdYMzVkNlV2QiIsImV4cCI6MTU2MzY3NTQ4NywidXNlcklkIjoib250YXhpIn0.8HxCdkcMsESGV-CdhXLz2X-w0cThtijddm4eGlxTC5Q';
 
             StringeeSoftPhone.on('displayModeChange', function (event) {
                 console.log('displayModeChange', event);

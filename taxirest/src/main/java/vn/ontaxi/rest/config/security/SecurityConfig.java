@@ -89,6 +89,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
+                .antMatchers("/scco/**")
+                .permitAll()
                 .antMatchers("/customer/resetPassword/**")
                 .permitAll()
                 .antMatchers("/customer/createCustomerAccount", "/customer/setPassword")
