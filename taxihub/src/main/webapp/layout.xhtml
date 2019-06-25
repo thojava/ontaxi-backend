@@ -19,6 +19,7 @@
         <script type="application/javascript" src="https://static.stringee.com/web_phone/lastest/js/StringeeSoftPhone-lastest.js" />
     </h:head>
     <h:body styleClass="skin-blue layout-top-nav">
+        <p id="access_token" style="display: none">#{callManagementDialogComponent.accessToken}</p>
         <p:ajaxStatus style="display: none">
             <f:facet name="start">
                 <p:graphicImage name="/images/ajaxloading.gif" />
@@ -81,7 +82,6 @@
 
             function stopTimer() {
                 clearTimeout(t);
-
             }
         </script>
 
@@ -99,7 +99,7 @@
                 fromNumbers: [{alias: '02471008847', number: '842471008847'}]
             };
             StringeeSoftPhone.init(config);
-            var access_token2 = 'eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTS3hXRVVWeUZZeWVQaEtvdlRNNHRNRGFHWDM1ZDZVdkItMTU2MTA4MzQ4NyIsImlzcyI6IlNLeFdFVVZ5Rll5ZVBoS292VE00dE1EYUdYMzVkNlV2QiIsImV4cCI6MTU2MzY3NTQ4NywidXNlcklkIjoib250YXhpIn0.8HxCdkcMsESGV-CdhXLz2X-w0cThtijddm4eGlxTC5Q';
+            var access_token2 = $('#access_token').text();
 
             StringeeSoftPhone.on('displayModeChange', function (event) {
                 console.log('displayModeChange', event);

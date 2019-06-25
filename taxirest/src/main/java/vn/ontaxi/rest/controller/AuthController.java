@@ -51,7 +51,7 @@ public class AuthController {
             return restResult;
         }
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DIRVER.name()))));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name()))));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);

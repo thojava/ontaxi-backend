@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginPage("/login.jsf")
 				.permitAll()
 				.failureUrl("/login.jsf?error=true")
-				.defaultSuccessUrl("/index.jsf")
+				.successHandler(customAuthenticationSuccessHandler())
 				.and()
 				.logout()
 				.logoutSuccessUrl("/login.jsf");
@@ -66,6 +66,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	@Bean
+	public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+		return new CustomAuthenticationSuccessHandler();
 	}
 
 	@Override

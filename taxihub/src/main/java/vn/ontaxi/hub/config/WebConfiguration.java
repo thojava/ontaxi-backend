@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -70,6 +71,11 @@ public class WebConfiguration implements WebMvcConfigurer {
                 ignoreAcceptHeader(true).
                 useRegisteredExtensionsOnly(true).
                 defaultContentType(MediaType.APPLICATION_JSON);
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
     }
 
     @Bean

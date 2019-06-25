@@ -2,9 +2,11 @@ package vn.ontaxi.hub.component;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
+import vn.ontaxi.hub.model.user.LoggedInUser;
 import vn.ontaxi.hub.utils.PhoneUtils;
 
 import javax.faces.context.FacesContext;
@@ -14,6 +16,7 @@ import java.util.List;
 public class CallManagementDialogComponent {
 
     private Customer customerInfo;
+    private String access;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -41,4 +44,13 @@ public class CallManagementDialogComponent {
         return customerInfo;
     }
 
+    public String getAccessToken() {
+        LoggedInUser user = (LoggedInUser) SecurityContextHolder.getContext().getAuthentication(). getPrincipal();
+
+        if (user.getUser().isHelpDesk())
+            return user.getUser().getStringeeAccessToken();
+
+        return "";
+
+    }
 }

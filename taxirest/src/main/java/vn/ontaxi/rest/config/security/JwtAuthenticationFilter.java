@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (accountType.equalsIgnoreCase(JwtTokenProvider.DRIVER)) {
                     Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
                     if (driver != null) {
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DIRVER.name())));
+                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name())));
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }

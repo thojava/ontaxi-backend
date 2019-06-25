@@ -14,7 +14,18 @@ public class User extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(length = 1000)
+    private String stringeeAccessToken;
+
     public User() {
+    }
+
+    public String getStringeeAccessToken() {
+        return stringeeAccessToken;
+    }
+
+    public void setStringeeAccessToken(String stringeeAccessToken) {
+        this.stringeeAccessToken = stringeeAccessToken;
     }
 
     public String getUserName() {
@@ -45,5 +56,10 @@ public class User extends AbstractEntity {
     @JsonIgnore
     public String getKey() {
         return null;
+    }
+
+    @Transient
+    public boolean isHelpDesk() {
+        return role.equals(Role.ROLE_HELPDESK);
     }
 }

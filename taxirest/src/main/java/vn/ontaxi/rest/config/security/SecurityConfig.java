@@ -96,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/customer/createCustomerAccount", "/customer/setPassword")
                 .permitAll()
                 //.antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
-                //.antMatchers("/booking/**").hasAnyRole(Role.ROLE_DIRVER.name())
+                //.antMatchers("/booking/**").hasAnyRole(Role.ROLE_DRIVER.name())
                 .anyRequest()
                 .authenticated();
 
