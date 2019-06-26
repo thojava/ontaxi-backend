@@ -21,7 +21,8 @@ import java.util.Map;
 @Service
 public class StringeeService {
 
-    String accessToken = "eyJjdHkiOiJzdHJpbmdlZS1hcGk7dj0xIiwidHlwIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiJTS3hXRVVWeUZZeWVQaEtvdlRNNHRNRGFHWDM1ZDZVdkItMTU2MTQ0ODgwMCIsImlzcyI6IlNLeFdFVVZ5Rll5ZVBoS292VE00dE1EYUdYMzVkNlV2QiIsImV4cCI6MTU2NDA0MDgwMCwicmVzdF9hcGkiOnRydWV9.tT5XpTtbrOrbrFQVxyrUgE3fZU29IcAlfiIHLBulxHw";
+    @Value("${stringee.access_token}")
+    String accessToken;
 
     @Value("${stringee.sid}")
     private String stringeeSid;
@@ -59,15 +60,8 @@ public class StringeeService {
 
         try {
             Algorithm algorithmHS = Algorithm.HMAC256(stringeeKeySecret);
-
-            Map<String, Object> headerClaims = new HashMap<>();
-            headerClaims.put("typ", "JWT");
-            headerClaims.put("alg", "HS256");
-            headerClaims.put("cty", "stringee-api;v=1");
-
             long exp = System.currentTimeMillis() + 3600L * 24 * 30 * 12 * 1000 * 99; //99 years
-
-            String token = JWT.create().withHeader(headerClaims)
+            String token = JWT.create().withHeader(headerClaims())
                     .withClaim("jti", stringeeSid + "-" + System.currentTimeMillis())
                     .withClaim("iss", stringeeSid)
                     .withClaim("userId", userId)
@@ -81,6 +75,57 @@ public class StringeeService {
         }
 
         return null;
+    }
+
+    private Map<String, Object> headerClaims() {
+        Map<String, Object> headerClaims = new HashMap<>();
+        headerClaims.put("typ", "JWT");
+        headerClaims.put("alg", "HS256");
+        headerClaims.put("cty", "stringee-api;v=1");
+
+        return headerClaims;
+    }
+
+    private String generateAccessTokenForRest() {
+
+        try {
+            Algorithm algorithmHS = Algorithm.HMAC256(stringeeKeySecret);
+            long exp = System.currentTimeMillis() + 3600L * 24 * 30 * 12 * 1000 * 99; //99 years
+            String token = JWT.create().withHeader(headerClaims())
+                    .withClaim("jti", stringeeSid + "-" + System.currentTimeMillis())
+                    .withClaim("iss", stringeeSid)
+                    .withClaim("rest_api", true)
+                    .withExpiresAt(new Date(exp))
+                    .sign(algorithmHS);
+
+            return token;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void main(String [] ars) {
+        try {
+            Map<String, Object> headerClaims = new HashMap<>();
+            headerClaims.put("typ", "JWT");
+            headerClaims.put("alg", "HS256");
+            headerClaims.put("cty", "stringee-api;v=1");
+
+            Algorithm algorithmHS = Algorithm.HMAC256("SWZXdHZIMWY5R0ViVTdadUttVG5ISktxVktoMGx1b08=");
+            long exp = System.currentTimeMillis() + 3600L * 24 * 30 * 12 * 1000 * 99; //99 years
+            String token = JWT.create().withHeader(headerClaims)
+                    .withClaim("jti", "SKxWEUVyFYyePhKovTM4tMDaGX35d6UvB" + "-" + System.currentTimeMillis())
+                    .withClaim("iss", "SKxWEUVyFYyePhKovTM4tMDaGX35d6UvB")
+                    .withClaim("rest_api", true)
+                    .withExpiresAt(new Date(exp))
+                    .sign(algorithmHS);
+
+            System.out.println(token);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 }
