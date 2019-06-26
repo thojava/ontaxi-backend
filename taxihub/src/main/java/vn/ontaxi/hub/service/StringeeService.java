@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import vn.ontaxi.common.jpa.entity.User;
 import vn.ontaxi.common.jpa.repository.UserRepository;
+import vn.ontaxi.hub.model.AddAgentIntoGroup;
 import vn.ontaxi.hub.model.CreateAgent;
 import vn.ontaxi.hub.model.CreateAgentResponse;
 
@@ -24,6 +26,9 @@ public class StringeeService {
     @Value("${stringee.access_token}")
     String accessToken;
 
+    @Value("${stringee.group_id}")
+    String groupId;
+
     @Value("${stringee.sid}")
     private String stringeeSid;
 
@@ -36,6 +41,7 @@ public class StringeeService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Transactional(rollbackFor = Exception.class)
     public void registerAgent(User user) {
 
         CreateAgent createAgent = new CreateAgent(user.getUserName(), user.getUserName());
@@ -50,6 +56,10 @@ public class StringeeService {
         if (exchange != null && exchange.isCreated()){
             user.setStringeeAccessToken(generateAccessToken(user.getUserName()));
             userRepository.save(user);
+
+            AddAgentIntoGroup addAgentIntoGroup = new AddAgentIntoGroup(exchange.getAgentID(), groupId);
+            restTemplate.exchange("https://icc-api.stringee.com/v1/manage-agents-in-group", HttpMethod.POST, new HttpEntity<>(addAgentIntoGroup,headers), String.class).getBody();
+
         } else {
             throw new RuntimeException("Cannot register agent");
         }
