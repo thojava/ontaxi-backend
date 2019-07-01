@@ -45,33 +45,7 @@
 
         <p:remoteCommand name="showCallDialog" actionListener="#{callManagementDialogComponent.updateCustomerInfoFromUI}" oncomplete="PF('callDialog').show()" update="@([id$=customerInfo])"/>
 
-        <p:dialog modal="true" widgetVar="callDialog"
-                  width="700"
-                  height="600"
-                  header="Cuộc gọi" draggable="true" closable="true" resizable="true">
-
-            <div class="ui-g">
-                <div class="ui-g-6">
-                    <div id="callPosition"></div>
-                </div>
-                <div class="ui-g-6">
-                    <h:form id="customerInfo">
-                        <h4>Khách hàng</h4>
-                        <p:fragment rendered="#{not empty callManagementDialogComponent.customerInfo.name}">
-                            <p:link href="customer_detail.jsf?id=#{callManagementDialogComponent.customerInfo.id}" target="_blank">#{callManagementDialogComponent.customerInfo.name}</p:link>
-                        </p:fragment>
-                        <p:fragment rendered="#{empty callManagementDialogComponent.customerInfo.name}">
-                            <p>Chưa có trong hệ thống</p>
-                        </p:fragment>
-                        <h4>Số điện thoại</h4>
-                        <p id="phoneNumber">#{callManagementDialogComponent.customerInfo.phone}</p>
-                        <input type="button" value="Gọi" class="call-btn" onclick="StringeeSoftPhone.makeCall('842471008847', $('#phoneNumber').text().replace(/^0/, '84')); return false;"/>
-                    </h:form>
-                </div>
-            </div>
-
-        </p:dialog>
-
+        <ui:include src="phone_call_dialog.xhtml"></ui:include>
 
         <script type="text/javascript">
             var t;
@@ -88,8 +62,8 @@
         <script type="text/javascript">
             var config = {
                 showMode: 'full',//full | min | none
-                top: 45,
-                left: 50,
+                top: 5,
+                left: 5,
                 //right: 810,
                 appendToElement: 'callPosition',
                 arrowLeft: 155,

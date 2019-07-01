@@ -59,3 +59,11 @@ a.button {
     padding: 10px 20px;
     color: white;
 }
+
+.new-order-btn {
+    background: linear-gradient(262.92deg, #339cd5 6.49%, #4c91c6 108.73%);
+    box-shadow: 0px 4px 24px rgba(50, 153, 150, 0.25);
+    border: none;
+    padding: 10px 20px;
+    color: white !important;
+}

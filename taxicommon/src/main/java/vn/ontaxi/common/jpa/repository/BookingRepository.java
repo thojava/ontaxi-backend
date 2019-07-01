@@ -1,5 +1,6 @@
 package vn.ontaxi.common.jpa.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,8 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
     List<Booking> findByStatus(String status);
+
+    List<Booking> findByMobile(String phoneNumber, Sort sort);
 
     List<Booking> findByStatusAndCreatedBy(String status, String created_by);
 

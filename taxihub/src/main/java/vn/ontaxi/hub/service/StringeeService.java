@@ -58,7 +58,7 @@ public class StringeeService {
             userRepository.save(user);
 
             AddAgentIntoGroup addAgentIntoGroup = new AddAgentIntoGroup(exchange.getAgentID(), groupId);
-            restTemplate.exchange("https://icc-api.stringee.com/v1/manage-agents-in-group", HttpMethod.POST, new HttpEntity<>(addAgentIntoGroup,headers), String.class).getBody();
+            restTemplate.exchange("https://icc-api.stringee.com/v1/manage-agents-in-group", HttpMethod.POST, new HttpEntity<>(addAgentIntoGroup, headers), String.class);
 
         } else {
             throw new RuntimeException("Cannot register agent");
