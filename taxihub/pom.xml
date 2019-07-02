@@ -103,6 +103,11 @@
             <artifactId>primefaces-extensions</artifactId>
             <version>${version.primefaces}</version>
         </dependency>
+        <dependency>
+            <groupId>org.primefaces.extensions</groupId>
+            <artifactId>resources-ckeditor</artifactId>
+            <version>${version.primefaces}</version>
+        </dependency>
         <!-- omnifaces -->
         <dependency>
             <groupId>org.omnifaces</groupId>

@@ -6,14 +6,14 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:p="http://primefaces.org/ui">
+        xmlns:p="http://primefaces.org/ui" xmlns:pe="http://primefaces.org/ui/extensions">
     <ui:composition template="layout.xhtml">
         <ui:define name="content">
             <h1 align="center">Chi Tiết Email Mẫu</h1>
             <p:spacer height="10px"/>
             <h:form id="mainForm">
 
-                <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
+                <p:growl showDetail="true" life="5000" globalOnly="true" id="message" severity="error, info"/>
                 <p:commandButton value="Lưu Lại" icon="fa fa-check"
                                  action="#{emailTemplateComponent.saveTemplate}"
                                  process="@form"
@@ -48,7 +48,7 @@
                          <span class="help-block">
                                 <p:message for="mailContent"/>
                             </span>
-                        <p:textEditor id="mailContent" required="true" requiredMessage="Hãy nhập nội dung mail" widgetVar="editor" height="400" value="#{emailTemplateComponent.currentEmailTemplate.emailContent}" style="margin-bottom:10px"/>
+                        <pe:ckEditor id="mailContent" required="true" width="100%" requiredMessage="Hãy nhập nội dung mail" widgetVar="editor" height="400"  value="#{emailTemplateComponent.currentEmailTemplate.emailContent}" style="margin-bottom:10px"/>
                     </div>
                 </p:outputPanel>
                 </p:panel>

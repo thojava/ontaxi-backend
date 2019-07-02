@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:pe="http://primefaces.org/ui/extensions">
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">Header &amp; Footer</h1>
+        <p:spacer height="10px"/>
+        <p:spacer height="10px"/>
+        <p:tabView id="tabView">
+            <p:tab title="Preview">
+                <p:outputPanel class="ui-g ui-fluid" id="previewTab">
+                    <div class="ui-g-12 ui-g-nopad">
+                        <div class="ui-g-1">
+                            <h3>Tiêu đề</h3>
+                        </div>
+                        <div class="ui-g-10">
+                            <p:outputLabel value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.name}"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <h3>Header</h3>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+                        <p:outputLabel escape="false" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.header}"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <h3>Footer</h3>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+                        <p:outputLabel escape="false" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.footer}"/>
+                    </div>
+                </p:outputPanel>
+            </p:tab>
+            <p:tab title="Chỉnh sửa">
+                <h:form>
+                    <p:commandButton value="Lưu Lại" style="margin-bottom: 20px"
+                                     update="@([id$=previewTab]), message"
+                                     process="@this, editTab" action="#{emailTemplateHeaderFooterDetailComponent.saveEmailHeaderFooter}" />
+                    <p:growl showDetail="true" life="5000" globalOnly="true" id="message" severity="error, info"/>
+                    <p:outputPanel class="ui-g ui-fluid" id="editTab">
+                        <div class="ui-g-12 ui-g-nopad">
+                            <div class="ui-g-1">
+                                <h3>Tiêu Đề</h3>
+                            </div>
+                            <div class="ui-g-10">
+                                <p:inputText id="name" maxlength="100"
+                                             value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.name}"
+                                             required="true" requiredMessage="Hãy nhập tiêu đề"/>
+                                <span class="help-block">
+                                    <p:message for="name"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ui-g-12">
+                            <h3>Header</h3>
+                        </div>
+                        <div class="ui-g-12 ui-g-nopad">
+                            <pe:ckEditor id="editorHeader" height="300" style="margin-bottom:10px" width="100%" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.header}" />
+                        </div>
+                        <div class="ui-g-12">
+                            <h3>Footer</h3>
+                        </div>
+                        <div class="ui-g-12 ui-g-nopad">
+                            <pe:ckEditor id="editorFooter" height="300" style="margin-bottom:10px" width="100%" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.footer}" />
+                        </div>
+                    </p:outputPanel>
+                </h:form>
+            </p:tab>
+        </p:tabView>
+    </ui:define>
+</ui:composition>
+</html>

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import vn.ontaxi.common.constant.EmailType;
 import vn.ontaxi.common.jpa.entity.AbstractEntity;
 import vn.ontaxi.common.jpa.entity.EmailTemplate;
+import vn.ontaxi.common.jpa.entity.EmailTemplateHeaderFooter;
+import vn.ontaxi.common.jpa.repository.EmailTemplateHeaderFooterRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
 
 import javax.annotation.PostConstruct;
@@ -22,13 +24,16 @@ import java.util.stream.Collectors;
 @Scope("view")
 public class EmailTemplateComponent {
     private final EmailTemplateRepository emailTemplateRepository;
+    private final EmailTemplateHeaderFooterRepository emailTemplateHeaderFooterRepository;
 
     private List<EmailTemplate> marketingEmailTemplates;
     private List<EmailTemplate> systemEmailTemplates;
+    private List<EmailTemplateHeaderFooter> emailTemplateHeaderFooters;
     private EmailTemplate currentEmailTemplate;
 
-    public EmailTemplateComponent(EmailTemplateRepository emailTemplateRepository) {
+    public EmailTemplateComponent(EmailTemplateRepository emailTemplateRepository, EmailTemplateHeaderFooterRepository emailTemplateHeaderFooterRepository) {
         this.emailTemplateRepository = emailTemplateRepository;
+        this.emailTemplateHeaderFooterRepository = emailTemplateHeaderFooterRepository;
         currentEmailTemplate = new EmailTemplate();
     }
 
@@ -55,6 +60,12 @@ public class EmailTemplateComponent {
         return systemEmailTemplates;
     }
 
+    public List<EmailTemplateHeaderFooter> getEmailTemplateHeaderFooters() {
+        if (emailTemplateHeaderFooters == null)
+            emailTemplateHeaderFooters = emailTemplateHeaderFooterRepository.findAll(new Sort(Sort.Direction.DESC, "active", "id"));
+        return emailTemplateHeaderFooters;
+    }
+
     public void deleteMarketingTemplates() {
         deleteTemplates(marketingEmailTemplates);
         marketingEmailTemplates = null;
@@ -76,6 +87,13 @@ public class EmailTemplateComponent {
         }
     }
 
+    public void deleteEmailHeaderFooters() {
+        List<EmailTemplateHeaderFooter> deleteHeaderFooters = emailTemplateHeaderFooters.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
+        emailTemplateHeaderFooterRepository.delete(deleteHeaderFooters);
+        emailTemplateHeaderFooters = null;
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s mẫu header & footer", deleteHeaderFooters.size())));
+    }
+
     public String createNewTemplate() {
         EmailTemplate emailTemplate = new EmailTemplate();
         emailTemplate.setEmailType(EmailType.MARKETING);
@@ -83,9 +101,32 @@ public class EmailTemplateComponent {
         return "email_template_detail.jsf?faces-redirect=true&id=" + save.getId();
     }
 
+    public String createNewHeaderFooter() {
+        EmailTemplateHeaderFooter emailTemplateHeaderFooter = new EmailTemplateHeaderFooter();
+        EmailTemplateHeaderFooter saved = emailTemplateHeaderFooterRepository.saveAndFlush(emailTemplateHeaderFooter);
+        return "email_header_footer.jsf?faces-redirect=true&id=" + saved.getId();
+    }
+
     public String saveTemplate() {
         emailTemplateRepository.save(currentEmailTemplate);
         return "email_template.jsf?faces-redirect=true";
+    }
+
+    public void changeActivatedHeaderFooter(Long id) {
+        EmailTemplateHeaderFooter changedHeaderFooter = emailTemplateHeaderFooterRepository.findOne(id);
+        List<EmailTemplateHeaderFooter> headerFooters = emailTemplateHeaderFooterRepository.findAll();
+        headerFooters.forEach(headerFooter -> headerFooter.setActive(false));
+        emailTemplateHeaderFooterRepository.save(headerFooters);
+
+        changedHeaderFooter.setActive(!changedHeaderFooter.isActive());
+        emailTemplateHeaderFooterRepository.save(changedHeaderFooter);
+
+        emailTemplateHeaderFooters = null;
+
+    }
+
+    public void setEmailTemplateHeaderFooters(List<EmailTemplateHeaderFooter> emailTemplateHeaderFooters) {
+        this.emailTemplateHeaderFooters = emailTemplateHeaderFooters;
     }
 
     public void setMarketingEmailTemplates(List<EmailTemplate> marketingEmailTemplates) {

@@ -8,6 +8,7 @@ import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.CustomerAccount;
 import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
+import vn.ontaxi.common.service.EmailService;
 import vn.ontaxi.hub.component.viewmodel.TaxiLazyDataModel;
 import vn.ontaxi.hub.service.LazyDataService;
 
@@ -20,13 +21,15 @@ import java.util.UUID;
 public class CustomersComponent {
     private final CustomerRepository customerRepository;
     private final CustomerAccountRepository customerAccountRepository;
+    private final EmailService emailService;
     private final LazyDataService lazyDataService;
     private TaxiLazyDataModel<Customer> lstCustomers;
 
     @Autowired
-    public CustomersComponent(CustomerRepository customerRepository, CustomerAccountRepository customerAccountRepository, LazyDataService lazyDataService) {
+    public CustomersComponent(CustomerRepository customerRepository, CustomerAccountRepository customerAccountRepository, EmailService emailService, LazyDataService lazyDataService) {
         this.customerRepository = customerRepository;
         this.customerAccountRepository = customerAccountRepository;
+        this.emailService = emailService;
         this.lazyDataService = lazyDataService;
     }
 

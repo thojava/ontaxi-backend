@@ -11,11 +11,10 @@
     <ui:define name="content">
         <h1 align="center">Quản Lý Email Mẫu</h1>
         <p:spacer height="10px"/>
-        <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
         <p:tabView id="tabView">
             <p:tab title="#{msg.marketing_email_template}">
                 <h:form id="mailMarketingForm">
-                    <p:growl showDetail="true" life="5000" globalOnly="true"/>
+                    <p:growl showDetail="true" life="5000" globalOnly="true" severity="error, info"/>
 
                     <p:dataTable value="#{emailTemplateComponent.marketingEmailTemplates}"
                                  rows="10" widgetVar="emailTemplate"
@@ -62,7 +61,7 @@
             </p:tab>
             <p:tab title="#{msg.system_mail_template}">
                 <h:form id="mailSystemForm">
-                    <p:growl showDetail="true" life="5000" globalOnly="true"/>
+                    <p:growl showDetail="true" life="5000" globalOnly="true" severity="error, info"/>
 
                     <p:dataTable value="#{emailTemplateComponent.systemEmailTemplates}"
                                  rows="10" widgetVar="emailTemplate"
@@ -103,6 +102,53 @@
                         </p:column>
                         <p:column headerText="Phân Loại" filterBy="#{email.emailType.description}" sortBy="#{email.emailType.description}">
                             <h:outputText value="#{email.emailType.description}"/>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:tab>
+            <p:tab title="#{msg.config_header_footer}">
+                <h:form id="configHeaderFooter">
+                    <p:growl showDetail="true" life="5000" globalOnly="true" severity="error, info"/>
+
+                    <p:dataTable value="#{emailTemplateComponent.emailTemplateHeaderFooters}"
+                                 rows="10" widgetVar="configHeaderFooter"
+                                 paginator="true"
+                                 rowKey="#{headerFooter.id}"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 var="headerFooter">
+                        <f:facet name="header">
+                            <p:commandButton value="Xóa" style="float: left" styleClass="btn btn-primary" onclick="PF('confirmDeleteHeaderFooters').show(); return false;">
+                            </p:commandButton>
+                            <p:confirmDialog message="Bạn có chắc chắn muốn xóa những mẫu này?"
+                                             widgetVar="confirmDeleteHeaderFooters">
+                                <p:commandButton value="Có"
+                                                 process="@this"
+                                                 actionListener="#{emailTemplateComponent.deleteEmailHeaderFooters}"
+                                                 update="@([id$=configHeaderFooter])"
+                                                 oncomplete="PF('confirmDeleteHeaderFooters').hide()"/>
+                                <p:commandButton value="Không"
+                                                 oncomplete="PF('confirmDeleteHeaderFooters').hide()"/>
+                            </p:confirmDialog>
+
+                            <p:commandButton value="Tạo mới" action="#{emailTemplateComponent.createNewHeaderFooter}" immediate="true" style="float: left" styleClass="btn btn-primary"/>
+                            <div style="clear: both"></div>
+                        </f:facet>
+                        <p:column style="width: 20px">
+                            <p:selectBooleanCheckbox value="#{headerFooter.beanSelected}">
+                                <p:ajax/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column headerText="Tiêu Đề" filterBy="#{headerFooter.name}" sortBy="#{headerFooter.name}">
+                            <h:outputText value="#{headerFooter.name}"/>
+                        </p:column>
+                        <p:column headerText="Hoạt động" style="width: 100px; text-align:  center">
+                            <p:selectBooleanCheckbox value="#{headerFooter.active}">
+                                <p:ajax update="@([id$=configHeaderFooter])" process="@this" listener="#{emailTemplateComponent.changeActivatedHeaderFooter(headerFooter.id)}"/>
+                            </p:selectBooleanCheckbox>
+                        </p:column>
+                        <p:column style="width: 100px; text-align: center">
+                            <p:link value="Chi tiết" target="_blank" href="email_header_footer.jsf?id=#{headerFooter.id}"/>
                         </p:column>
                     </p:dataTable>
                 </h:form>
