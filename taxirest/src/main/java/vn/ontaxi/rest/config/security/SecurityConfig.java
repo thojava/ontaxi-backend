@@ -62,6 +62,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -93,7 +99,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/customer/resetPassword/**")
                 .permitAll()
-                .antMatchers("/customer/createCustomerAccount", "/customer/setPassword")
+                .antMatchers("/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin")
+                .permitAll()
+                .antMatchers(AUTH_WHITELIST)
                 .permitAll()
                 //.antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
                 //.antMatchers("/booking/**").hasAnyRole(Role.ROLE_DRIVER.name())

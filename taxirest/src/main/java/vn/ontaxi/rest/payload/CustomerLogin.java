@@ -5,16 +5,16 @@ import javax.validation.constraints.NotEmpty;
 public class CustomerLogin {
 
     @NotEmpty
-    private String emailOrPhone;
+    private String phone;
     @NotEmpty
     private String password;
 
-    public String getEmailOrPhone() {
-        return emailOrPhone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setEmailOrPhone(String emailOrPhone) {
-        this.emailOrPhone = emailOrPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {

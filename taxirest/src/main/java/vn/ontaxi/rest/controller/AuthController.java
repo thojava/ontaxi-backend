@@ -6,18 +6,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-import vn.ontaxi.common.jpa.entity.CustomerAccount;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.Role;
-import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.DriverRepository;
-import vn.ontaxi.rest.payload.CustomerLogin;
 import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
 import vn.ontaxi.rest.utils.JwtTokenProvider;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -26,22 +24,18 @@ import java.util.Locale;
 public class AuthController {
 
     private final DriverRepository driverRepository;
-    private final CustomerAccountRepository customerAccountRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final MessageSource messageSource;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(DriverRepository driverRepository, CustomerAccountRepository customerAccountRepository, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource, PasswordEncoder passwordEncoder) {
+    public AuthController(DriverRepository driverRepository, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource) {
         this.driverRepository = driverRepository;
-        this.customerAccountRepository = customerAccountRepository;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.messageSource = messageSource;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @RequestMapping(path = "/validateLoginEmail/{email:.+}")
+    @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.GET)
     public RestResult validateLoginEmail(@PathVariable String email) {
         RestResult restResult = new RestResult();
         Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
@@ -52,31 +46,6 @@ public class AuthController {
         }
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name()))));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.generateToken(authentication);
-        restResult.setData(new JwtAuthenticationResponse(jwt));
-
-        return restResult;
-    }
-
-    @RequestMapping(path = "/customerLogin", method = RequestMethod.POST)
-    public RestResult customerLogin(@Valid @RequestBody CustomerLogin customerLogin) {
-        RestResult restResult = new RestResult();
-        CustomerAccount customerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customerLogin.getEmailOrPhone(), customerLogin.getEmailOrPhone());
-        if (customerAccount == null) {
-            restResult.setSucceed(false);
-            restResult.setMessage(messageSource.getMessage("account_is_not_registered", new String[]{customerLogin.getEmailOrPhone()}, Locale.getDefault()));
-            return restResult;
-        }
-
-        if (!passwordEncoder.matches(customerLogin.getPassword(), customerAccount.getPassword())) {
-            restResult.setSucceed(false);
-            restResult.setMessage(messageSource.getMessage("password_incorrect", new String []{}, Locale.getDefault()));
-            return restResult;
-        }
-
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(customerAccount.getCustomer(), null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name()))));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);

@@ -81,7 +81,7 @@ public class RestBookingController {
         eventBus.on($("updateLocation"), locationWithDriverService);
     }
 
-    @RequestMapping(path = "/acceptOrder/{driverCode:.+}")
+    @RequestMapping(path = "/acceptOrder/{driverCode:.+}", method = RequestMethod.POST)
     public synchronized RestResult acceptOrder(@PathVariable String driverCode, @RequestBody long orderId) {
         em.flush();
         em.clear();
@@ -124,7 +124,7 @@ public class RestBookingController {
         return restResult;
     }
 
-    @RequestMapping(path = "/completeOrder/{driverCode:.+}")
+    @RequestMapping(path = "/completeOrder/{driverCode:.+}", method = RequestMethod.POST)
     public synchronized RestResult completeOrder(@PathVariable String driverCode, @RequestBody Booking booking) {
         Booking persistedBooking = bookingRepository.findOne(booking.getId());
         if (!booking.isCompleted()) {
@@ -170,7 +170,7 @@ public class RestBookingController {
     }
 
     @CrossOrigin
-    @RequestMapping(path = "/firstCalculateDistanceAndPrice")
+    @RequestMapping(path = "/firstCalculateDistanceAndPrice", method = RequestMethod.POST)
     public BookingDTO firstCalculateDistanceAndPrice(@RequestBody Booking booking) {
         booking = calculateDistanceAndPrice(booking);
 
@@ -186,7 +186,7 @@ public class RestBookingController {
     }
 
     @CrossOrigin
-    @RequestMapping(path = "/calculateDistanceAndPrice")
+    @RequestMapping(path = "/calculateDistanceAndPrice", method = RequestMethod.POST)
     public Booking calculateDistanceAndPrice(@RequestBody Booking booking) {
         booking.setUnit_price(priceCalculator.getPricePerKm(booking.getCar_type()));
         double distance = DistanceMatrixService.getDistance(booking.getFrom_location(), booking.getTo_location()) / 1000;
@@ -202,7 +202,7 @@ public class RestBookingController {
 
 
     @CrossOrigin
-    @RequestMapping(path = "/postBookingFromWebsite")
+    @RequestMapping(path = "/postBookingFromWebsite", method = RequestMethod.POST)
     public Booking postBookingFromWebsite(@RequestBody BookingDTO bookingDTO) {
         Booking booking = mapper.toPersistenceBean(bookingDTO);
         booking.setCreatedBy("site");
@@ -218,22 +218,22 @@ public class RestBookingController {
         return booking;
     }
 
-    @RequestMapping(path = "/getDriverDetail/{email:.+}")
+    @RequestMapping(path = "/getDriverDetail/{email:.+}", method = RequestMethod.POST)
     public RestResult getDriverDetail(@PathVariable String email) {
         RestResult restResult = new RestResult();
         restResult.setData(driverRepository.findByEmail(email));
         return restResult;
     }
 
-    @RequestMapping("/uploadCurrentLocation/{driverCode:.+}/{versionCode}")
+    @RequestMapping(value = "/uploadCurrentLocation/{driverCode:.+}/{versionCode}", method = RequestMethod.POST)
     public void uploadCurrentLocation(@PathVariable String driverCode, @PathVariable int versionCode, @RequestBody Location currentLocation) {
 //        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
         eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driverCode, versionCode, new Date())));
     }
 
     // Get the updated booking status, there are case when the app is closed and the booking status may be missed
-    @RequestMapping("/updateBookingStatus/{driverCode}")
-    public RestResult updateBookingStatus(@PathVariable String driverCode, @RequestBody List<Booking> bookings) {
+    @RequestMapping(value = "/updateBookingStatus", method = RequestMethod.POST)
+    public RestResult updateBookingStatus(@RequestBody List<Booking> bookings) {
         List<Booking> updatedBookings = new ArrayList<>();
         for (Booking booking : bookings) {
             Booking serverBooking = bookingRepository.findOne(booking.getId());
@@ -248,8 +248,8 @@ public class RestBookingController {
         return restResult;
     }
 
-    @RequestMapping(value = "/getNewBooking/{driverCode:.+}")
-    public RestResult getNewBooking(@PathVariable String driverCode) {
+    @RequestMapping(value = "/getNewBooking", method = RequestMethod.POST)
+    public RestResult getNewBooking() {
         List<Booking> newBooking = bookingRepository.findByStatus(OrderStatus.NEW);
         RestResult restResult = new RestResult();
         restResult.setData(mapper.toDtoBean(newBooking));
@@ -257,7 +257,7 @@ public class RestBookingController {
         return restResult;
     }
 
-    @RequestMapping(value = "/downloadHistory/{driverCode:.+}")
+    @RequestMapping(value = "/downloadHistory/{driverCode:.+}", method = RequestMethod.POST)
     public RestResult getAllBooking(@PathVariable String driverCode) {
 
         List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driverCode);

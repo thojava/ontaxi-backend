@@ -1,24 +1,41 @@
 package vn.ontaxi.rest.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.EmailType;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.CustomerAccount;
 import vn.ontaxi.common.jpa.entity.EmailTemplate;
+import vn.ontaxi.common.jpa.entity.Role;
 import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
 import vn.ontaxi.common.service.EmailService;
 import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
+import vn.ontaxi.rest.payload.CustomerLogin;
+import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
 import vn.ontaxi.rest.payload.SetPasswordRequest;
 import vn.ontaxi.rest.payload.dto.CustomerDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
+import vn.ontaxi.rest.utils.JwtTokenProvider;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -32,15 +49,23 @@ public class CustomerController {
     private final PasswordEncoder passwordEncoder;
     private final EmailTemplateRepository emailTemplateRepository;
     private final EmailService emailService;
+    private final MessageSource messageSource;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider tokenProvider;
 
-    public CustomerController(CustomerRepository customerRepository, CustomerAccountRepository customerAccountRepository, PasswordEncoder passwordEncoder, EmailTemplateRepository emailTemplateRepository, EmailService emailService) {
+    public CustomerController(CustomerRepository customerRepository, CustomerAccountRepository customerAccountRepository, PasswordEncoder passwordEncoder, EmailTemplateRepository emailTemplateRepository, EmailService emailService, MessageSource messageSource, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider) {
         this.customerRepository = customerRepository;
         this.customerAccountRepository = customerAccountRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailTemplateRepository = emailTemplateRepository;
         this.emailService = emailService;
+        this.messageSource = messageSource;
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = tokenProvider;
     }
 
+    @ApiOperation("Create customer account base on input json data")
+    @ApiResponse(code = 200, message = "When all information is valid and customer account not existed there will be and email send to customer with set password link")
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "/createCustomerAccount", method = RequestMethod.POST)
     public RestResult<String> createCustomerAccount(@Valid @RequestBody Customer customer) {
@@ -78,9 +103,12 @@ public class CustomerController {
             emailService.sendEmail(setPasswordTemplate.getSubject(), customer.getEmail(), emailContent);
         }).start();
 
+        restResult.setMessage("Kiểm tra email để hoàn thành cài đặt");
         return restResult;
     }
 
+    @ApiOperation("/setPassword")
+    @ApiResponse(code = 200, message = "When the token is valid and data checking completed then the password will be set to the account and the account is activated")
     @RequestMapping(value = "/setPassword", method = RequestMethod.POST)
     public RestResult<Void> setPassword(@Valid @RequestBody SetPasswordRequest setPasswordRequest) {
         CustomerAccount customerAccount = customerAccountRepository.findByToken(setPasswordRequest.getToken());
@@ -107,8 +135,10 @@ public class CustomerController {
         return restResult;
     }
 
+    @ApiOperation("Reset password for a specific customer with input as his email")
+    @ApiResponse(code = 200, message = "Request is valid. If the checking is okay then there will be an email with reset password link is sent to customer")
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(path = "/resetPassword/{email:.+}")
+    @RequestMapping(path = "/resetPassword/{email:.+}", method = RequestMethod.POST)
     public RestResult<String> customerRequestResetPassword(@PathVariable String email) {
         RestResult<String> restResult = new RestResult<>();
         CustomerAccount customerEmail = customerAccountRepository.findByCustomerEmail(email);
@@ -130,12 +160,38 @@ public class CustomerController {
         return restResult;
     }
 
-    @RequestMapping(path = "/getDetail", method = RequestMethod.GET)
-    public RestResult<CustomerDTO> getCustomerDetail(@CurrentUser Customer customer) {
+    @RequestMapping(path = "/customerProfile", method = RequestMethod.GET)
+    public RestResult<CustomerDTO> getCustomerDetail(@ApiIgnore @CurrentUser Customer customer) {
         RestResult<CustomerDTO> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(customer));
         return restResult;
     }
 
+    @ApiOperation(value = "Login the customer with phone number and password")
+    @ApiResponse(code = 200, message = "When the token is valid and data checking completed then the password will be set to the account and the account is activated. This API will return access token for client to access or update customer profile later")
+    @RequestMapping(path = "/customerLogin", method = RequestMethod.POST)
+    public RestResult customerLogin(@Valid @RequestBody CustomerLogin customerLogin) {
+        RestResult restResult = new RestResult();
+        CustomerAccount customerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customerLogin.getPhone(), customerLogin.getPhone());
+        if (customerAccount == null) {
+            restResult.setSucceed(false);
+            restResult.setMessage(messageSource.getMessage("account_is_not_registered", new String[]{customerLogin.getPhone()}, Locale.getDefault()));
+            return restResult;
+        }
+
+        if (!passwordEncoder.matches(customerLogin.getPassword(), customerAccount.getPassword())) {
+            restResult.setSucceed(false);
+            restResult.setMessage(messageSource.getMessage("password_incorrect", new String []{}, Locale.getDefault()));
+            return restResult;
+        }
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(customerAccount.getCustomer(), null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name()))));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = tokenProvider.generateToken(authentication);
+        restResult.setData(new JwtAuthenticationResponse(jwt));
+
+        return restResult;
+    }
 
 }
