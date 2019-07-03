@@ -67,3 +67,4 @@ public class LazyDataService {
         return jpaSpecificationExecutor.count(filterSpecification);
     }
 }
+
