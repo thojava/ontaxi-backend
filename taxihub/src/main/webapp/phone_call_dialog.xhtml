@@ -33,6 +33,8 @@
                             <h4>Email</h4>
                             <p id="email">#{callManagementDialogComponent.customerInfo.email}</p>
                         </div>
+                    </div>
+                    <div class="ui-g">
                         <div class="ui-g-4">
                             <h4>Giới Tính</h4>
                             <p id="gender">#{callManagementDialogComponent.customerInfo.gender.string}</p>
@@ -43,41 +45,47 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </h:outputLabel>
                         </div>
-                        <div class="ui-g-4">
+                        <div class="ui-g-4" style="    align-items: center; align-content: center; display: flex">
                             <p:commandLink target="_blank" value="Tạo đơn" styleClass="new-order-btn" immediate="true" ajax="false" action="#{callManagementDialogComponent.createNewOrder}"/>
                         </div>
                     </div>
                     <div class="ui-g">
-                        <strong>Nhà ở: </strong>
-                        <ui:repeat value="#{callManagementDialogComponent.addresses}" var="adds" varStatus="var">
-                            #{var.index + 1}. #{adds} <br/>
-                        </ui:repeat>
+                        <div class="ui-g-12">
+                            <strong>Nhà ở: </strong>
+                            <ui:repeat value="#{callManagementDialogComponent.addresses}" var="adds" varStatus="var">
+                                #{var.index + 1}. #{adds} <br/>
+                            </ui:repeat>
+                        </div>
                     </div>
                     <div class="ui-g" style="margin-top: 10px">
-                        <strong>Sở thích: </strong> #{callManagementDialogComponent.behaviours}
+                        <div class="ui-g-12">
+                            <strong>Sở thích: </strong> #{callManagementDialogComponent.behaviours}
+                        </div>
                     </div>
                     <div class="ui-g">
-                        <h4>Chuyến đi gần nhất</h4>
-                        <p:dataTable value="#{callManagementDialogComponent.latestBooking}"
-                                     var="booking">
-                            <p:column headerText="Điểm đi">
-                                #{booking.from_location}
-                            </p:column>
-                            <p:column headerText="Điểm đến">
-                                #{booking.to_location}
-                            </p:column>
-                            <p:column headerText="Ngày giờ">
-                                <p:outputLabel value="#{booking.created_datetime}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy hh mm" />
-                                </p:outputLabel>
-                            </p:column>
-                            <p:column headerText="Số tiền">
-                                #{numberFormatterComponent.formatPrice(booking.total_price)}
-                            </p:column>
-                            <p:column headerText="Chi tiết">
-                                <p:link value="Xem" target="_blank" href="order_detail.jsf?id=#{booking.id}"/>
-                            </p:column>
-                        </p:dataTable>
+                        <div class="ui-g-12">
+                            <h4>Chuyến đi gần nhất</h4>
+                            <p:dataTable value="#{callManagementDialogComponent.latestBooking}"
+                                         var="booking">
+                                <p:column headerText="Điểm đi">
+                                    #{booking.from_location}
+                                </p:column>
+                                <p:column headerText="Điểm đến">
+                                    #{booking.to_location}
+                                </p:column>
+                                <p:column headerText="Ngày giờ">
+                                    <p:outputLabel value="#{booking.created_datetime}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy hh mm" />
+                                    </p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Số tiền">
+                                    #{numberFormatterComponent.formatPrice(booking.total_price)}
+                                </p:column>
+                                <p:column headerText="Chi tiết">
+                                    <p:link value="Xem" target="_blank" href="order_detail.jsf?id=#{booking.id}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
                     </div>
                 </h:form>
             </div>
