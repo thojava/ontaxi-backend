@@ -41,6 +41,11 @@ public class CustomersComponent {
         return lstCustomers;
     }
 
+    public void saveCustomerAsTested(Customer customer) {
+        customer.setTestedCustomer(true);
+        customerRepository.save(customer);
+    }
+
     public void createAccountForCustomer(Customer customer) {
         if (StringUtils.isEmpty(customer.getEmail())) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Khách hàng chưa có email"));

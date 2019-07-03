@@ -19,6 +19,11 @@
                                  process="@form"
                                  update="@form"
                                  styleClass="btn-primary"/>
+                <p:commandButton value="Test gửi"
+                                 action="#{emailTemplateComponent.testSendEmail(emailTemplateComponent.currentEmailTemplate)}"
+                                 process="@this"
+                                 update="message"
+                                 styleClass="btn-primary"/>
                 <p:panel style="margin-top: 10px">
                     <p:outputPanel class="ui-g ui-fluid">
                     <div class="ui-g-6 ui-g-nopad">

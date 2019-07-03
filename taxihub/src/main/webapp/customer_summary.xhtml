@@ -17,7 +17,7 @@
         <p:spacer height="10px"/>
 
         <h:form id="mainForm">
-            <p:growl showDetail="true" life="5000" globalOnly="true" id="message"/>
+            <p:growl showDetail="true" life="5000" globalOnly="true" id="message" severity="error, info"/>
             <p:dataTable value="#{customersComponent.customers}"
                          lazy="true"
                          rows="10"
@@ -50,13 +50,16 @@
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputText>
                 </p:column>
+                <p:column headerText="Tài khoản test" style="width: 70px; text-align: center">
+                    <p:selectBooleanCheckbox value="#{customer.testedCustomer}">
+                        <p:ajax process="@this" listener="#{customersComponent.saveCustomerAsTested(customer)}" update="mainForm"/>
+                    </p:selectBooleanCheckbox>
+                </p:column>
                 <p:column headerText="Tạo Tài Khoản" style="width: 70px">
                     <p:commandButton value="Tạo" process="@this" actionListener="#{customersComponent.createAccountForCustomer(customer)}" update="@([id$=message])"/>
                 </p:column>
                 <p:column headerText="Xóa" width="20">
-                    <p:selectBooleanCheckbox value="#{customer.beanSelected}" disabled="#{not empty customer.name}">
-                        <p:ajax/>
-                    </p:selectBooleanCheckbox>
+                    <p:selectBooleanCheckbox value="#{customer.beanSelected}" disabled="#{not empty customer.name}" />
                 </p:column>
             </p:dataTable>
         </h:form>

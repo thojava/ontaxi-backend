@@ -27,6 +27,8 @@ public class Customer extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private boolean testedCustomer;
+
     @Transient
     private Set<Behavior> behaviors;
 
@@ -38,6 +40,14 @@ public class Customer extends AbstractEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<CustomerBehavior> customerBehaviors = new HashSet<>();
+
+    public boolean isTestedCustomer() {
+        return testedCustomer;
+    }
+
+    public void setTestedCustomer(boolean testedCustomer) {
+        this.testedCustomer = testedCustomer;
+    }
 
     public Set<CustomerBehavior> getCustomerBehaviors() {
         return customerBehaviors;

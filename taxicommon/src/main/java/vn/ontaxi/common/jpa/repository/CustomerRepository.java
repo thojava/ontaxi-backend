@@ -9,6 +9,6 @@ import java.util.List;
 public interface CustomerRepository extends JpaRepository<Customer, Long>, JpaSpecificationExecutor<Customer> {
 
     List<Customer> findByPhone(String phone);
-
     Customer findByPhoneOrEmail(String phone, String email);
+    List<Customer> findCustomersByTestedCustomerTrue();
 }

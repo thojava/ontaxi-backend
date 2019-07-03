@@ -15,6 +15,16 @@ public class EmailTemplate extends AbstractEntity {
     private String emailContent;
     private EmailType emailType;
 
+    private boolean hasTested;
+
+    public boolean isHasTested() {
+        return hasTested;
+    }
+
+    public void setHasTested(boolean hasTested) {
+        this.hasTested = hasTested;
+    }
+
     public Long getId() {
         return id;
     }

@@ -14,7 +14,7 @@
         <p:tabView id="tabView">
             <p:tab title="#{msg.marketing_email_template}">
                 <h:form id="mailMarketingForm">
-                    <p:growl showDetail="true" life="5000" globalOnly="true" severity="error, info"/>
+                    <p:growl showDetail="true" life="5000" globalOnly="true" severity="error, info" id="message"/>
 
                     <p:dataTable value="#{emailTemplateComponent.marketingEmailTemplates}"
                                  rows="10" widgetVar="emailTemplate"
@@ -55,6 +55,12 @@
                         </p:column>
                         <p:column headerText="Phân Loại" filterBy="#{email.emailType.description}" sortBy="#{email.emailType.description}">
                             <h:outputText value="#{email.emailType.description}"/>
+                        </p:column>
+                        <p:column headerText="Đã test" style="text-align: center; width: 70px;">
+                            <p:selectBooleanCheckbox value="#{email.hasTested}" disabled="true" />
+                        </p:column>
+                        <p:column headerText="Test Email" style="text-align: center; width: 70px;">
+                            <p:commandButton process="@this" actionListener="#{emailTemplateComponent.testSendEmail(email)}" value="Gửi" update="@([id$=message])"/>
                         </p:column>
                     </p:dataTable>
                 </h:form>

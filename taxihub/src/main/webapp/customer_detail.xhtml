@@ -18,15 +18,17 @@
         <p:spacer height="10px"/>
 
         <h:form id="formId" prependId="false">
-            <p:growl showDetail="true" life="5000" globalOnly="true" autoUpdate="true" id="message"/>
-            <p:commandButton value="Lưu Lại" update="@form" action="#{customerDetailComponent.saveCustomerInfo}" icon="fa fa-check" process="@this, @([id$=user_info]), @([id$=behavior])"
-                             styleClass="btn-primary"/>
-            <p:spacer width="5"/>
-            <p:growl showDetail="true" life="5000" globalOnly="true" autoUpdate="true" severity="error"/>
+            <p:growl showDetail="true" life="5000" globalOnly="true" autoUpdate="true" id="message" severity="error, info"/>
             <p:commandButton value="Quay lại" immediate="true" styleClass="btn-default"
                              action="/customer_summary.jsf?faces-redirect=true"
                              ajax="false"
                              icon="fa fa-reply"/>
+            <p:spacer width="5"/>
+            <p:commandButton value="Lưu Lại" update="@form" action="#{customerDetailComponent.saveCustomerInfo}" icon="fa fa-check" process="@this, @([id$=formId])"
+                             styleClass="btn-primary"/>
+            <p:spacer width="5" />
+            <p:outputLabel for="test" value="Tài khoản test: " />
+            <p:selectBooleanCheckbox id="test" value="#{customerDetailComponent.currentCustomer.testedCustomer}" />
 
             <p:panel style="margin-top: 10px">
                 <p:outputPanel class="ui-g ui-fluid" id="user_info">

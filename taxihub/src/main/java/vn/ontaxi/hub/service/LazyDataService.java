@@ -51,7 +51,7 @@ public class LazyDataService {
                 predicates.add(predicateBuilder.build(builder, root));
             }
             if (!userCredentialComponent.hasViewAllPermission()) {
-                predicates.add(builder.equal(root.get("debtor"), userCredentialComponent.getUserName()));
+                predicates.add(builder.equal(root.get("createdBy"), userCredentialComponent.getUserName()));
             }
 
             return builder.and(predicates.toArray(new Predicate[0]));

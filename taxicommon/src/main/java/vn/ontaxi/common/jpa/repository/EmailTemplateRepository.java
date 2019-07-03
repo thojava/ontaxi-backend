@@ -10,6 +10,8 @@ import java.util.List;
 public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Long> {
 
     EmailTemplate findByEmailType(EmailType emailType);
+    List<EmailTemplate> findByEmailTypeInAndHasTestedTrueAndSubjectIsNotNull(Sort var1, EmailType... emailTypes);
     List<EmailTemplate> findByEmailTypeIn(Sort var1, EmailType... emailTypes);
     List<EmailTemplate> findByEmailTypeNotIn(Sort var1, EmailType... emailTypes);
+
 }

@@ -8,10 +8,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.constant.EmailType;
 import vn.ontaxi.common.jpa.entity.AbstractEntity;
+import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.EmailTemplate;
 import vn.ontaxi.common.jpa.entity.EmailTemplateHeaderFooter;
+import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateHeaderFooterRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
+import vn.ontaxi.common.service.EmailService;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -24,15 +27,20 @@ import java.util.stream.Collectors;
 @Scope("view")
 public class EmailTemplateComponent {
     private final EmailTemplateRepository emailTemplateRepository;
+    private final CustomerRepository customerRepository;
+    private final EmailService emailService;
     private final EmailTemplateHeaderFooterRepository emailTemplateHeaderFooterRepository;
 
     private List<EmailTemplate> marketingEmailTemplates;
+    private List<EmailTemplate> marketingEmailTemplateHasTested;
     private List<EmailTemplate> systemEmailTemplates;
     private List<EmailTemplateHeaderFooter> emailTemplateHeaderFooters;
     private EmailTemplate currentEmailTemplate;
 
-    public EmailTemplateComponent(EmailTemplateRepository emailTemplateRepository, EmailTemplateHeaderFooterRepository emailTemplateHeaderFooterRepository) {
+    public EmailTemplateComponent(EmailTemplateRepository emailTemplateRepository, CustomerRepository customerRepository, EmailService emailService, EmailTemplateHeaderFooterRepository emailTemplateHeaderFooterRepository) {
         this.emailTemplateRepository = emailTemplateRepository;
+        this.customerRepository = customerRepository;
+        this.emailService = emailService;
         this.emailTemplateHeaderFooterRepository = emailTemplateHeaderFooterRepository;
         currentEmailTemplate = new EmailTemplate();
     }
@@ -51,6 +59,13 @@ public class EmailTemplateComponent {
             marketingEmailTemplates = emailTemplateRepository.findByEmailTypeIn(new Sort(Sort.Direction.ASC, "subject"), EmailType.MARKETING);
 
         return marketingEmailTemplates;
+    }
+
+    public List<EmailTemplate> getMarketingEmailTemplateHasTested() {
+        if (marketingEmailTemplateHasTested == null)
+            marketingEmailTemplateHasTested = emailTemplateRepository.findByEmailTypeInAndHasTestedTrueAndSubjectIsNotNull(new Sort(Sort.Direction.ASC, "subject"), EmailType.MARKETING);
+
+        return marketingEmailTemplateHasTested;
     }
 
     public List<EmailTemplate> getSystemEmailTemplates() {
@@ -105,6 +120,19 @@ public class EmailTemplateComponent {
         EmailTemplateHeaderFooter emailTemplateHeaderFooter = new EmailTemplateHeaderFooter();
         EmailTemplateHeaderFooter saved = emailTemplateHeaderFooterRepository.saveAndFlush(emailTemplateHeaderFooter);
         return "email_header_footer.jsf?faces-redirect=true&id=" + saved.getId();
+    }
+
+    public void testSendEmail(EmailTemplate emailTemplate) {
+        List<Customer> customers = customerRepository.findCustomersByTestedCustomerTrue();
+        for (Customer customer : customers) {
+            if (StringUtils.isNotEmpty(customer.getEmail()))
+                emailService.sendEmail("Tested Email: " + emailTemplate.getSubject(), customer.getEmail(), emailTemplate.getEmailContent());
+        }
+
+        emailTemplate.setHasTested(true);
+        if (emailTemplate.getId() != null)
+            emailTemplateRepository.save(emailTemplate);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Đã gửi cho tested customer"));
     }
 
     public String saveTemplate() {
