@@ -50,9 +50,9 @@ public class LazyDataService {
             for (PredicateBuilder<T> predicateBuilder : predicateBuilders) {
                 predicates.add(predicateBuilder.build(builder, root));
             }
-            if (!userCredentialComponent.hasViewAllPermission()) {
-                predicates.add(builder.equal(root.get("createdBy"), userCredentialComponent.getUserName()));
-            }
+//            if (!userCredentialComponent.hasViewAllPermission()) {
+//                predicates.add(builder.equal(root.get("createdBy"), userCredentialComponent.getUserName()));
+//            }
 
             return builder.and(predicates.toArray(new Predicate[0]));
         };
