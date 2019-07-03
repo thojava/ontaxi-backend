@@ -138,25 +138,25 @@ public class CustomerController {
     @ApiOperation("Reset password for a specific customer with input as his email")
     @ApiResponse(code = 200, message = "Request is valid. If the checking is okay then there will be an email with reset password link is sent to customer")
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping(path = "/resetPassword/{email:.+}", method = RequestMethod.POST)
-    public RestResult<String> customerRequestResetPassword(@PathVariable String email) {
+    @RequestMapping(path = "/resetPassword/{phone:.+}", method = RequestMethod.POST)
+    public RestResult<String> customerRequestResetPassword(@PathVariable String phone) {
         RestResult<String> restResult = new RestResult<>();
-        CustomerAccount customerEmail = customerAccountRepository.findByCustomerEmail(email);
-        if (customerEmail == null) {
+        CustomerAccount customer = customerAccountRepository.findByCustomerPhone(phone);
+        if (customer == null) {
             restResult.setSucceed(false);
             restResult.setMessage("Thông tin khách hàng không tồn tại");
             return restResult;
         }
-        customerEmail.setToken(UUID.randomUUID().toString());
-        customerAccountRepository.save(customerEmail);
+        customer.setToken(UUID.randomUUID().toString());
+        customerAccountRepository.save(customer);
         EmailTemplate resetPassword = emailTemplateRepository.findByEmailType(EmailType.RESET_PASSWORD);
         String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(resetPassword.getEmailContent(), new HashMap<String, String>() {{
-            put("\\$\\{name\\}", customerEmail.getCustomer().getName());
-            put("\\$\\{reset_password_link\\}", customerEmail.getToken());
+            put("\\$\\{name\\}", customer.getCustomer().getName());
+            put("\\$\\{reset_password_link\\}", customer.getToken());
         }});
 
-        emailService.sendEmail(resetPassword.getSubject(), customerEmail.getCustomer().getEmail(), emailContent);
-        restResult.setData(customerEmail.getToken());
+        emailService.sendEmail(resetPassword.getSubject(), customer.getCustomer().getEmail(), emailContent);
+        restResult.setData(customer.getToken());
         return restResult;
     }
 

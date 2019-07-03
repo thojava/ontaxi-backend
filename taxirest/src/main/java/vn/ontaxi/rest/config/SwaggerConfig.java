@@ -10,6 +10,7 @@ import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
+import springfox.documentation.spring.web.paths.AbstractPathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -30,8 +31,8 @@ public class SwaggerConfig {
                 .securitySchemes(Lists.newArrayList(apiKey()))
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(regex("^\\/(customer|booking|auth)\\/.*"))
-                .build();
+                .paths(regex("^\\/(customer|booking|driver\\/validateLoginEmail)\\/.*"))
+                .build().pathProvider(new ExtendRelativePathProvider());
     }
 
     private ApiKey apiKey() {
@@ -53,6 +54,18 @@ public class SwaggerConfig {
         authorizationScopes[0] = authorizationScope;
         return Lists.newArrayList(
                 new SecurityReference("JWT", authorizationScopes));
+    }
+
+    class ExtendRelativePathProvider extends AbstractPathProvider {
+        static final String ROOT = "/";
+        @Override
+        protected String applicationPath() {
+            return ROOT;
+        }
+        @Override
+        protected String getDocumentationPath() {
+            return "/";
+        }
     }
 }
 

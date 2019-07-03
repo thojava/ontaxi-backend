@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    private static final String[] AUTH_WHITELIST = {
+    private static final String[] SWAGGER_AUTH_WHITELIST = {
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v2/api-docs",
@@ -93,15 +93,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/auth/**")
+                .antMatchers("/driver/validateLoginEmail/**")
                 .permitAll()
-                .antMatchers("/scco/**")
+                .antMatchers("/customer/resetPassword/**","/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin")
                 .permitAll()
-                .antMatchers("/customer/resetPassword/**")
-                .permitAll()
-                .antMatchers("/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin")
-                .permitAll()
-                .antMatchers(AUTH_WHITELIST)
+                .antMatchers(SWAGGER_AUTH_WHITELIST)
                 .permitAll()
                 //.antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
                 //.antMatchers("/booking/**").hasAnyRole(Role.ROLE_DRIVER.name())
