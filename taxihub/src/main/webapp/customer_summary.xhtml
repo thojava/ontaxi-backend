@@ -59,7 +59,7 @@
                     <p:commandButton value="Tạo" process="@this" actionListener="#{customersComponent.createAccountForCustomer(customer)}" update="@([id$=message])"/>
                 </p:column>
                 <p:column headerText="Xóa" width="20">
-                    <p:selectBooleanCheckbox value="#{customer.beanSelected}" disabled="#{not empty customer.name}" />
+                    <p:selectBooleanCheckbox value="#{customer.beanSelected}"/>
                 </p:column>
             </p:dataTable>
         </h:form>
