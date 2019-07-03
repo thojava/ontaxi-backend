@@ -1,5 +1,6 @@
 package vn.ontaxi.rest.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +36,7 @@ public class AuthController {
         this.messageSource = messageSource;
     }
 
+    @ApiOperation("Verify driver account via email")
     @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.GET)
     public RestResult validateLoginEmail(@PathVariable String email) {
         RestResult restResult = new RestResult();

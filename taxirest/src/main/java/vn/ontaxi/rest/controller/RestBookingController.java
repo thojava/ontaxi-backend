@@ -1,5 +1,6 @@
 package vn.ontaxi.rest.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
+import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.BooleanConstants;
 import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
@@ -22,6 +24,7 @@ import vn.ontaxi.common.jpa.repository.ViewPriceRepository;
 import vn.ontaxi.common.model.Location;
 import vn.ontaxi.common.model.LocationWithDriver;
 import vn.ontaxi.common.service.*;
+import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.dto.BookingDTO;
 import vn.ontaxi.rest.service.*;
 import vn.ontaxi.common.utils.BookingUtils;
@@ -81,15 +84,14 @@ public class RestBookingController {
         eventBus.on($("updateLocation"), locationWithDriverService);
     }
 
-    @RequestMapping(path = "/acceptOrder/{driverCode:.+}", method = RequestMethod.POST)
-    public synchronized RestResult acceptOrder(@PathVariable String driverCode, @RequestBody long orderId) {
+    @RequestMapping(path = "/acceptOrder", method = RequestMethod.POST)
+    public synchronized RestResult acceptOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody long orderId) {
         em.flush();
         em.clear();
         Booking booking = bookingRepository.findOne(orderId);
-        logger.debug(driverCode + " accept " + orderId + " start " + booking.getStatus());
+        logger.debug(driver.getEmail() + " accept " + orderId + " start " + booking.getStatus());
         RestResult restResult = new RestResult();
 
-        Driver driver = driverRepository.findByEmail(driverCode);
         if (driver.getAmount() < booking.getTotal_fee() + configurationService.getDriver_balance_low_limit()) {
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("your_account_amount_is_not_enough_for_this_order", null, Locale.getDefault()));
@@ -98,7 +100,7 @@ public class RestBookingController {
 
         if (booking.getStatus().equalsIgnoreCase(OrderStatus.NEW)) {
             booking.setStatus(OrderStatus.ACCEPTED);
-            booking.setAccepted_by(driverCode);
+            booking.setAccepted_by(driver.getEmail());
             booking = bookingRepository.saveAndFlush(booking);
 
             driver.decreaseAmt(booking.getTotal_fee(), logger);
@@ -120,12 +122,12 @@ public class RestBookingController {
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("order_has_been_accepted_by_other_driver", null, Locale.getDefault()));
         }
-        logger.debug(driverCode + " accept " + orderId + " complete " + booking.getStatus());
+        logger.debug(driver.getEmail() + " accept " + orderId + " complete " + booking.getStatus());
         return restResult;
     }
 
-    @RequestMapping(path = "/completeOrder/{driverCode:.+}", method = RequestMethod.POST)
-    public synchronized RestResult completeOrder(@PathVariable String driverCode, @RequestBody Booking booking) {
+    @RequestMapping(path = "/completeOrder", method = RequestMethod.POST)
+    public synchronized RestResult completeOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody Booking booking) {
         Booking persistedBooking = bookingRepository.findOne(booking.getId());
         if (!booking.isCompleted()) {
             persistedBooking.setActual_total_distance(booking.getActual_total_distance());
@@ -153,7 +155,6 @@ public class RestBookingController {
             persistedBooking.setStatus(OrderStatus.COMPLETED);
             bookingRepository.saveAndFlush(persistedBooking);
 
-            Driver driver = driverRepository.findByEmail(driverCode);
             double amt = persistedBooking.getActual_total_fee() - persistedBooking.getTotal_fee();
             driver.decreaseAmt(amt, logger);
             driverRepository.saveAndFlush(driver);
@@ -218,17 +219,17 @@ public class RestBookingController {
         return booking;
     }
 
-    @RequestMapping(path = "/getDriverDetail/{email:.+}", method = RequestMethod.POST)
-    public RestResult getDriverDetail(@PathVariable String email) {
+    @RequestMapping(path = "/getDriverDetail", method = RequestMethod.POST)
+    public RestResult getDriverDetail(@ApiIgnore @CurrentUser Driver driver) {
         RestResult restResult = new RestResult();
-        restResult.setData(driverRepository.findByEmail(email));
+        restResult.setData(driver);
         return restResult;
     }
 
-    @RequestMapping(value = "/uploadCurrentLocation/{driverCode:.+}/{versionCode}", method = RequestMethod.POST)
-    public void uploadCurrentLocation(@PathVariable String driverCode, @PathVariable int versionCode, @RequestBody Location currentLocation) {
+    @RequestMapping(value = "/uploadCurrentLocation/{versionCode}", method = RequestMethod.POST)
+    public void uploadCurrentLocation(@ApiIgnore @CurrentUser Driver driver, @PathVariable int versionCode, @RequestBody Location currentLocation) {
 //        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
-        eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driverCode, versionCode, new Date())));
+        eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driver.getEmail(), versionCode, new Date())));
     }
 
     // Get the updated booking status, there are case when the app is closed and the booking status may be missed
@@ -248,6 +249,7 @@ public class RestBookingController {
         return restResult;
     }
 
+    @ApiOperation("Get new booking")
     @RequestMapping(value = "/getNewBooking", method = RequestMethod.POST)
     public RestResult getNewBooking() {
         List<Booking> newBooking = bookingRepository.findByStatus(OrderStatus.NEW);
@@ -257,10 +259,11 @@ public class RestBookingController {
         return restResult;
     }
 
-    @RequestMapping(value = "/downloadHistory/{driverCode:.+}", method = RequestMethod.POST)
-    public RestResult getAllBooking(@PathVariable String driverCode) {
+    @ApiOperation("Download booking history")
+    @RequestMapping(value = "/downloadHistory", method = RequestMethod.POST)
+    public RestResult getAllBooking(@ApiIgnore @CurrentUser Driver driver) {
 
-        List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driverCode);
+        List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driver.getEmail());
         RestResult restResult = new RestResult();
         restResult.setData(mapper.toDtoBean(allBooking));
         return restResult;
