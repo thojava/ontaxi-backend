@@ -9,6 +9,7 @@ import vn.ontaxi.common.utils.PriceUtils;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 public class Booking extends AbstractEntity {
@@ -75,6 +76,8 @@ public class Booking extends AbstractEntity {
     private String isFixedPrice = BooleanConstants.NO;
     private long surveyId;
 
+    private String identify;
+
     @Lob
     @Column
     private String routes = "";
@@ -96,6 +99,14 @@ public class Booking extends AbstractEntity {
     public Booking(String from_location, String to_location) {
         this.from_location = from_location;
         this.to_location = to_location;
+    }
+
+    public String getIdentify() {
+        return identify;
+    }
+
+    public void setIdentify(String identify) {
+        this.identify = identify;
     }
 
     public long getId() {

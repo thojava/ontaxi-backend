@@ -11,6 +11,9 @@ public class LocationWithDriver {
     private int versionCode;
     private String driverInfo;
 
+    public LocationWithDriver() {
+    }
+
     public LocationWithDriver(Location location, String driverCode, int versionCode, Date received_time) {
         this.received_time = received_time;
         setLatitude(location.getLatitude());

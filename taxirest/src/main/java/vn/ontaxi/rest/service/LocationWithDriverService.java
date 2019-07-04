@@ -29,6 +29,10 @@ public class LocationWithDriverService implements Consumer<Event<LocationWithDri
         driversLocation.put(data.getDriverCode(), data);
     }
 
+    public LocationWithDriver getLocationWithDriverByCode(String driverCode) {
+        return driversLocation.getOrDefault(driverCode, new LocationWithDriver());
+    }
+
     public Map<String, LocationWithDriver> getOnlineDriversLocation(boolean fromWebsite) {
         long currentTime = new Date().getTime();
         Map<String, LocationWithDriver> onlineDriverMap = new HashMap<>();

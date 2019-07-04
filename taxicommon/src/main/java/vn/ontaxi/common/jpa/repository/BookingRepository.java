@@ -10,9 +10,14 @@ import vn.ontaxi.common.jpa.entity.Driver;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public interface BookingRepository extends JpaRepository<Booking, Long>, JpaSpecificationExecutor<Booking> {
     List<Booking> findByStatus(String status);
+
+    Booking findByIdentify(String identify);
+
+    List<Booking> findByAcceptedByDriverIsNotNullAndIdentifyIsNullAndDepartureTimeBetween(Date from, Date to);
 
     List<Booking> findByMobile(String phoneNumber, Sort sort);
 

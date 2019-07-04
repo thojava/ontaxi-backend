@@ -6,6 +6,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class AuditorAwareImpl implements AuditorAware<String> {
     @Override
     public String getCurrentAuditor() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        try {
+            return SecurityContextHolder.getContext().getAuthentication().getName();
+        } catch (Exception e) {
+            return "System";
+        }
     }
 }
