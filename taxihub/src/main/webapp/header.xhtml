@@ -21,13 +21,17 @@
                                 rendered="#{not userCredentialComponent.customer}"/>
                     <p:menuitem value="Tạo Mới" action="driver_detail.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"/>
-                    <p:menuitem value="Bản Đồ Vị Trí" action="driver_map.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                    <p:menuitem value="Bản Đồ Vị Trí" action="driver_map.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"/>
                 </p:submenu>
 
                 <p:submenu label="Khách Hàng">
-                    <p:menuitem value="Danh Sách" action="customer_summary.jsf?faces-redirect=true" ajax="false" immediate="true"/>
-                    <p:menuitem value="Tạo Mới" action="customer_detail.jsf?faces-redirect=true" ajax="false" immediate="true"/>
-                    <p:menuitem value="Danh Sách Hành Vi" action="customer_behaviour.xhtml" ajax="false" immediate="true"/>
+                    <p:menuitem value="Danh Sách" action="customer_summary.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"/>
+                    <p:menuitem value="Tạo Mới" action="customer_detail.jsf?faces-redirect=true" ajax="false"
+                                immediate="true"/>
+                    <p:menuitem value="Danh Sách Hành Vi" action="customer_behaviour.xhtml" ajax="false"
+                                immediate="true"/>
                     <p:menuitem value="Nhóm khách hàng" action="customer_group.xhtml" ajax="false" immediate="true"/>
                 </p:submenu>
 
@@ -48,18 +52,24 @@
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
 
-                    <p:menuitem value="Lập Lịch Gửi Email" action="emaill_scheduler.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Lập Lịch Gửi Email" action="emaill_scheduler.jsf?faces-redirect=true"
+                                ajax="false"
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
                 </p:submenu>
 
                 <p:submenu label="Tài Khoản: #{userCredentialComponent.userName}">
-                    <p:menuitem value="Thoát" action="/logout"/>
+                    <p:menuitem value="Thoát" onclick="$('.logout')[0].click(); return false;"/>
                     <p:menuitem value="Show call" onclick="PF('callDialog').show()"/>
                 </p:submenu>
             </p:menubar>
         </h:form>
+        <h:form onsubmit="this.action='#{request.contextPath}/logout'" style="display: none"
+                class="logout-form">
+            <p:commandButton styleClass="logout" value="Logout" ajax="false"/>
+          </h:form>
     </span>
 </div>
+
 
 </html>

@@ -52,7 +52,6 @@ public class RestBookingController {
     @PersistenceContext
     private EntityManager em;
 
-    private final EventBus eventBus;
     private final BookingRepository bookingRepository;
     private final ViewPriceRepository viewPriceRepository;
     private final PromotionPlanRepository promotionPlanRepository;
@@ -60,12 +59,11 @@ public class RestBookingController {
     private final FCMService fcmService;
     private final SMSService smsService;
     private final MessageSource messageSource;
-    private final LocationWithDriverService locationWithDriverService;
     private final ConfigurationService configurationService;
     private final PriceCalculator priceCalculator;
 
     @Autowired
-    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, DriverRepository driverRepository, FCMService fcmService, SMSService smsService, MessageSource messageSource, EventBus eventBus, ConfigurationService configurationService, PriceCalculator priceCalculator, LocationWithDriverService locationWithDriverService) {
+    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, DriverRepository driverRepository, FCMService fcmService, SMSService smsService, MessageSource messageSource, ConfigurationService configurationService, PriceCalculator priceCalculator) {
         this.bookingRepository = bookingRepository;
         this.viewPriceRepository = viewPriceRepository;
         this.promotionPlanRepository = promotionPlanRepository;
@@ -73,15 +71,8 @@ public class RestBookingController {
         this.fcmService = fcmService;
         this.smsService = smsService;
         this.messageSource = messageSource;
-        this.eventBus = eventBus;
-        this.locationWithDriverService = locationWithDriverService;
         this.configurationService = configurationService;
         this.priceCalculator = priceCalculator;
-    }
-
-    @PostConstruct
-    public void init() {
-        eventBus.on($("updateLocation"), locationWithDriverService);
     }
 
     @RequestMapping(path = "/acceptOrder", method = RequestMethod.POST)
@@ -217,19 +208,6 @@ public class RestBookingController {
 
         bookingRepository.saveAndFlush(booking);
         return booking;
-    }
-
-    @RequestMapping(path = "/getDriverDetail", method = RequestMethod.POST)
-    public RestResult getDriverDetail(@ApiIgnore @CurrentUser Driver driver) {
-        RestResult restResult = new RestResult();
-        restResult.setData(driver);
-        return restResult;
-    }
-
-    @RequestMapping(value = "/uploadCurrentLocation/{versionCode}", method = RequestMethod.POST)
-    public void uploadCurrentLocation(@ApiIgnore @CurrentUser Driver driver, @PathVariable int versionCode, @RequestBody Location currentLocation) {
-//        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
-        eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driver.getEmail(), versionCode, new Date())));
     }
 
     // Get the updated booking status, there are case when the app is closed and the booking status may be missed

@@ -176,4 +176,29 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <rest.url>http://localhost:8080/api</rest.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <rest.url>https://api.ontaxi.vn</rest.url>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 </project>

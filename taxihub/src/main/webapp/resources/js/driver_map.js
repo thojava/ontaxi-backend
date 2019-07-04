@@ -23,15 +23,14 @@ function reloadMarkers() {
 
     var locationJsonText = document.getElementById("mapForm:locationJson").innerHTML;
     var datajson = JSON.parse(locationJsonText);
-    var keyArr = Object.keys(datajson);
-    for ( var i = 0; i < keyArr.length; i++) {
-        var location = datajson[keyArr[i]];
+    for ( var i = 0; i < datajson.length; i++) {
+        var location = datajson[i];
 
         var myLatLng = new google.maps.LatLng(location['latitude'], location['longitude']);
         var marker = new google.maps.Marker({
             position: myLatLng,
             map: map,
-            icon: "http://ontaxi.vn:8080/javax.faces.resource/images/car.png.jsf",
+            icon: "https://hub.ontaxi.vn/javax.faces.resource/images/car.png.jsf",
             title: location['driverInfo']
         });
 

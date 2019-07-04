@@ -10,18 +10,17 @@
     <ui:define name="content">
         <h:outputScript name="js/driver_map.js"/>
         <h:form id="mapForm">
-            <p:poll interval="5" oncomplete="reloadMarkers();" update="mapForm" global="false"/>
-            <!--@elvariable id="driversMapComponent" type="vn.ontaxi.hub.component.DriversMapComponent"-->
+            <p:poll interval="10" oncomplete="reloadMarkers();" update="mapForm" global="false"/>
             <h:outputText value="#{driversMapComponent.locationJson}" id="locationJson" style="display: none"/>
             <h:outputText value="Tổng số xe đang hoạt động "/>
-            <h:outputText value="#{driversMapComponent.getOnlineDriversLocation(false).size()}"/>
+            <h:outputText value="#{driversMapComponent.numOfActivatedCar}"/>
         </h:form>
         <div id="map"/>
         <style type="text/css">
             /* Always set the map height explicitly to define the size of the div
              * element that contains the map. */
             #map {
-                height: 100%;
+                height: 500px;
             }
 
             /* Optional: Makes the sample page fill the window. */

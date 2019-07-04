@@ -93,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/driver/validateLoginEmail/**")
+                .antMatchers("/driver/validateLoginEmail/**", "/driver/location")
                 .permitAll()
                 .antMatchers("/customer/resetPassword/**","/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin")
                 .permitAll()

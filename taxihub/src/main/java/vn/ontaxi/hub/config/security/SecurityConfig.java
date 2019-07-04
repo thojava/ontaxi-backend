@@ -42,10 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			http.csrf().disable();
 
 			http.logout()
-					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					.invalidateHttpSession(true)
+					.deleteCookies("JSESSIONID")
 					.logoutSuccessUrl(
-							"/login.xhtml");
+							"/login.jsf");
 
 			http
 				.userDetailsService(userDetailsService())
@@ -58,10 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginPage("/login.jsf")
 				.permitAll()
 				.failureUrl("/login.jsf?error=true")
-				.successHandler(customAuthenticationSuccessHandler())
-				.and()
-				.logout()
-				.logoutSuccessUrl("/login.jsf");
+				.successHandler(customAuthenticationSuccessHandler());
 		}
 		catch (Exception ex) {
 			throw new RuntimeException(ex);
