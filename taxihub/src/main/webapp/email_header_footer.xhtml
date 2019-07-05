@@ -8,34 +8,10 @@
         xmlns:pe="http://primefaces.org/ui/extensions">
 <ui:composition template="layout.xhtml">
     <ui:define name="content">
-        <h1 align="center">Header &amp; Footer</h1>
+        <h1 align="center">Cấu hình Header, Footer cho Mail Template</h1>
         <p:spacer height="10px"/>
         <p:spacer height="10px"/>
         <p:tabView id="tabView">
-            <p:tab title="Preview">
-                <p:outputPanel class="ui-g ui-fluid" id="previewTab">
-                    <div class="ui-g-12 ui-g-nopad">
-                        <div class="ui-g-1">
-                            <h3>Tiêu đề</h3>
-                        </div>
-                        <div class="ui-g-10">
-                            <p:outputLabel value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.name}"/>
-                        </div>
-                    </div>
-                    <div class="ui-g-12">
-                        <h3>Header</h3>
-                    </div>
-                    <div class="ui-g-12 ui-g-nopad">
-                        <p:outputLabel escape="false" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.header}"/>
-                    </div>
-                    <div class="ui-g-12">
-                        <h3>Footer</h3>
-                    </div>
-                    <div class="ui-g-12 ui-g-nopad">
-                        <p:outputLabel escape="false" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.footer}"/>
-                    </div>
-                </p:outputPanel>
-            </p:tab>
             <p:tab title="Chỉnh sửa">
                 <h:form>
                     <p:commandButton value="Lưu Lại" style="margin-bottom: 20px"
@@ -45,7 +21,7 @@
                     <p:outputPanel class="ui-g ui-fluid" id="editTab">
                         <div class="ui-g-12 ui-g-nopad">
                             <div class="ui-g-1">
-                                <h3>Tiêu Đề</h3>
+                                <h3>Miêu tả</h3>
                             </div>
                             <div class="ui-g-10">
                                 <p:inputText id="name" maxlength="100"
@@ -70,6 +46,30 @@
                         </div>
                     </p:outputPanel>
                 </h:form>
+            </p:tab>
+            <p:tab title="Preview">
+                <p:outputPanel class="ui-g ui-fluid" id="previewTab">
+                    <div class="ui-g-12 ui-g-nopad">
+                        <div class="ui-g-1">
+                            <h3>Miêu tả</h3>
+                        </div>
+                        <div class="ui-g-10">
+                            <p:outputLabel value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.name}"/>
+                        </div>
+                    </div>
+                    <div class="ui-g-12">
+                        <h3>Header</h3>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+                        <p:outputLabel escape="false" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.header}"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <h3>Footer</h3>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad">
+                        <p:outputLabel escape="false" value="#{emailTemplateHeaderFooterDetailComponent.currentEmailHeaderFooter.footer}"/>
+                    </div>
+                </p:outputPanel>
             </p:tab>
         </p:tabView>
     </ui:define>
