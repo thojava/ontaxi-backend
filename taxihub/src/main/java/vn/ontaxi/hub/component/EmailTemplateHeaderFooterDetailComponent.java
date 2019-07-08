@@ -33,7 +33,7 @@ public class EmailTemplateHeaderFooterDetailComponent {
     }
 
     public void saveEmailHeaderFooter() {
-        emailTemplateHeaderFooterRepository.saveAndFlush(currentEmailHeaderFooter);
+        currentEmailHeaderFooter = emailTemplateHeaderFooterRepository.saveAndFlush(currentEmailHeaderFooter);
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Đã lưu"));
     }
 
