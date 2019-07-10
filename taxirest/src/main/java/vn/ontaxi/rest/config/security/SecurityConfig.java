@@ -97,7 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/customer/resetPassword/**","/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin")
                 .permitAll()
-                .antMatchers("/booking/firstCalculateDistanceAndPrice", "/booking/calculateDistanceAndPrice", "/booking/postBookingFromWebsite")
+                .antMatchers("/booking/calculateDistanceAndPrice", "/booking/postBookingFromWebsite")
                 .permitAll()
                 .antMatchers(SWAGGER_AUTH_WHITELIST)
                 .permitAll()
