@@ -5,12 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import reactor.bus.Event;
-import reactor.bus.EventBus;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.BooleanConstants;
 import vn.ontaxi.common.constant.OrderStatus;
@@ -21,26 +17,20 @@ import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.DriverRepository;
 import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
 import vn.ontaxi.common.jpa.repository.ViewPriceRepository;
-import vn.ontaxi.common.model.Location;
-import vn.ontaxi.common.model.LocationWithDriver;
 import vn.ontaxi.common.service.*;
-import vn.ontaxi.rest.config.security.CurrentUser;
-import vn.ontaxi.rest.payload.dto.BookingDTO;
-import vn.ontaxi.rest.service.*;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.rest.config.security.CurrentUser;
+import vn.ontaxi.rest.payload.dto.BookingCalculatePriceDTO;
+import vn.ontaxi.rest.payload.dto.BookingDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
 import vn.ontaxi.rest.utils.SMSContentBuilder;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static reactor.bus.selector.Selectors.$;
 
 @RestController
 @Transactional
@@ -156,15 +146,15 @@ public class RestBookingController {
             }
         }
 
-        RestResult restResult = new RestResult();
+        RestResult<BookingDTO> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(persistedBooking));
         return restResult;
     }
 
     @CrossOrigin
     @RequestMapping(path = "/firstCalculateDistanceAndPrice", method = RequestMethod.POST)
-    public BookingDTO firstCalculateDistanceAndPrice(@RequestBody Booking booking) {
-        booking = calculateDistanceAndPrice(booking);
+    public BookingDTO firstCalculateDistanceAndPrice(@RequestBody BookingCalculatePriceDTO bookingCalculatePriceDTO) {
+        Booking booking = calculateDistanceAndPrice(bookingCalculatePriceDTO);
 
         ViewPrice viewPrice = new ViewPrice();
         viewPrice.setFrom_location(booking.getFrom_location());
@@ -179,12 +169,14 @@ public class RestBookingController {
 
     @CrossOrigin
     @RequestMapping(path = "/calculateDistanceAndPrice", method = RequestMethod.POST)
-    public Booking calculateDistanceAndPrice(@RequestBody Booking booking) {
-        booking.setUnit_price(priceCalculator.getPricePerKm(booking.getCar_type()));
-        double distance = DistanceMatrixService.getDistance(booking.getFrom_location(), booking.getTo_location()) / 1000;
+    public Booking calculateDistanceAndPrice(@RequestBody BookingCalculatePriceDTO bookingCalculatePriceDTO) {
+        BaseMapper<Booking, BookingCalculatePriceDTO> mapper = new BaseMapper<>(Booking.class, BookingCalculatePriceDTO.class);
+        Booking booking = mapper.toPersistenceBean(bookingCalculatePriceDTO);
+        booking.setUnit_price(priceCalculator.getPricePerKm(bookingCalculatePriceDTO.getCar_type()));
+        double distance = DistanceMatrixService.getDistance(bookingCalculatePriceDTO.getFrom_location(), bookingCalculatePriceDTO.getTo_location()) / 1000;
         booking.setTotal_distance(distance);
 
-        double promotionPercentage = BookingUtils.calculatePromotionPercentage(booking.getDeparture_time(), distance, booking.isLaterPaidPersistentCustomer(), promotionPlanRepository);
+        double promotionPercentage = BookingUtils.calculatePromotionPercentage(bookingCalculatePriceDTO.getDeparture_time(), distance, false, promotionPlanRepository);
         booking.setPromotionPercentage(promotionPercentage);
 
         priceCalculator.calculateEstimatedPrice(booking);
@@ -196,12 +188,11 @@ public class RestBookingController {
     @CrossOrigin
     @RequestMapping(path = "/postBookingFromWebsite", method = RequestMethod.POST)
     public Booking postBookingFromWebsite(@RequestBody BookingDTO bookingDTO) {
-        Booking booking = mapper.toPersistenceBean(bookingDTO);
+        // Recalculate the price
+        Booking booking = calculateDistanceAndPrice(bookingDTO);
+        // Update status
         booking.setCreatedBy("site");
         booking.setStatus(OrderStatus.ORDERED);
-
-        // Recalculate the price
-        booking = calculateDistanceAndPrice(booking);
         // Recalculate the fee
         booking.setFee_percentage(12);
         booking.setTotal_fee(PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
@@ -221,7 +212,7 @@ public class RestBookingController {
                 updatedBookings.addAll(bookings);
             }
         }
-        RestResult restResult = new RestResult();
+        RestResult<List<BookingDTO>> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(updatedBookings));
 
         return restResult;
@@ -231,7 +222,7 @@ public class RestBookingController {
     @RequestMapping(value = "/getNewBooking", method = RequestMethod.POST)
     public RestResult getNewBooking() {
         List<Booking> newBooking = bookingRepository.findByStatus(OrderStatus.NEW);
-        RestResult restResult = new RestResult();
+        RestResult<List<BookingDTO>> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(newBooking));
 
         return restResult;
@@ -242,7 +233,7 @@ public class RestBookingController {
     public RestResult getAllBooking(@ApiIgnore @CurrentUser Driver driver) {
 
         List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driver.getEmail());
-        RestResult restResult = new RestResult();
+        RestResult<List<BookingDTO>> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(allBooking));
         return restResult;
     }
