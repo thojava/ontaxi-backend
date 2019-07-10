@@ -21,8 +21,10 @@ import vn.ontaxi.common.service.*;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.PriceUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
-import vn.ontaxi.rest.payload.dto.BookingCalculatePriceDTO;
+import vn.ontaxi.rest.payload.dto.request.BookingCalculatePriceRequestDTO;
 import vn.ontaxi.rest.payload.dto.BookingDTO;
+import vn.ontaxi.rest.payload.dto.request.PostBookingRequestDTO;
+import vn.ontaxi.rest.payload.dto.response.BookingCalculatePriceResponseDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
 import vn.ontaxi.rest.utils.SMSContentBuilder;
 
@@ -152,31 +154,32 @@ public class RestBookingController {
     }
 
     @CrossOrigin
-    @RequestMapping(path = "/firstCalculateDistanceAndPrice", method = RequestMethod.POST)
-    public BookingDTO firstCalculateDistanceAndPrice(@RequestBody BookingCalculatePriceDTO bookingCalculatePriceDTO) {
-        Booking booking = calculateDistanceAndPrice(bookingCalculatePriceDTO);
+    @RequestMapping(path = "/calculateDistanceAndPrice", method = RequestMethod.POST)
+    public BookingCalculatePriceResponseDTO calculateDistanceAndPrice(@RequestBody BookingCalculatePriceRequestDTO bookingCalculatePriceRequestDTO) {
+        Booking booking = calculateDistanceAndPriceHelper(bookingCalculatePriceRequestDTO);
 
-        ViewPrice viewPrice = new ViewPrice();
-        viewPrice.setFrom_location(booking.getFrom_location());
-        viewPrice.setTo_location(booking.getTo_location());
-        viewPrice.setTotal_distance(booking.getTotal_distance());
-        viewPrice.setDepartureTime(booking.getDeparture_time());
-        viewPrice.setCar_type(booking.getCar_type().name());
-        viewPriceRepository.saveAndFlush(viewPrice);
+        if(bookingCalculatePriceRequestDTO.isFirstPriceView()) {
+            ViewPrice viewPrice = new ViewPrice();
+            viewPrice.setFrom_location(booking.getFrom_location());
+            viewPrice.setTo_location(booking.getTo_location());
+            viewPrice.setTotal_distance(booking.getTotal_distance());
+            viewPrice.setDepartureTime(booking.getDeparture_time());
+            viewPrice.setCar_type(booking.getCar_type().name());
+            viewPriceRepository.saveAndFlush(viewPrice);
+        }
 
+        BaseMapper<Booking, BookingCalculatePriceResponseDTO> mapper = new BaseMapper<>(Booking.class, BookingCalculatePriceResponseDTO.class);
         return mapper.toDtoBean(booking);
     }
 
-    @CrossOrigin
-    @RequestMapping(path = "/calculateDistanceAndPrice", method = RequestMethod.POST)
-    public Booking calculateDistanceAndPrice(@RequestBody BookingCalculatePriceDTO bookingCalculatePriceDTO) {
-        BaseMapper<Booking, BookingCalculatePriceDTO> mapper = new BaseMapper<>(Booking.class, BookingCalculatePriceDTO.class);
-        Booking booking = mapper.toPersistenceBean(bookingCalculatePriceDTO);
-        booking.setUnit_price(priceCalculator.getPricePerKm(bookingCalculatePriceDTO.getCar_type()));
-        double distance = DistanceMatrixService.getDistance(bookingCalculatePriceDTO.getFrom_location(), bookingCalculatePriceDTO.getTo_location()) / 1000;
+    private Booking calculateDistanceAndPriceHelper(BookingCalculatePriceRequestDTO bookingCalculatePriceRequestDTO) {
+        BaseMapper<Booking, BookingCalculatePriceRequestDTO> mapper = new BaseMapper<>(Booking.class, BookingCalculatePriceRequestDTO.class);
+        Booking booking = mapper.toPersistenceBean(bookingCalculatePriceRequestDTO);
+        booking.setUnit_price(priceCalculator.getPricePerKm(bookingCalculatePriceRequestDTO.getCar_type()));
+        double distance = DistanceMatrixService.getDistance(bookingCalculatePriceRequestDTO.getFrom_location(), bookingCalculatePriceRequestDTO.getTo_location()) / 1000;
         booking.setTotal_distance(distance);
 
-        double promotionPercentage = BookingUtils.calculatePromotionPercentage(bookingCalculatePriceDTO.getDeparture_time(), distance, false, promotionPlanRepository);
+        double promotionPercentage = BookingUtils.calculatePromotionPercentage(bookingCalculatePriceRequestDTO.getDeparture_time(), distance, false, promotionPlanRepository);
         booking.setPromotionPercentage(promotionPercentage);
 
         priceCalculator.calculateEstimatedPrice(booking);
@@ -187,9 +190,12 @@ public class RestBookingController {
 
     @CrossOrigin
     @RequestMapping(path = "/postBookingFromWebsite", method = RequestMethod.POST)
-    public Booking postBookingFromWebsite(@RequestBody BookingDTO bookingDTO) {
+    public Booking postBookingFromWebsite(@RequestBody PostBookingRequestDTO bookingDTO) {
         // Recalculate the price
-        Booking booking = calculateDistanceAndPrice(bookingDTO);
+        Booking booking = calculateDistanceAndPriceHelper(bookingDTO);
+        booking.setName(bookingDTO.getName());
+        booking.setEmail(bookingDTO.getEmail());
+        booking.setMobile(bookingDTO.getMobile());
         // Update status
         booking.setCreatedBy("site");
         booking.setStatus(OrderStatus.ORDERED);

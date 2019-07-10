@@ -38,7 +38,6 @@ public class BaseMapper<Model, DTO> {
         return mapper.map(dtoBean, model);
     }
 
-
     public List<DTO> toDtoBean(Iterable<Model> models) {
         List<DTO> dtoBeans = new ArrayList<>();
         if (models == null) return dtoBeans;

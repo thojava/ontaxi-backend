@@ -4,15 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import vn.ontaxi.common.constant.BooleanConstants;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.constant.OrderStatus;
-import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.utils.NumberUtils;
-import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.rest.payload.dto.request.BookingCalculatePriceRequestDTO;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.Date;
 
-public class BookingDTO extends BookingCalculatePriceDTO {
+public class BookingDTO extends BookingCalculatePriceRequestDTO {
 
     private long id;
     private Date actual_departure_time;
