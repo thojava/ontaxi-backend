@@ -31,7 +31,7 @@ public class SwaggerConfig {
                 .securitySchemes(Lists.newArrayList(apiKey()))
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(regex("^\\/(customer|booking|driver\\/validateLoginEmail)\\/.*"))
+                .paths(regex("^\\/(customer|booking|driver)\\/.*"))
                 .build();//.pathProvider(new ExtendRelativePathProvider());
     }
 

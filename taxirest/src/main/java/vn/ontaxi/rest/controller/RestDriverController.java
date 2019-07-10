@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
@@ -46,6 +47,7 @@ import java.util.*;
 import static reactor.bus.selector.Selectors.$;
 
 @RestController
+@Transactional
 @RequestMapping("/driver")
 public class RestDriverController {
     private static final Logger logger = LoggerFactory.getLogger(RestDriverController.class);

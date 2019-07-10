@@ -1,13 +1,10 @@
 package vn.ontaxi.rest.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
-import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.ViewPrice;
 import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
@@ -16,22 +13,15 @@ import vn.ontaxi.common.service.DistanceMatrixService;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.PriceUtils;
-import vn.ontaxi.rest.config.security.CurrentUser;
-import vn.ontaxi.rest.payload.dto.BookingDTO;
 import vn.ontaxi.rest.payload.dto.request.BookingCalculatePriceRequestDTO;
 import vn.ontaxi.rest.payload.dto.request.PostBookingRequestDTO;
 import vn.ontaxi.rest.payload.dto.response.BookingCalculatePriceResponseDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @Transactional
 @RequestMapping("/booking")
 public class RestBookingController {
-    private BaseMapper<Booking, BookingDTO> mapper = new BaseMapper<>(Booking.class, BookingDTO.class);
-
     private final BookingRepository bookingRepository;
     private final ViewPriceRepository viewPriceRepository;
     private final PromotionPlanRepository promotionPlanRepository;
@@ -97,42 +87,5 @@ public class RestBookingController {
 
         bookingRepository.saveAndFlush(booking);
         return booking;
-    }
-
-    // Get the updated booking status, there are case when the app is closed and the booking status may be missed
-    @RequestMapping(value = "/updateBookingStatus", method = RequestMethod.POST)
-    public RestResult updateBookingStatus(@RequestBody List<Booking> bookings) {
-        List<Booking> updatedBookings = new ArrayList<>();
-        for (Booking booking : bookings) {
-            Booking serverBooking = bookingRepository.findOne(booking.getId());
-            if (!serverBooking.getStatus().equals(booking.getStatus())) {
-                booking.setStatus(serverBooking.getStatus());
-                updatedBookings.addAll(bookings);
-            }
-        }
-        RestResult<List<BookingDTO>> restResult = new RestResult<>();
-        restResult.setData(mapper.toDtoBean(updatedBookings));
-
-        return restResult;
-    }
-
-    @ApiOperation("Get new booking")
-    @RequestMapping(value = "/getNewBooking", method = RequestMethod.POST)
-    public RestResult getNewBooking() {
-        List<Booking> newBooking = bookingRepository.findByStatus(OrderStatus.NEW);
-        RestResult<List<BookingDTO>> restResult = new RestResult<>();
-        restResult.setData(mapper.toDtoBean(newBooking));
-
-        return restResult;
-    }
-
-    @ApiOperation("Download booking history")
-    @RequestMapping(value = "/downloadHistory", method = RequestMethod.POST)
-    public RestResult getAllBooking(@ApiIgnore @CurrentUser Driver driver) {
-
-        List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driver.getEmail());
-        RestResult<List<BookingDTO>> restResult = new RestResult<>();
-        restResult.setData(mapper.toDtoBean(allBooking));
-        return restResult;
     }
 }
