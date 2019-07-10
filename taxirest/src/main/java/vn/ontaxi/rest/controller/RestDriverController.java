@@ -41,9 +41,7 @@ import vn.ontaxi.rest.utils.SMSContentBuilder;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 import static reactor.bus.selector.Selectors.$;
 
@@ -51,6 +49,8 @@ import static reactor.bus.selector.Selectors.$;
 @RequestMapping("/driver")
 public class RestDriverController {
     private static final Logger logger = LoggerFactory.getLogger(RestDriverController.class);
+
+    private BaseMapper<Booking, BookingDTO> mapper = new BaseMapper<>(Booking.class, BookingDTO.class);
 
     private final LocationWithDriverService driversMapComponent;
     private final AuthenticationManager authenticationManager;
@@ -115,7 +115,7 @@ public class RestDriverController {
     @ApiOperation("Verify driver account via email")
     @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.GET)
     public RestResult validateLoginEmail(@PathVariable String email) {
-        RestResult restResult = new RestResult();
+        RestResult<JwtAuthenticationResponse> restResult = new RestResult<>();
         Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
         if (driver == null) {
             restResult.setSucceed(false);
@@ -123,7 +123,7 @@ public class RestDriverController {
             return restResult;
         }
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name()))));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(driver, null, Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name()))));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
@@ -134,7 +134,7 @@ public class RestDriverController {
 
     @RequestMapping(path = "/getDriverDetail", method = RequestMethod.POST)
     public RestResult getDriverDetail(@ApiIgnore @CurrentUser Driver driver) {
-        RestResult restResult = new RestResult();
+        RestResult<Driver> restResult = new RestResult<>();
         restResult.setData(driver);
         return restResult;
     }
@@ -229,6 +229,43 @@ public class RestDriverController {
         RestResult<BookingDTO> restResult = new RestResult<>();
         BaseMapper<Booking, BookingDTO> mapper = new BaseMapper<>(Booking.class, BookingDTO.class);
         restResult.setData(mapper.toDtoBean(persistedBooking));
+        return restResult;
+    }
+
+    // Get the updated booking status, there are case when the app is closed and the booking status may be missed
+    @RequestMapping(value = "/updateBookingStatus", method = RequestMethod.POST)
+    public RestResult updateBookingStatus(@RequestBody List<Booking> bookings) {
+        List<Booking> updatedBookings = new ArrayList<>();
+        for (Booking booking : bookings) {
+            Booking serverBooking = bookingRepository.findOne(booking.getId());
+            if (!serverBooking.getStatus().equals(booking.getStatus())) {
+                booking.setStatus(serverBooking.getStatus());
+                updatedBookings.addAll(bookings);
+            }
+        }
+        RestResult<List<BookingDTO>> restResult = new RestResult<>();
+        restResult.setData(mapper.toDtoBean(updatedBookings));
+
+        return restResult;
+    }
+
+    @ApiOperation("Get new booking")
+    @RequestMapping(value = "/getNewBooking", method = RequestMethod.POST)
+    public RestResult getNewBooking() {
+        List<Booking> newBooking = bookingRepository.findByStatus(OrderStatus.NEW);
+        RestResult<List<BookingDTO>> restResult = new RestResult<>();
+        restResult.setData(mapper.toDtoBean(newBooking));
+
+        return restResult;
+    }
+
+    @ApiOperation("Download booking history")
+    @RequestMapping(value = "/downloadHistory", method = RequestMethod.POST)
+    public RestResult getAllBooking(@ApiIgnore @CurrentUser Driver driver) {
+
+        List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driver.getEmail());
+        RestResult<List<BookingDTO>> restResult = new RestResult<>();
+        restResult.setData(mapper.toDtoBean(allBooking));
         return restResult;
     }
 }
