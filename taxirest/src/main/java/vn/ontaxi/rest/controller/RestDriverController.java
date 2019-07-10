@@ -3,6 +3,8 @@ package vn.ontaxi.rest.controller;
 import com.google.gson.Gson;
 import com.google.maps.model.LatLng;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.bus.Event;
 import reactor.bus.EventBus;
 import springfox.documentation.annotations.ApiIgnore;
+import vn.ontaxi.common.constant.BooleanConstants;
+import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.Role;
@@ -21,23 +25,33 @@ import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.DriverRepository;
 import vn.ontaxi.common.model.Location;
 import vn.ontaxi.common.model.LocationWithDriver;
+import vn.ontaxi.common.service.ConfigurationService;
+import vn.ontaxi.common.service.FCMService;
+import vn.ontaxi.common.service.SMSService;
+import vn.ontaxi.common.utils.PriceUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
+import vn.ontaxi.rest.payload.dto.BookingDTO;
 import vn.ontaxi.rest.payload.dto.DriverInfoDTO;
 import vn.ontaxi.rest.service.LocationWithDriverService;
+import vn.ontaxi.rest.utils.BaseMapper;
 import vn.ontaxi.rest.utils.JwtTokenProvider;
+import vn.ontaxi.rest.utils.SMSContentBuilder;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 import static reactor.bus.selector.Selectors.$;
 
 @RestController
 @RequestMapping("/driver")
 public class RestDriverController {
+    private static final Logger logger = LoggerFactory.getLogger(RestDriverController.class);
+
     private final LocationWithDriverService driversMapComponent;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
@@ -46,9 +60,15 @@ public class RestDriverController {
     private final EventBus eventBus;
     private final LocationWithDriverService locationWithDriverService;
     private final BookingRepository bookingRepository;
+    private final FCMService fcmService;
+    private final SMSService smsService;
+    private final ConfigurationService configurationService;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Autowired
-    public RestDriverController(LocationWithDriverService driversMapComponent, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource, DriverRepository driverRepository, EventBus eventBus, LocationWithDriverService locationWithDriverService, BookingRepository bookingRepository) {
+    public RestDriverController(LocationWithDriverService driversMapComponent, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource, DriverRepository driverRepository, EventBus eventBus, LocationWithDriverService locationWithDriverService, BookingRepository bookingRepository, FCMService fcmService, SMSService smsService, ConfigurationService configurationService) {
         this.driversMapComponent = driversMapComponent;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
@@ -57,6 +77,9 @@ public class RestDriverController {
         this.eventBus = eventBus;
         this.locationWithDriverService = locationWithDriverService;
         this.bookingRepository = bookingRepository;
+        this.fcmService = fcmService;
+        this.smsService = smsService;
+        this.configurationService = configurationService;
     }
 
     @PostConstruct
@@ -120,5 +143,92 @@ public class RestDriverController {
     public void uploadCurrentLocation(@ApiIgnore @CurrentUser Driver driver, @PathVariable int versionCode, @RequestBody Location currentLocation) {
 //        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
         eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driver.getEmail(), versionCode, new Date())));
+    }
+
+    @RequestMapping(path = "/acceptOrder", method = RequestMethod.POST)
+    public synchronized RestResult acceptOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody long orderId) {
+        em.flush();
+        em.clear();
+        Booking booking = bookingRepository.findOne(orderId);
+        logger.debug(driver.getEmail() + " accept " + orderId + " start " + booking.getStatus());
+        RestResult restResult = new RestResult();
+
+        if (driver.getAmount() < booking.getTotal_fee() + configurationService.getDriver_balance_low_limit()) {
+            restResult.setSucceed(false);
+            restResult.setMessage(messageSource.getMessage("your_account_amount_is_not_enough_for_this_order", null, Locale.getDefault()));
+            return restResult;
+        }
+
+        if (booking.getStatus().equalsIgnoreCase(OrderStatus.NEW)) {
+            booking.setStatus(OrderStatus.ACCEPTED);
+            booking.setAccepted_by(driver.getEmail());
+            booking = bookingRepository.saveAndFlush(booking);
+
+            driver.decreaseAmt(booking.getTotal_fee(), logger);
+            driver = driverRepository.saveAndFlush(driver);
+
+            // Send a broadcast fcm message to all device to notify the booking is accepted
+            fcmService.postAcceptedTaxiOrder(booking);
+
+            // Send SMS message to inform customer
+            if (!booking.isLaterPaidPersistentCustomer()) {
+                Booking finalBooking = booking;
+                Driver finalDriver = driver;
+                new Thread(() -> smsService.sendSMS(finalBooking.getMobile(), SMSContentBuilder.buildDriverAcceptedSMSContent(finalBooking, finalDriver))).start();
+            }
+
+            // Need this flush to make sure other thread trying to accept does not using old data
+            em.flush();
+        } else {
+            restResult.setSucceed(false);
+            restResult.setMessage(messageSource.getMessage("order_has_been_accepted_by_other_driver", null, Locale.getDefault()));
+        }
+        logger.debug(driver.getEmail() + " accept " + orderId + " complete " + booking.getStatus());
+        return restResult;
+    }
+
+    @RequestMapping(path = "/completeOrder", method = RequestMethod.POST)
+    public synchronized RestResult completeOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody Booking booking) {
+        Booking persistedBooking = bookingRepository.findOne(booking.getId());
+        if (!booking.isCompleted()) {
+            persistedBooking.setActual_total_distance(booking.getActual_total_distance());
+            persistedBooking.setOutward_distance(booking.getOutward_distance());
+            persistedBooking.setReturn_distance(booking.getReturn_distance());
+            persistedBooking.setWait_hours(booking.getWait_hours());
+            persistedBooking.setTransport_fee(booking.getTransport_fee());
+            persistedBooking.setRoutes(booking.getRoutes());
+            persistedBooking.setReturn_routes(booking.getReturn_routes());
+            persistedBooking.setActual_departure_time(booking.getActual_departure_time());
+            persistedBooking.setArrival_time(booking.getArrival_time());
+            persistedBooking.setReturnDepartureTime(booking.getReturnDepartureTime());
+            persistedBooking.setOutwardArrivalTime(booking.getOutwardArrivalTime());
+
+            if (!BooleanConstants.YES.equalsIgnoreCase(persistedBooking.getIsFixedPrice())) {
+                PriceUtils.calculateActualPrice(persistedBooking);
+            } else {
+                persistedBooking.setActual_total_price(persistedBooking.getTotal_price());
+                persistedBooking.setActualTotalPriceBeforePromotion(persistedBooking.getTotal_price());
+            }
+
+            double priceBeforePromotionWithoutTransportFee = persistedBooking.getActualTotalPriceBeforePromotion() - persistedBooking.getTransport_fee();
+            double fee = PriceUtils.calculateDriverFee(priceBeforePromotionWithoutTransportFee, persistedBooking.getFee_percentage(), persistedBooking.getPromotionPercentage());
+            persistedBooking.setActual_total_fee(fee);
+            persistedBooking.setStatus(OrderStatus.COMPLETED);
+            bookingRepository.saveAndFlush(persistedBooking);
+
+            double amt = persistedBooking.getActual_total_fee() - persistedBooking.getTotal_fee();
+            driver.decreaseAmt(amt, logger);
+            driverRepository.saveAndFlush(driver);
+
+            // Do not send message for contract customer
+            if (!persistedBooking.isLaterPaidPersistentCustomer()) {
+                new Thread(() -> smsService.sendSMS(persistedBooking.getMobile(), SMSContentBuilder.buildCompleteOrderSMSContent(persistedBooking))).start();
+            }
+        }
+
+        RestResult<BookingDTO> restResult = new RestResult<>();
+        BaseMapper<Booking, BookingDTO> mapper = new BaseMapper<>(Booking.class, BookingDTO.class);
+        restResult.setData(mapper.toDtoBean(persistedBooking));
+        return restResult;
     }
 }
