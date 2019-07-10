@@ -43,7 +43,6 @@ public class SwaggerConfig {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .forPaths(PathSelectors.ant("/customer/customerProfile"))
-                .forPaths(PathSelectors.ant("/booking/**"))
                 .build();
     }
 
