@@ -145,16 +145,13 @@
                                 <p:ajax/>
                             </p:selectBooleanCheckbox>
                         </p:column>
-                        <p:column headerText="Tiêu Đề" filterBy="#{headerFooter.name}" sortBy="#{headerFooter.name}">
-                            <h:outputText value="#{headerFooter.name}"/>
+                        <p:column headerText="Tên" filterBy="#{headerFooter.name}" sortBy="#{headerFooter.name}">
+                            <p:link value="#{headerFooter.name}" target="_blank" href="email_header_footer.jsf?id=#{headerFooter.id}"/>
                         </p:column>
                         <p:column headerText="Hoạt động" style="width: 100px; text-align:  center">
                             <p:selectBooleanCheckbox value="#{headerFooter.active}">
                                 <p:ajax update="@([id$=configHeaderFooter])" process="@this" listener="#{emailTemplateComponent.changeActivatedHeaderFooter(headerFooter.id)}"/>
                             </p:selectBooleanCheckbox>
-                        </p:column>
-                        <p:column style="width: 100px; text-align: center">
-                            <p:link value="Chi tiết" target="_blank" href="email_header_footer.jsf?id=#{headerFooter.id}"/>
                         </p:column>
                     </p:dataTable>
                 </h:form>
