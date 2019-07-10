@@ -27,8 +27,6 @@
             <p:commandButton value="Lưu Lại" update="@form" action="#{customerDetailComponent.saveCustomerInfo}" icon="fa fa-check" process="@this, @([id$=formId])"
                              styleClass="btn-primary"/>
             <p:spacer width="5" />
-            <p:outputLabel for="test" value="Tài khoản test: " />
-            <p:selectBooleanCheckbox id="test" value="#{customerDetailComponent.currentCustomer.testedCustomer}" />
 
             <p:panel style="margin-top: 10px">
                 <p:outputPanel class="ui-g ui-fluid" id="user_info">
@@ -179,6 +177,10 @@
                         <ui:include src="order_summary/completed_bookings.xhtml">
                             <ui:param name="customerPhone" value="#{customerDetailComponent.currentCustomer.phone}" />
                         </ui:include>
+                    </p:tab>
+                    <p:tab title="Cấu Hình">
+                        <p:outputLabel for="test" value="Tài khoản test: " />
+                        <p:selectBooleanCheckbox id="test" value="#{customerDetailComponent.currentCustomer.testedCustomer}" />
                     </p:tab>
                 </p:tabView>
 
