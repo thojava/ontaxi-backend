@@ -14,80 +14,141 @@
                 <div id="callPosition"></div>
             </div>
             <div style="display: inline-block; margin-left: 300px; width: 100%">
-                <h:form id="customerInfo">
-                    <div class="ui-g">
-                        <div class="ui-g-4">
-                            <h4>Khách hàng</h4>
-                            <p:fragment rendered="#{not empty callManagementDialogComponent.customerInfo.name}">
-                                <p:link href="customer_detail.jsf?id=#{callManagementDialogComponent.customerInfo.id}" target="_blank">#{callManagementDialogComponent.customerInfo.name}</p:link>
-                            </p:fragment>
-                            <p:fragment rendered="#{empty callManagementDialogComponent.customerInfo.name}">
-                                <p>Chưa có trong hệ thống</p>
-                            </p:fragment>
+                <p:outputPanel id="customerPanel">
+                    <h:form id="customerInfo" rendered="#{callManagementDialogComponent.fromCustomer}">
+                        <div class="ui-g">
+                            <div class="ui-g-4">
+                                <h4>Khách hàng</h4>
+                                <p:fragment rendered="#{not empty callManagementDialogComponent.customerInfo.name}">
+                                    <p:link href="customer_detail.jsf?id=#{callManagementDialogComponent.customerInfo.id}" target="_blank">#{callManagementDialogComponent.customerInfo.name}</p:link>
+                                </p:fragment>
+                                <p:fragment rendered="#{empty callManagementDialogComponent.customerInfo.name}">
+                                    <p>Chưa có trong hệ thống</p>
+                                </p:fragment>
+                            </div>
+                            <div class="ui-g-4">
+                                <h4>Số điện thoại</h4>
+                                <a href="#" onclick="StringeeSoftPhone.makeCall('842471008847', $('#phoneNumber').text().replace(/^0/, '84')); return false;">#{callManagementDialogComponent.customerInfo.phone}</a>
+                            </div>
+                            <div class="ui-g-4">
+                                <h4>Email</h4>
+                                <p>#{callManagementDialogComponent.customerInfo.email}</p>
+                            </div>
                         </div>
-                        <div class="ui-g-4">
-                            <h4>Số điện thoại</h4>
-                            <a id="phoneNumber" href="#" onclick="StringeeSoftPhone.makeCall('842471008847', $('#phoneNumber').text().replace(/^0/, '84')); return false;">#{callManagementDialogComponent.customerInfo.phone}</a>
+                        <div class="ui-g">
+                            <div class="ui-g-4">
+                                <h4>Giới Tính</h4>
+                                <p>#{callManagementDialogComponent.customerInfo.gender.string}</p>
+                            </div>
+                            <div class="ui-g-4">
+                                <h4>Ngày sinh</h4>
+                                <h:outputLabel value="#{callManagementDialogComponent.customerInfo.birthDay}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </h:outputLabel>
+                            </div>
+                            <div class="ui-g-4" style="    align-items: center; align-content: center; display: flex">
+                                <p:commandLink target="_blank" value="Tạo đơn" styleClass="new-order-btn" immediate="true" ajax="false" action="#{callManagementDialogComponent.createNewOrder}"/>
+                            </div>
                         </div>
-                        <div class="ui-g-4">
-                            <h4>Email</h4>
-                            <p id="email">#{callManagementDialogComponent.customerInfo.email}</p>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <strong>Nhà ở: </strong>
+                                <ui:repeat value="#{callManagementDialogComponent.addresses}" var="adds" varStatus="var">
+                                    #{var.index + 1}. #{adds} <br/>
+                                </ui:repeat>
+                            </div>
                         </div>
-                    </div>
-                    <div class="ui-g">
-                        <div class="ui-g-4">
-                            <h4>Giới Tính</h4>
-                            <p id="gender">#{callManagementDialogComponent.customerInfo.gender.string}</p>
+                        <div class="ui-g" style="margin-top: 10px">
+                            <div class="ui-g-12">
+                                <strong>Sở thích: </strong> #{callManagementDialogComponent.behaviours}
+                            </div>
                         </div>
-                        <div class="ui-g-4">
-                            <h4>Ngày sinh</h4>
-                            <h:outputLabel value="#{callManagementDialogComponent.customerInfo.birthDay}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
-                            </h:outputLabel>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <h4>Chuyến đi gần nhất</h4>
+                                <p:dataTable value="#{callManagementDialogComponent.latestBooking}"
+                                             var="booking">
+                                    <p:column headerText="Điểm đi">
+                                        #{booking.from_location}
+                                    </p:column>
+                                    <p:column headerText="Điểm đến">
+                                        #{booking.to_location}
+                                    </p:column>
+                                    <p:column headerText="Ngày giờ" style="width: 100px">
+                                        <h:outputText value="#{booking.created_datetime}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy hh mm" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Số tiền" style="width: 50px">
+                                        #{numberFormatterComponent.formatPrice(booking.total_price)}
+                                    </p:column>
+                                    <p:column headerText="Chi tiết" style="width: 50px">
+                                        <p:link value="Xem" target="_blank" href="order_detail.jsf?id=#{booking.id}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
                         </div>
-                        <div class="ui-g-4" style="    align-items: center; align-content: center; display: flex">
-                            <p:commandLink target="_blank" value="Tạo đơn" styleClass="new-order-btn" immediate="true" ajax="false" action="#{callManagementDialogComponent.createNewOrder}"/>
+                    </h:form>
+                </p:outputPanel>
+                <p:outputPanel id="driverPanel">
+                    <h:form id="driverInfo" rendered="#{not callManagementDialogComponent.fromCustomer}">
+                        <div class="ui-g">
+                            <div class="ui-g-4">
+                                <h4>Tài xế</h4>
+                                <p:fragment rendered="#{not empty callManagementDialogComponent.driverInfo.name}">
+                                    <p:link href="driver_detail.jsf?id=#{callManagementDialogComponent.driverInfo.id}" target="_blank">#{callManagementDialogComponent.driverInfo.name}</p:link>
+                                </p:fragment>
+                            </div>
+                            <div class="ui-g-4">
+                                <h4>Số điện thoại</h4>
+                                <a href="#" onclick="StringeeSoftPhone.makeCall('842471008847', $('#phoneNumber').text().replace(/^0/, '84')); return false;">#{callManagementDialogComponent.driverInfo.mobile}</a>
+                            </div>
+                            <div class="ui-g-4">
+                                <h4>Email</h4>
+                                <p>#{callManagementDialogComponent.driverInfo.email}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="ui-g">
-                        <div class="ui-g-12">
-                            <strong>Nhà ở: </strong>
-                            <ui:repeat value="#{callManagementDialogComponent.addresses}" var="adds" varStatus="var">
-                                #{var.index + 1}. #{adds} <br/>
-                            </ui:repeat>
+                        <div class="ui-g">
+                            <div class="ui-g-4">
+                                <h4>Loại xe</h4>
+                                <p>#{callManagementDialogComponent.driverInfo.carType.description}</p>
+                            </div>
+                            <div class="ui-g-4">
+                                <h4>Biển số</h4>
+                                <h:outputLabel value="#{callManagementDialogComponent.driverInfo.license_plates}" />
+                            </div>
+                            <div class="ui-g-4">
+                                <h4>Xếp hạng</h4>
+                                <h:outputLabel value="#{callManagementDialogComponent.driverInfo.level == 1 ? 'Ưu tiên' : 'Bình thường'}" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="ui-g" style="margin-top: 10px">
-                        <div class="ui-g-12">
-                            <strong>Sở thích: </strong> #{callManagementDialogComponent.behaviours}
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <h4>Lịch sử gần nhất</h4>
+                                <p:dataTable value="#{callManagementDialogComponent.latestBooking}"
+                                             var="booking">
+                                    <p:column headerText="Điểm đi">
+                                        #{booking.from_location}
+                                    </p:column>
+                                    <p:column headerText="Điểm đến">
+                                        #{booking.to_location}
+                                    </p:column>
+                                    <p:column headerText="Ngày giờ">
+                                        <h:outputText value="#{booking.created_datetime}" style="width: 100px">
+                                            <f:convertDateTime pattern="dd/MM/yyyy hh mm" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Số tiền" style="width: 50px;">
+                                        #{numberFormatterComponent.formatPrice(booking.total_price)}
+                                    </p:column>
+                                    <p:column headerText="Chi tiết" style="width: 50px">
+                                        <p:link value="Xem" target="_blank" href="order_detail.jsf?id=#{booking.id}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
                         </div>
-                    </div>
-                    <div class="ui-g">
-                        <div class="ui-g-12">
-                            <h4>Chuyến đi gần nhất</h4>
-                            <p:dataTable value="#{callManagementDialogComponent.latestBooking}"
-                                         var="booking">
-                                <p:column headerText="Điểm đi">
-                                    #{booking.from_location}
-                                </p:column>
-                                <p:column headerText="Điểm đến">
-                                    #{booking.to_location}
-                                </p:column>
-                                <p:column headerText="Ngày giờ">
-                                    <p:outputLabel value="#{booking.created_datetime}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy hh mm" />
-                                    </p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Số tiền">
-                                    #{numberFormatterComponent.formatPrice(booking.total_price)}
-                                </p:column>
-                                <p:column headerText="Chi tiết">
-                                    <p:link value="Xem" target="_blank" href="order_detail.jsf?id=#{booking.id}"/>
-                                </p:column>
-                            </p:dataTable>
-                        </div>
-                    </div>
-                </h:form>
+                    </h:form>
+                </p:outputPanel>
             </div>
         </div>
 

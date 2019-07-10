@@ -43,7 +43,7 @@
             </ui:insert>
         </div>
 
-        <p:remoteCommand name="showCallDialog" actionListener="#{callManagementDialogComponent.updateCustomerInfoFromUI}" oncomplete="PF('callDialog').show()" update="@([id$=customerInfo])"/>
+        <p:remoteCommand name="showCallDialog" actionListener="#{callManagementDialogComponent.updateInfoFromUI}" oncomplete="PF('callDialog').show()" update="@([id$=driverPanel]), @([id$=customerPanel])"/>
 
         <ui:include src="phone_call_dialog.xhtml"/>
 

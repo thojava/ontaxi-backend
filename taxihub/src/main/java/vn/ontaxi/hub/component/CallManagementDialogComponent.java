@@ -3,19 +3,15 @@ package vn.ontaxi.hub.component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import vn.ontaxi.common.constant.BookingOrder;
-import vn.ontaxi.common.jpa.entity.Address;
-import vn.ontaxi.common.jpa.entity.Behavior;
-import vn.ontaxi.common.jpa.entity.Booking;
-import vn.ontaxi.common.jpa.entity.Customer;
+import vn.ontaxi.common.jpa.entity.*;
 import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
-import vn.ontaxi.hub.component.viewmodel.TaxiLazyDataModel;
+import vn.ontaxi.common.jpa.repository.DriverRepository;
 import vn.ontaxi.hub.model.user.LoggedInUser;
-import vn.ontaxi.hub.utils.DateUtils;
 import vn.ontaxi.hub.utils.PhoneUtils;
 
 import javax.faces.context.FacesContext;
@@ -23,9 +19,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Scope("view")
 public class CallManagementDialogComponent {
 
     private Customer customerInfo;
+    private Driver driverInfo;
+    private boolean isFromCustomer = true;
+
+    @Autowired
+    private DriverRepository driverRepository;
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -33,18 +35,28 @@ public class CallManagementDialogComponent {
     @Autowired
     private BookingRepository bookingRepository;
 
-    public void resetCustomerInfo(){
+    public void resetData(){
         customerInfo = new Customer();
+        driverInfo = new Driver();
     }
 
-    public void updateCustomerInfo(String phone) {
-        resetCustomerInfo();
-        List<Customer> customers = customerRepository.findByPhone(PhoneUtils.normalizePhone(phone));
-        if (CollectionUtils.isNotEmpty(customers))
-            customerInfo = customers.get(0);
-        else {
-            customerInfo.setPhone(PhoneUtils.normalizePhone(phone));
+    public void updateInfo(String phone) {
+        resetData();
+
+        Driver driver = driverRepository.findByMobile(PhoneUtils.normalizePhone(phone));
+        if (driver != null) {
+            this.driverInfo = driver;
+            this.isFromCustomer = false;
+        } else {
+            this.isFromCustomer = true;
+            List<Customer> customers = customerRepository.findByPhone(PhoneUtils.normalizePhone(phone));
+            if (CollectionUtils.isNotEmpty(customers))
+                customerInfo = customers.get(0);
+            else {
+                customerInfo.setPhone(PhoneUtils.normalizePhone(phone));
+            }
         }
+
     }
 
     public String createNewOrder() {
@@ -52,10 +64,14 @@ public class CallManagementDialogComponent {
     }
 
     public List<Booking> getLatestBooking() {
-        if (customerInfo != null) {
-            List<Booking> byMobile = bookingRepository.findByMobile(customerInfo.getPhone(), new Sort(Sort.Direction.DESC, "id"));
-            if (CollectionUtils.isNotEmpty(byMobile))
-                return byMobile.subList(0, Math.min(2, byMobile.size()));
+        if (isFromCustomer && customerInfo != null) {
+            List<Booking> bookings = bookingRepository.findByMobile(customerInfo.getPhone(), new Sort(Sort.Direction.DESC, "id"));
+            if (CollectionUtils.isNotEmpty(bookings))
+                return bookings.subList(0, Math.min(2, bookings.size()));
+        } else if (!isFromCustomer && driverInfo != null) {
+            List<Booking> bookings = bookingRepository.findByAcceptedByDriver_Email(driverInfo.getEmail(), new Sort(Sort.Direction.DESC, "id"));
+            if (CollectionUtils.isNotEmpty(bookings))
+                return bookings.subList(0, Math.min(2, bookings.size()));
         }
 
         return new ArrayList<>();
@@ -79,13 +95,17 @@ public class CallManagementDialogComponent {
         return "";
     }
 
-    public void updateCustomerInfoFromUI() {
+    public void updateInfoFromUI() {
         String phone = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("phone");
-        updateCustomerInfo(phone);
+        updateInfo(phone);
     }
 
     public Customer getCustomerInfo() {
         return customerInfo;
+    }
+
+    public Driver getDriverInfo() {
+        return driverInfo;
     }
 
     public String getAccessToken() {
@@ -95,6 +115,13 @@ public class CallManagementDialogComponent {
             return user.getUser().getStringeeAccessToken();
 
         return "";
+    }
 
+    public boolean isFromCustomer() {
+        return isFromCustomer;
+    }
+
+    public void setFromCustomer(boolean fromCustomer) {
+        isFromCustomer = fromCustomer;
     }
 }
