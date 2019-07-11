@@ -1,6 +1,5 @@
 package vn.ontaxi.hub.component;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import vn.ontaxi.hub.component.viewmodel.TaxiLazyDataModel;
 import vn.ontaxi.common.constant.BookingOrder;
 import vn.ontaxi.common.constant.BooleanConstants;
@@ -36,6 +35,7 @@ public class BookingListComponent {
     private final DriverRepository driverRepository;
     private final FCMService fcmService;
     private final BookingRepository bookingRepository;
+    private final OrderSummaryTabStore orderSummaryTabStore;
 
     private TaxiLazyDataModel<Booking> scheduledBookings;
     private TaxiLazyDataModel<Booking> newBookings;
@@ -49,12 +49,13 @@ public class BookingListComponent {
 
 
     @Autowired
-    public BookingListComponent(DriverRepository driverRepository, FCMService fcmService, LazyDataService lazyDataService, BookingService bookingService, BookingRepository bookingRepository) {
+    public BookingListComponent(DriverRepository driverRepository, FCMService fcmService, LazyDataService lazyDataService, BookingService bookingService, BookingRepository bookingRepository, OrderSummaryTabStore orderSummaryTabStore) {
         this.driverRepository = driverRepository;
         this.fcmService = fcmService;
         this.lazyDataService = lazyDataService;
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
+        this.orderSummaryTabStore = orderSummaryTabStore;
     }
 
     public void resetNewOrder() {
@@ -62,55 +63,58 @@ public class BookingListComponent {
     }
 
     public void cancelBooking() {
-        for (Booking newBooking : getScheduledBookings()) {
-            if (newBooking.isBeanSelected()) {
-                newBooking.setStatus(OrderStatus.ABORTED);
-                bookingRepository.saveAndFlush(newBooking);
-                return;
-            }
+
+        switch (orderSummaryTabStore.getActiveIndex()) {
+            case 0:
+                List<Booking> scheduledBookingsWrappedData = getScheduledBookings().getWrappedData();
+                for (Booking newBooking : scheduledBookingsWrappedData) {
+                    if (newBooking.isBeanSelected()) {
+                        newBooking.setStatus(OrderStatus.ABORTED);
+                        bookingRepository.saveAndFlush(newBooking);
+                    }
+                }
+                scheduledBookings = null;
+                break;
+            case 1:
+                List<Booking> newBookingsWrappedData = getNewBookings().getWrappedData();
+                for (Booking newBooking : newBookingsWrappedData) {
+                    if (newBooking.isBeanSelected()) {
+                        newBooking.setStatus(OrderStatus.ABORTED);
+                        bookingRepository.saveAndFlush(newBooking);
+                        fcmService.abortNewTaxiOrder(newBooking);
+                    }
+                }
+                newBookings = null;
+                break;
+            case 2:
+                List<Booking> acceptedBookingsWrappedData = getAcceptedBookings().getWrappedData();
+                for (Booking acceptedBooking : acceptedBookingsWrappedData) {
+                    if (acceptedBooking.isBeanSelected()) {
+                        Driver accepted_by_driver = acceptedBooking.getAccepted_by_driver();
+                        accepted_by_driver.increaseAmt(acceptedBooking.getTotal_fee(), logger);
+                        driverRepository.saveAndFlush(accepted_by_driver);
+                        acceptedBooking.setStatus(OrderStatus.ABORTED);
+                        bookingRepository.saveAndFlush(acceptedBooking);
+                        fcmService.abortNewTaxiOrder(acceptedBooking);
+                        return;
+                    }
+                }
+                acceptedBookings = null;
+                break;
+            case 3:
+                List<Booking> completedBookingsWrappedData = getCompletedBookings().getWrappedData();
+                for (Booking completedBooking : completedBookingsWrappedData) {
+                    if (completedBooking.isBeanSelected()) {
+                        Driver accepted_by_driver = completedBooking.getAccepted_by_driver();
+                        accepted_by_driver.increaseAmt(completedBooking.getActual_total_fee(), logger);
+                        driverRepository.saveAndFlush(accepted_by_driver);
+                        completedBooking.setStatus(OrderStatus.ABORTED);
+                        bookingRepository.saveAndFlush(completedBooking);
+                    }
+                }
+                completedBookings = null;
+                break;
         }
-
-        for (Booking newBooking : getNewBookings()) {
-            if (newBooking.isBeanSelected()) {
-                newBooking.setStatus(OrderStatus.ABORTED);
-                bookingRepository.saveAndFlush(newBooking);
-
-                fcmService.abortNewTaxiOrder(newBooking);
-                return;
-            }
-        }
-
-        for (Booking acceptedBooking : getAcceptedBookings()) {
-            if (acceptedBooking.isBeanSelected()) {
-                Driver accepted_by_driver = acceptedBooking.getAccepted_by_driver();
-                accepted_by_driver.increaseAmt(acceptedBooking.getTotal_fee(), logger);
-                driverRepository.saveAndFlush(accepted_by_driver);
-
-                acceptedBooking.setStatus(OrderStatus.ABORTED);
-                bookingRepository.saveAndFlush(acceptedBooking);
-
-                fcmService.abortNewTaxiOrder(acceptedBooking);
-                return;
-            }
-        }
-
-        for (Booking completedBooking : getCompletedBookings()) {
-            if (completedBooking.isBeanSelected()) {
-                Driver accepted_by_driver = completedBooking.getAccepted_by_driver();
-                accepted_by_driver.increaseAmt(completedBooking.getActual_total_fee(), logger);
-                driverRepository.saveAndFlush(accepted_by_driver);
-
-                completedBooking.setStatus(OrderStatus.ABORTED);
-                bookingRepository.saveAndFlush(completedBooking);
-
-                return;
-            }
-        }
-
-        newBookings = null;
-        scheduledBookings = null;
-        acceptedBookings = null;
-        completedBookings = null;
     }
 
     public TaxiLazyDataModel<Booking> getScheduledBookings() {

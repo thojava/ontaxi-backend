@@ -32,12 +32,12 @@ public class Customer extends AbstractEntity {
     @Transient
     private Set<Behavior> behaviors;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     private List<Address> addresses = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
     private Set<CustomerBehavior> customerBehaviors = new HashSet<>();
 

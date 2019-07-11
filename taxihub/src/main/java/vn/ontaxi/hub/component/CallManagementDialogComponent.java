@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.*;
 import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
@@ -75,6 +76,14 @@ public class CallManagementDialogComponent {
         }
 
         return new ArrayList<>();
+    }
+
+    public String getStatusName(String status){
+        return OrderStatus.getStatusName(status);
+    }
+
+    public String normalizeAddress(String address) {
+        return address.replaceAll("(, Vietnam|, Việt Nam)", "");
     }
 
     public List<String> getAddresses() {

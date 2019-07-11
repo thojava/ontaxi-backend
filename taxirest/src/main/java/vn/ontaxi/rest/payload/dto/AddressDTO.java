@@ -1,6 +1,7 @@
 package vn.ontaxi.rest.payload.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.jpa.entity.Address;
 import vn.ontaxi.common.jpa.entity.Customer;
 
@@ -12,12 +13,14 @@ public class AddressDTO {
     public AddressDTO() {
     }
 
+    @JsonIgnore
     private long id;
     private String address;
     @Enumerated(EnumType.STRING)
     private Address.AddressType addressType = Address.AddressType.HOME;
     private double lat;
     private double lng;
+    @JsonIgnore
     private int numOfBooking;
 
     @Transient
@@ -66,6 +69,7 @@ public class AddressDTO {
     }
 
     @Transient
+    @JsonIgnore
     public String getCenterGeoMap() {
         return lat + ", " + lng;
     }

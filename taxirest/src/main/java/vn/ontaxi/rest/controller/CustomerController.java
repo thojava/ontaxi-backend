@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.EmailType;
-import vn.ontaxi.common.jpa.entity.Customer;
-import vn.ontaxi.common.jpa.entity.CustomerAccount;
-import vn.ontaxi.common.jpa.entity.EmailTemplate;
-import vn.ontaxi.common.jpa.entity.Role;
+import vn.ontaxi.common.jpa.entity.*;
 import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
@@ -28,21 +26,23 @@ import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.CustomerLogin;
 import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
 import vn.ontaxi.rest.payload.SetPasswordRequest;
+import vn.ontaxi.rest.payload.dto.AddressDTO;
+import vn.ontaxi.rest.payload.dto.BehaviorDTO;
 import vn.ontaxi.rest.payload.dto.CustomerDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
 import vn.ontaxi.rest.utils.JwtTokenProvider;
 
 import javax.validation.Valid;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
 
     private BaseMapper<Customer, CustomerDTO> mapper = new BaseMapper<>(Customer.class, CustomerDTO.class);
+    private BaseMapper<Address, AddressDTO> addressMapper = new BaseMapper<>(Address.class, AddressDTO.class);
+    private BaseMapper<Behavior, BehaviorDTO> behaviorMapper = new BaseMapper<>(Behavior.class, BehaviorDTO.class);
 
     private final CustomerRepository customerRepository;
     private final CustomerAccountRepository customerAccountRepository;
@@ -160,10 +160,17 @@ public class CustomerController {
         return restResult;
     }
 
-    @RequestMapping(path = "/customerProfile", method = RequestMethod.GET)
+    @RequestMapping(path = "/currentCustomerProfile", method = RequestMethod.GET)
     public RestResult<CustomerDTO> getCustomerDetail(@ApiIgnore @CurrentUser Customer customer) {
         RestResult<CustomerDTO> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(customer));
+        return restResult;
+    }
+
+    @RequestMapping(path = "/getCustomerInfo/{email:.+}", method = RequestMethod.GET)
+    public RestResult<CustomerDTO> getCustomerInfo(@PathVariable String email) {
+        RestResult<CustomerDTO> restResult = new RestResult<>();
+        restResult.setData(mapper.toDtoBean(customerRepository.findByEmail(email)));
         return restResult;
     }
 
@@ -191,6 +198,26 @@ public class CustomerController {
         String jwt = tokenProvider.generateToken(authentication);
         restResult.setData(new JwtAuthenticationResponse(jwt));
 
+        return restResult;
+    }
+
+    @RequestMapping(path = "/updateCustomer", method = RequestMethod.POST)
+    public RestResult<CustomerDTO> updateCustomerInfo(@ApiIgnore @CurrentUser Customer customer, @RequestBody CustomerDTO customerDTO) {
+
+        customer.setPhone(customerDTO.getPhone());
+        customer.setEmail(customerDTO.getEmail());
+        customer.setName(customerDTO.getName());
+        customer.setGender(customerDTO.getGender());
+        customer.setBirthDay(customerDTO.getBirthDay());
+        customer.setJob(customerDTO.getJob());
+        customer.setAddresses(addressMapper.toPersistenceBean(customerDTO.getAddresses()));
+        if (CollectionUtils.isNotEmpty(customer.getAddresses()))
+            customer.getAddresses().forEach(address -> address.setCustomer(customer));
+        customer.setBehaviors(new HashSet<>(behaviorMapper.toPersistenceBean(new ArrayList<>(customerDTO.getBehaviors()))));
+
+        customerRepository.save(customer);
+        RestResult<CustomerDTO> restResult = new RestResult<>();
+        restResult.setData(mapper.toDtoBean(customer));
         return restResult;
     }
 

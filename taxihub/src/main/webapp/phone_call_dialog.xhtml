@@ -69,20 +69,23 @@
                                 <p:dataTable value="#{callManagementDialogComponent.latestBooking}"
                                              var="booking">
                                     <p:column headerText="Điểm đi">
-                                        #{booking.from_location}
+                                        #{callManagementDialogComponent.normalizeAddress(booking.from_location)}
                                     </p:column>
                                     <p:column headerText="Điểm đến">
-                                        #{booking.to_location}
+                                        #{callManagementDialogComponent.normalizeAddress(booking.to_location)}
                                     </p:column>
                                     <p:column headerText="Ngày giờ" style="width: 100px">
                                         <h:outputText value="#{booking.created_datetime}">
                                             <f:convertDateTime pattern="dd/MM/yyyy hh mm" />
                                         </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Số tiền" style="width: 50px">
+                                    <p:column headerText="Trạng Thái">
+                                        #{callManagementDialogComponent.getStatusName(booking.status)}
+                                    </p:column>
+                                    <p:column headerText="Số tiền" style="width: 60px; text-align: center">
                                         #{numberFormatterComponent.formatPrice(booking.total_price)}
                                     </p:column>
-                                    <p:column headerText="Chi tiết" style="width: 50px">
+                                    <p:column headerText="Chi tiết" style="width: 50px; text-align: center">
                                         <p:link value="Xem" target="_blank" href="order_detail.jsf?id=#{booking.id}"/>
                                     </p:column>
                                 </p:dataTable>
@@ -128,20 +131,23 @@
                                 <p:dataTable value="#{callManagementDialogComponent.latestBooking}"
                                              var="booking">
                                     <p:column headerText="Điểm đi">
-                                        #{booking.from_location}
+                                        #{callManagementDialogComponent.normalizeAddress(booking.from_location)}
                                     </p:column>
                                     <p:column headerText="Điểm đến">
-                                        #{booking.to_location}
+                                        #{callManagementDialogComponent.normalizeAddress(booking.to_location)}
                                     </p:column>
                                     <p:column headerText="Ngày giờ">
                                         <h:outputText value="#{booking.created_datetime}" style="width: 100px">
                                             <f:convertDateTime pattern="dd/MM/yyyy hh mm" />
                                         </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Số tiền" style="width: 50px;">
+                                    <p:column headerText="Trạng Thái">
+                                        #{callManagementDialogComponent.getStatusName(booking.status)}
+                                    </p:column>
+                                    <p:column headerText="Số tiền" style="width: 60px;  text-align: center">
                                         #{numberFormatterComponent.formatPrice(booking.total_price)}
                                     </p:column>
-                                    <p:column headerText="Chi tiết" style="width: 50px">
+                                    <p:column headerText="Chi tiết" style="width: 50px; text-align: center">
                                         <p:link value="Xem" target="_blank" href="order_detail.jsf?id=#{booking.id}"/>
                                     </p:column>
                                 </p:dataTable>

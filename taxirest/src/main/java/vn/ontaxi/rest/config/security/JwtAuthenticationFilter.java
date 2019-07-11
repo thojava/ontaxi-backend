@@ -3,6 +3,7 @@ package vn.ontaxi.rest.config.security;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -34,6 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CustomerRepository customerRepository;
 
+    private final String PRIVATE_TOKEN = "ONTAXI_PRIVATE_TOKEN";
+
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Override
@@ -41,7 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            if (!StringUtils.isEmpty(jwt) && PRIVATE_TOKEN.equals(jwt)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("SYSTEM", null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name())));
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 String accountType = tokenProvider.getAccountTypeFromJWT(jwt);
                 String email = tokenProvider.getEmailFromJWT(jwt);
                 if (accountType.equalsIgnoreCase(JwtTokenProvider.DRIVER)) {
