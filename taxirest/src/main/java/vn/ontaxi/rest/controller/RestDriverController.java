@@ -115,7 +115,7 @@ public class RestDriverController {
     }
 
     @ApiOperation("Verify driver account via email")
-    @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.GET)
+    @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.POST)
     public RestResult validateLoginEmail(@PathVariable String email) {
         RestResult<JwtAuthenticationResponse> restResult = new RestResult<>();
         Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
