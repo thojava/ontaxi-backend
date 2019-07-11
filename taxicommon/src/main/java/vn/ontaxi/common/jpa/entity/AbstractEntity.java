@@ -69,6 +69,7 @@ public abstract class AbstractEntity implements Serializable {
     @Transient
     public abstract String getKey();
 
+    @JsonIgnore
     public String getModifiedBy() {
         return modifiedBy;
     }
