@@ -32,7 +32,7 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(regex("^\\/(customer|booking|driver)\\/.*"))
-                .build();//.pathProvider(new ExtendRelativePathProvider());
+                .build().pathProvider(new ExtendRelativePathProvider());
     }
 
     private ApiKey apiKey() {
@@ -42,7 +42,7 @@ public class SwaggerConfig {
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
-                .forPaths(regex("^/customer\\/(updateCustomer|getCustomerInfo|currentCustomerProfile)\\.*"))
+                .forPaths(regex("^/customer\\/(updateCustomer|getCustomerInfo|currentCustomerProfile)(\\/.*)?"))
                 .build();
     }
 
