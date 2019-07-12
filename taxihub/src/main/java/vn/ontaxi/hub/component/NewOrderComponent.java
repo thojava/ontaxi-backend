@@ -1,6 +1,16 @@
 package vn.ontaxi.hub.component;
 
+import com.google.maps.GeoApiContext;
+import com.google.maps.PlaceAutocompleteRequest;
+import com.google.maps.PlacesApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.AutocompletePrediction;
+import com.google.maps.model.ComponentFilter;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.core.env.Environment;
+import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.repository.*;
+import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
 import vn.ontaxi.common.constant.BookingTypes;
 import vn.ontaxi.common.constant.BooleanConstants;
@@ -22,9 +32,12 @@ import vn.ontaxi.common.utils.PriceUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Scope("view")
@@ -38,11 +51,14 @@ public class NewOrderComponent extends AbstractOrderComponent {
     private final UserCredentialComponent userCredentialComponent;
     private final PriceCalculator priceCalculator;
     private final CustomerService customerService;
+    private final CustomerRepository customerRepository;
+    private final Environment env;
+    private String GOOGLE_MAP_PLACE_API_KEY;
 
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService) {
+    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService, CustomerRepository customerRepository, Environment env) {
         super(messageSource, persistentCustomerRepository);
         this.driverRepository = driverRepository;
         this.bookingRepository = bookingRepository;
@@ -51,10 +67,14 @@ public class NewOrderComponent extends AbstractOrderComponent {
         this.promotionPlanRepository = promotionPlanRepository;
         this.priceCalculator = priceCalculator;
         this.customerService = customerService;
+        this.customerRepository = customerRepository;
+        this.env = env;
     }
 
     @PostConstruct
     public void init() {
+        GOOGLE_MAP_PLACE_API_KEY = env.getProperty("google_map_place_recommendation_key");
+
         booking = new Booking();
         booking.setPromotionPercentage(BookingUtils.calculatePromotionPercentage(DateUtils.today(), 0, false, promotionPlanRepository));
         booking.setFee_percentage(BookingUtils.calculateFeePercentage(booking));
@@ -65,6 +85,27 @@ public class NewOrderComponent extends AbstractOrderComponent {
         booking.setMobile(params.get("mobile"));
 
         sendToGroupOption = SendToGroupOptions.INDIVIDUAL;
+    }
+
+    public void updateCustomerInformation() {
+        if (StringUtils.isNotEmpty(booking.getMobile())) {
+            List<Customer> customers = customerRepository.findByPhone(booking.getMobile());
+            if (CollectionUtils.isNotEmpty(customers)) {
+                booking.setName(customers.get(0).getName());
+                booking.setReturnedCustomer(true);
+            } else {
+                booking.setReturnedCustomer(false);
+            }
+        }
+    }
+
+    public List<String> recommendPlaces(String address) throws InterruptedException, ApiException, IOException {
+
+        GeoApiContext geoApiContext = new GeoApiContext.Builder().apiKey(GOOGLE_MAP_PLACE_API_KEY)
+                .build();
+
+        AutocompletePrediction[] autocompletePredictions = PlacesApi.placeAutocomplete(geoApiContext, address, new PlaceAutocompleteRequest.SessionToken()).language("vi_VN").await();
+        return Stream.of(autocompletePredictions).map(autocompletePrediction -> autocompletePrediction.description).collect(Collectors.toList());
     }
 
     public String scheduleBooking() {

@@ -14,19 +14,20 @@
         <p:spacer height="10px"/>
 
         <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
-        <h:outputScript name="js/new_order.js"/>
         <h:form id="newOrderForm">
             <!--@elvariable id="newOrderComponent" type="vn.ontaxi.hub.component.NewOrderComponent"-->
             <!--@elvariable id="selectItemGenerator" type="vn.ontaxi.hub.component.SelectItemGenerator"-->
-            <p:growl id="growl" showDetail="true" sticky="true" severity="error, info"/>
+            <!--<p:growl id="growl" showDetail="true" sticky="true" severity="error, info"/>-->
             <table class="table_booking_info">
                 <tr>
                     <td class="label">
                         Mobile
                     </td>
                     <td>
-                        <p:inputText id="mobile" label="#{msg.mobile}" type="text" autocomplete="off"
-                                     value="#{newOrderComponent.booking.mobile}" required="true"/>
+                        <p:inputText id="mobile" label="#{msg.mobile}" type="text"
+                                     value="#{newOrderComponent.booking.mobile}" required="true">
+                            <p:ajax process="@this" listener="#{newOrderComponent.updateCustomerInformation}" update="name, returnCustomer"/>
+                        </p:inputText>
                         <p:message for="mobile"/>
                     </td>
                 </tr>
@@ -36,7 +37,7 @@
                     </td>
                     <td>
                         <p:inputText id="name" label="#{msg.name}" type="text" value="#{newOrderComponent.booking.name}"
-                                     required="false" autocomplete="off"/>
+                                     required="false"/>
                         <p:message for="name"/>
                     </td>
                 </tr>
@@ -45,7 +46,7 @@
                         #{msg.returned_customer}
                     </td>
                     <td>
-                        <p:selectBooleanCheckbox id="returnCustomer" value="#{newOrderComponent.booking.returnedCustomer}" onchange="function updatePromotionPercentage() {
+                        <p:selectBooleanCheckbox id="returnCustomer" disabled="true" value="#{newOrderComponent.booking.returnedCustomer}" onchange="function updatePromotionPercentage() {
                             if(document.getElementById('newOrderForm:returnCustomer_input').checked) {
                                 PF('promotionPercentageSelect').selectValue('4.0');
                             } else {
@@ -72,13 +73,14 @@
                         #{msg.diem_di}
                     </td>
                     <td colspan="3">
-                        <p:inputText id="fromLocation" value="#{newOrderComponent.booking.from_location}"
-                                     required="true" style="width: 600px" autocomplete="off"/>
+                        <p:autoComplete id="fromLocation" placeholder="Nhập Địa Chỉ" queryDelay="500" minQueryLength="3"
+                                        cache="true" size="70"
+                                        required="true"
+                                        cacheTimeout="30000" completeMethod="#{newOrderComponent.recommendPlaces}" converter="stringTrimmer"
+                                        value="#{newOrderComponent.booking.from_location}">
+                            <p:ajax event="itemSelect" process="fromLocation"/>
+                        </p:autoComplete>
                         <p:message for="fromLocation"/>
-                        <p:inputText type="hidden" id="fromCity" class="administrative_area_level_1"
-                                     value="#{newOrderComponent.booking.from_city}"/>
-                        <p:inputText type="hidden" id="fromDistrict" class="administrative_area_level_2"
-                                     value="#{newOrderComponent.booking.from_district}"/>
                     </td>
                 </tr>
                 <tr>
@@ -86,13 +88,14 @@
                         #{msg.diem_den}
                     </td>
                     <td colspan="3">
-                        <p:inputText id="toLocation" value="#{newOrderComponent.booking.to_location}" required="true"
-                                     style="width: 600px" autocomplete="off"/>
+                        <p:autoComplete id="toLocation" placeholder="Nhập Địa Chỉ" queryDelay="500" minQueryLength="3"
+                                        cache="true" size="70"
+                                        required="true"
+                                        cacheTimeout="30000" completeMethod="#{newOrderComponent.recommendPlaces}" converter="stringTrimmer"
+                                        value="#{newOrderComponent.booking.to_location}">
+                            <p:ajax event="itemSelect" process="toLocation"/>
+                        </p:autoComplete>
                         <p:message for="toLocation"/>
-                        <p:inputText type="hidden" id="toCity" class="administrative_area_level_1"
-                                     value="#{newOrderComponent.booking.to_city}"/>
-                        <p:inputText type="hidden" id="toDistrict" class="administrative_area_level_2"
-                                     value="#{newOrderComponent.booking.to_district}"/>
                     </td>
                 </tr>
                 <tr>
@@ -119,7 +122,7 @@
                         #{msg.khoi_hanh}
                     </td>
                     <td>
-                        <p:calendar id="departureDate" value="#{newOrderComponent.booking.departure_time}" autocomplete="off"
+                        <p:calendar id="departureDate" value="#{newOrderComponent.booking.departure_time}"
                                     pattern="MM/dd/yyyy HH:mm" required="true"/>
                         <p:message for="departureDate"/>
                     </td>
