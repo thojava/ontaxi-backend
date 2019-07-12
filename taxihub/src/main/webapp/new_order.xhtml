@@ -25,7 +25,7 @@
                         Mobile
                     </td>
                     <td>
-                        <p:inputText id="mobile" label="#{msg.mobile}" type="text"
+                        <p:inputText id="mobile" label="#{msg.mobile}" type="text" autocomplete="false"
                                      value="#{newOrderComponent.booking.mobile}" required="true"/>
                         <p:message for="mobile"/>
                     </td>
@@ -36,7 +36,7 @@
                     </td>
                     <td>
                         <p:inputText id="name" label="#{msg.name}" type="text" value="#{newOrderComponent.booking.name}"
-                                     required="false"/>
+                                     required="false" autocomplete="false"/>
                         <p:message for="name"/>
                     </td>
                 </tr>
@@ -73,7 +73,7 @@
                     </td>
                     <td colspan="3">
                         <p:inputText id="fromLocation" value="#{newOrderComponent.booking.from_location}"
-                                     required="true" style="width: 600px"/>
+                                     required="true" style="width: 600px" autocomplete="false"/>
                         <p:message for="fromLocation"/>
                         <p:inputText type="hidden" id="fromCity" class="administrative_area_level_1"
                                      value="#{newOrderComponent.booking.from_city}"/>
@@ -87,7 +87,7 @@
                     </td>
                     <td colspan="3">
                         <p:inputText id="toLocation" value="#{newOrderComponent.booking.to_location}" required="true"
-                                     style="width: 600px"/>
+                                     style="width: 600px" autocomplete="false"/>
                         <p:message for="toLocation"/>
                         <p:inputText type="hidden" id="toCity" class="administrative_area_level_1"
                                      value="#{newOrderComponent.booking.to_city}"/>
@@ -119,7 +119,7 @@
                         #{msg.khoi_hanh}
                     </td>
                     <td>
-                        <p:calendar id="departureDate" value="#{newOrderComponent.booking.departure_time}"
+                        <p:calendar id="departureDate" value="#{newOrderComponent.booking.departure_time}" autocomplete="false"
                                     pattern="MM/dd/yyyy HH:mm" required="true"/>
                         <p:message for="departureDate"/>
                     </td>
