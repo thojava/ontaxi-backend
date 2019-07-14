@@ -3,9 +3,11 @@ package vn.ontaxi.common.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.LicenseTypes;
 import vn.ontaxi.common.utils.RoundUtils;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Driver extends AbstractEntity {
@@ -16,7 +18,9 @@ public class Driver extends AbstractEntity {
     private String email;
     private String mobile;
     private String name;
+    private Date birthDay;
     private String license_plates;
+    private LicenseTypes licenseType;
     private double amount;
     @Enumerated(EnumType.STRING)
     private CarTypes carType;
@@ -142,6 +146,24 @@ public class Driver extends AbstractEntity {
 
     public void setAirport(boolean airport) {
         this.airport = airport;
+    }
+
+    @JsonIgnore
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    @JsonIgnore
+    public LicenseTypes getLicenseType() {
+        return licenseType;
+    }
+
+    public void setLicenseType(LicenseTypes licenseType) {
+        this.licenseType = licenseType;
     }
 
     @Override
