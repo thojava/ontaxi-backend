@@ -410,8 +410,7 @@
                             oncomplete="initMap();"/>
                 </p:selectOneRadio>
                 Độ Chính Xác ( Theo mét )
-                <!--@elvariable id="configurationComponent" type="vn.ontaxi.hub.component.ConfigurationComponent"-->
-                <p:inputText value="#{configurationComponent.accuracy_limit}">
+                <p:inputText value="#{configurationService.accuracy_limit}">
                     <p:ajax update="locationJson, contentForm:systemCalculatedDistance, contentForm:returnSystemCalculatedDistance, contentForm:outwardSystemCalculatedDistance"
                             oncomplete="initMap();"/>
                 </p:inputText>
