@@ -24,7 +24,7 @@ function initMap() {
         var myLatLng = new google.maps.LatLng(location['lat'], location['lng']);
         var marker = new google.maps.Marker({
             position: myLatLng,
-            icon: "http://ontaxi.vn:8080/javax.faces.resource/images/dot.png.jsf",
+            icon: "https://hub.ontaxi.vn/javax.faces.resource/images/dot.png.jsf",
             title: "" + location['acc'],
             map: map
         });
