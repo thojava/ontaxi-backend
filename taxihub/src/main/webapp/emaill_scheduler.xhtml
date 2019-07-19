@@ -49,8 +49,8 @@
                 <p:column headerText="Id" style="width: 50px">
                     <p:commandLink value="#{emailScheduler.id}" actionListener="#{emailSchedulerComponent.setCurrentEmailScheduler(emailScheduler)}" process="@this" oncomplete="PF('emailScheduler').show()" update="@([id$=emailScheduler])"/>
                 </p:column>
-                <p:column headerText="Email mẫu" filterBy="#{emailScheduler.emailTemplate.name}" sortBy="#{emailScheduler.emailTemplate.name}">
-                    <p:link value="#{emailScheduler.emailTemplate.name}" target="_blank" href="email_template_detail.jsf?id=#{emailScheduler.emailTemplate.id}"/>
+                <p:column headerText="Email mẫu" filterBy="#{emailScheduler.emailTemplate.subject}" sortBy="#{emailScheduler.emailTemplate.subject}">
+                    <p:link value="#{emailScheduler.emailTemplate.subject}" target="_blank" href="email_template_detail.jsf?id=#{emailScheduler.emailTemplate.id}"/>
                 </p:column>
                 <p:column headerText="Nhóm khách hàng" filterBy="#{emailScheduler.customerGroup.name}" sortBy="#{emailScheduler.customerGroup.name}">
                     <p:outputLabel value="#{emailScheduler.customerGroup.name}" />
