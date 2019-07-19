@@ -78,6 +78,10 @@
     <param-name>primefaces.RESET_VALUES</param-name>
     <param-value>true</param-value>
   </context-param>
+  <context-param>
+    <param-name>primefaces.THEME</param-name>
+    <param-value>poseidon-turquoise</param-value>
+  </context-param>
 <!--  <context-param>
     <param-name>org.apache.el.parser.SKIP_IDENTIFIER_CHECK</param-name>
     <param-value>true</param-value>
