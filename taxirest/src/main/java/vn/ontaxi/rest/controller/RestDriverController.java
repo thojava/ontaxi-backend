@@ -3,6 +3,7 @@ package vn.ontaxi.rest.controller;
 import com.google.gson.Gson;
 import com.google.maps.model.LatLng;
 import io.swagger.annotations.ApiOperation;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,6 +269,26 @@ public class RestDriverController {
         List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driver.getEmail());
         RestResult<List<BookingDTO>> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(allBooking));
+        return restResult;
+    }
+
+    @RequestMapping(value = "/getAppVersion", method = RequestMethod.GET)
+    public RestResult<String> getAppVersion() {
+        RestResult<String> restResult = new RestResult();
+        try {
+            String newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=vn.ontaxi.driver&hl=vi")
+                    .timeout(30000)
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("http://www.google.com")
+                    .get()
+                    .select(".hAyfc .htlgb")
+                    .get(7)
+                    .ownText();
+            restResult.setData(newVersion);
+        } catch (Exception e) {
+            restResult.setData("0");
+        }
+
         return restResult;
     }
 }
