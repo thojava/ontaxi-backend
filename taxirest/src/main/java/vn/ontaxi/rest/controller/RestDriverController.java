@@ -129,7 +129,7 @@ public class RestDriverController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-        restResult.setData(new JwtAuthenticationResponse(jwt));
+        restResult.setData(new JwtAuthenticationResponse(jwt, driver.getName()));
 
         return restResult;
     }
