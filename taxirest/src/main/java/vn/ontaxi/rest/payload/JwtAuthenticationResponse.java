@@ -5,6 +5,10 @@ public class JwtAuthenticationResponse {
     private String tokenType = "Bearer";
     private String driverName;
 
+    public JwtAuthenticationResponse(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
     public JwtAuthenticationResponse(String accessToken, String driverName) {
         this.accessToken = accessToken;
         this.driverName = driverName;
