@@ -8,10 +8,10 @@ import vn.ontaxi.common.utils.NumberUtils;
 import vn.ontaxi.common.utils.PriceUtils;
 
 public class SMSContentBuilder {
-    private static final String HOTLINE = "0976857832";
-    private static final String DRIVER_ACCEPTED_SMS_TEMPLATE = "ON TAXI: Quy khach da dat xe thanh cong. Lai xe %s Bien So %s se don khach vao luc %s. Cam On Quy Khach";
-    private static final String SINGLE_ROUTE_TEMPLATE = "ON TAXI: Khach Hang: %s . %s -> %s : %s km * %d d/km = %s. Phi Cau Duong: %s. Tong Tien %s, duoc giam %d %%, Thanh Toan %s. Hotline: %s. Cam On Quy Khach";
-    private static final String RETURN_ROUTE_TEMPLATE = "ON TAXI: Khach Hang: %s . %s -> %s : %skm * %dd/km = %s. %s -> %s : %skm * %dd/km * %s = %s" +
+    private static final String HOTLINE = "02436626626";
+    private static final String DRIVER_ACCEPTED_SMS_TEMPLATE = "OnTaxi: Quy khach da dat xe thanh cong. Lai xe %s Bien So %s se don khach vao luc %s. Cam On Quy Khach";
+    private static final String SINGLE_ROUTE_TEMPLATE = "OnTaxi: Khach Hang: %s . %s -> %s : %s km * %d d/km = %s. Phi Cau Duong: %s. Tong Tien %s, duoc giam %d %%, Thanh Toan %s. Hotline: %s. Cam On Quy Khach";
+    private static final String RETURN_ROUTE_TEMPLATE = "OnTaxi: Khach Hang: %s . %s -> %s : %skm * %dd/km = %s. %s -> %s : %skm * %dd/km * %s = %s" +
             ". Phi Cau Duong: %s. Giờ Chờ %s * %dd/h = %s ." +
             " Tong Tien %s, duoc giam %d %%, Thanh Toan %s. Hotline: %s. Cam On Quy Khach";
 

@@ -26,13 +26,15 @@ public class RestBookingController {
     private final ViewPriceRepository viewPriceRepository;
     private final PromotionPlanRepository promotionPlanRepository;
     private final PriceCalculator priceCalculator;
+    private final DistanceMatrixService distanceMatrixService;
 
     @Autowired
-    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator) {
+    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator, DistanceMatrixService distanceMatrixService) {
         this.bookingRepository = bookingRepository;
         this.viewPriceRepository = viewPriceRepository;
         this.promotionPlanRepository = promotionPlanRepository;
         this.priceCalculator = priceCalculator;
+        this.distanceMatrixService = distanceMatrixService;
     }
 
     @CrossOrigin
@@ -58,7 +60,7 @@ public class RestBookingController {
         BaseMapper<Booking, BookingCalculatePriceRequestDTO> mapper = new BaseMapper<>(Booking.class, BookingCalculatePriceRequestDTO.class);
         Booking booking = mapper.toPersistenceBean(bookingCalculatePriceRequestDTO);
         booking.setUnit_price(priceCalculator.getPricePerKm(bookingCalculatePriceRequestDTO.getCar_type()));
-        double distance = DistanceMatrixService.getDistance(bookingCalculatePriceRequestDTO.getFrom_location(), bookingCalculatePriceRequestDTO.getTo_location()) / 1000;
+        double distance = distanceMatrixService.getDistance(bookingCalculatePriceRequestDTO.getFrom_location(), bookingCalculatePriceRequestDTO.getTo_location()) / 1000;
         booking.setTotal_distance(distance);
 
         double promotionPercentage = BookingUtils.calculatePromotionPercentage(bookingCalculatePriceRequestDTO.getDeparture_time(), distance, false, promotionPlanRepository);

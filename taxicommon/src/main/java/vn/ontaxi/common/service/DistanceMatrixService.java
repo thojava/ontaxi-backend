@@ -6,6 +6,7 @@ import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import vn.ontaxi.common.json.model.google.dm.DistanceMatrix;
 import vn.ontaxi.common.model.Location;
@@ -29,14 +30,16 @@ public class DistanceMatrixService {
     private static final String OUTPUT_FORMAT = "json";
     private static final String UNIT = "metric";
     private final ConfigurationService configurationService;
+    private final Environment environment;
 
     @Autowired
-    public DistanceMatrixService(ConfigurationService configurationService) {
+    public DistanceMatrixService(ConfigurationService configurationService, Environment environment) {
         this.configurationService = configurationService;
+        this.environment = environment;
     }
 
     public List<Long> getDistances(String origin, String[] destinations) {
-        GeoApiContext geoApiContext = new GeoApiContext.Builder().apiKey("AIzaSyC983JhXlUWUomd07jsfBkPjv7VpHA_eWQ")
+        GeoApiContext geoApiContext = new GeoApiContext.Builder().apiKey(environment.getProperty("google_map_distance_matrix_key"))
                 .build();
 
         DistanceMatrixApiRequest distanceMatrix = DistanceMatrixApi.getDistanceMatrix(geoApiContext, new String[]{origin}, destinations);
@@ -53,7 +56,7 @@ public class DistanceMatrixService {
     }
 
     /* Return distance by m */
-    public static double getDistance(final String origins, final String destinations) {
+    public double getDistance(final String origins, final String destinations) {
         String encodedOrigin, encodedDest;
         try {
             encodedOrigin = URLEncoder.encode(origins, StandardCharsets.UTF_8.name());
@@ -62,7 +65,7 @@ public class DistanceMatrixService {
             throw new RuntimeException(e);
         }
 
-        String directionAPIUrl = String.format(DISTANCE_MATRIX_BASE_URL, OUTPUT_FORMAT, UNIT, encodedOrigin, encodedDest, "AIzaSyC983JhXlUWUomd07jsfBkPjv7VpHA_eWQ");
+        String directionAPIUrl = String.format(DISTANCE_MATRIX_BASE_URL, OUTPUT_FORMAT, UNIT, encodedOrigin, encodedDest, environment.getProperty("google_map_distance_matrix_key"));
         DistanceMatrix distanceMatrix = new Gson().fromJson(HttpUtils.readTextFromURL(directionAPIUrl), DistanceMatrix.class);
         if (distanceMatrix.getStatus().equalsIgnoreCase("OK")) {
             try {
@@ -91,7 +94,7 @@ public class DistanceMatrixService {
 
     public double getDistanceFromRoutes(String routes, boolean with_snap) throws Exception {
         List<Location> locations = SnapToRoadService.parseRoutes(routes);
-        if(with_snap) {
+        if (with_snap) {
             locations = SnapToRoadService.getDistance(locations, configurationService.getAccuracy_limit());
         }
         double previousLat = 0;
@@ -100,11 +103,11 @@ public class DistanceMatrixService {
         for (Location snappedPoint : locations) {
             double latitude = snappedPoint.getLatitude();
             double longitude = snappedPoint.getLongitude();
-            if(previousLat > 0 && previousLng > 0) {
+            if (previousLat > 0 && previousLng > 0) {
                 float[] results = new float[1];
                 computeDistanceAndBearing(previousLat, previousLng, latitude, longitude, results);
                 double distance = results[0];
-                if(distance > 2000) {
+                if (distance > 2000) {
                     distance = getDistance(previousLat + "," + previousLng, latitude + "," + longitude);
                 }
                 totalDistance += distance;
@@ -153,7 +156,7 @@ public class DistanceMatrixService {
 //    }
 
     public static void computeDistanceAndBearing(double lat1, double lon1,
-                                                  double lat2, double lon2, float[] results) {
+                                                 double lat2, double lon2, float[] results) {
         // Based on http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
         // using the "Inverse Formula" (section 4)
 

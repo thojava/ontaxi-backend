@@ -5,7 +5,6 @@ import com.google.maps.PlaceAutocompleteRequest;
 import com.google.maps.PlacesApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.AutocompletePrediction;
-import com.google.maps.model.ComponentFilter;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.env.Environment;
 import vn.ontaxi.common.jpa.entity.Customer;
@@ -52,13 +51,14 @@ public class NewOrderComponent extends AbstractOrderComponent {
     private final PriceCalculator priceCalculator;
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
+    private final DistanceMatrixService distanceMatrixService;
     private final Environment env;
     private String GOOGLE_MAP_PLACE_API_KEY;
 
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService, CustomerRepository customerRepository, Environment env) {
+    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService, CustomerRepository customerRepository, DistanceMatrixService distanceMatrixService, Environment env) {
         super(messageSource, persistentCustomerRepository);
         this.driverRepository = driverRepository;
         this.bookingRepository = bookingRepository;
@@ -68,6 +68,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         this.priceCalculator = priceCalculator;
         this.customerService = customerService;
         this.customerRepository = customerRepository;
+        this.distanceMatrixService = distanceMatrixService;
         this.env = env;
     }
 
@@ -143,7 +144,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
     }
 
     private void calculateDistanceAndPriceAndFee(boolean recalculateFee) {
-        booking.setTotal_distance(DistanceMatrixService.getDistance(booking.getFrom_location(), booking.getTo_location()) / 1000);
+        booking.setTotal_distance(distanceMatrixService.getDistance(booking.getFrom_location(), booking.getTo_location()) / 1000);
         if(recalculateFee) {
             booking.setPromotionPercentage(BookingUtils.calculatePromotionPercentage(booking.getDeparture_time(), booking.getTotal_distance(), booking.isLaterPaidPersistentCustomer(), promotionPlanRepository));
             booking.setFee_percentage(BookingUtils.calculateFeePercentage(booking));
