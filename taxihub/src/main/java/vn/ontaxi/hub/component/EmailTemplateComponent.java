@@ -15,6 +15,7 @@ import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateHeaderFooterRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
 import vn.ontaxi.common.service.EmailService;
+import vn.ontaxi.common.utils.EmailUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -126,7 +127,7 @@ public class EmailTemplateComponent {
         List<Customer> customers = customerRepository.findCustomersByTestedCustomerTrue();
         for (Customer customer : customers) {
             if (StringUtils.isNotEmpty(customer.getEmail()))
-                emailService.sendEmail("Tested Email: " + emailTemplate.getSubject(), customer.getEmail(), emailTemplate.getEmailContent());
+                emailService.sendEmail("Tested Email: " + emailTemplate.getSubject(), customer.getEmail(), EmailUtils.getEmailContentCustomizedForCustomer(emailTemplate.getEmailContent(), customer));
         }
 
         emailTemplate.setHasTested(true);

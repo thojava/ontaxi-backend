@@ -21,6 +21,7 @@ import vn.ontaxi.common.jpa.repository.CustomerAccountRepository;
 import vn.ontaxi.common.jpa.repository.CustomerRepository;
 import vn.ontaxi.common.jpa.repository.EmailTemplateRepository;
 import vn.ontaxi.common.service.EmailService;
+import vn.ontaxi.common.utils.EmailUtils;
 import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.CustomerLogin;
@@ -96,8 +97,8 @@ public class CustomerController {
 
         new Thread(() -> {
             EmailTemplate setPasswordTemplate = emailTemplateRepository.findByEmailType(EmailType.SET_PASSWORD);
-            String emailContent = StringUtils.fillRegexParams(setPasswordTemplate.getEmailContent(), new HashMap<String, String>() {{
-                put("\\$\\{name\\}", customer.getName());
+            String emailContent = EmailUtils.getEmailContentCustomizedForCustomer(setPasswordTemplate.getEmailContent(), customer);
+            emailContent = StringUtils.fillRegexParams(emailContent, new HashMap<String, String>() {{
                 put("\\$\\{activate_link\\}", "https://ontaxi.vn/khach-hang/nhap-mat-khau?token=" + customerAccount.getToken());
             }});
             emailService.sendEmail(setPasswordTemplate.getSubject(), customer.getEmail(), emailContent);
@@ -188,7 +189,7 @@ public class CustomerController {
 
         if (!passwordEncoder.matches(customerLogin.getPassword(), customerAccount.getPassword())) {
             restResult.setSucceed(false);
-            restResult.setMessage(messageSource.getMessage("password_incorrect", new String []{}, Locale.getDefault()));
+            restResult.setMessage(messageSource.getMessage("password_incorrect", new String[]{}, Locale.getDefault()));
             return restResult;
         }
 

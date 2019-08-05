@@ -1,6 +1,5 @@
 package vn.ontaxi.hub.service;
 
-import com.sendgrid.helpers.mail.Mail;
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import vn.ontaxi.common.jpa.entity.EmailScheduler;
 import vn.ontaxi.common.jpa.entity.EmailSchedulerVsCustomer;
 import vn.ontaxi.common.jpa.repository.EmailSchedulerVsCustomerRepository;
 import vn.ontaxi.common.service.EmailService;
+import vn.ontaxi.common.utils.EmailUtils;
 import vn.ontaxi.hub.quartz.EmailJob;
 
 import javax.persistence.EntityManager;
@@ -99,10 +99,7 @@ public class EmailSchedulerService {
                 }
 
                 if (sendEmail) {
-                    String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(emailScheduler.getEmailTemplate().getEmailContent(), new HashMap<String, String>() {{
-                        put("\\$\\{name\\}", customer.getName());
-                    }});
-
+                    String emailContent = EmailUtils.getEmailContentCustomizedForCustomer(emailScheduler.getEmailTemplate().getEmailContent(), customer);
                     emailService.sendEmail(subject, customer.getEmail(), emailContent);
                     emailSchedulerVsCustomerRepository.save(emailSchedulerVsCustomers.get(customer.getId()));
                 }
