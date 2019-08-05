@@ -42,7 +42,6 @@ public class CustomersComponent {
     }
 
     public void saveCustomerAsTested(Customer customer) {
-        customer.setTestedCustomer(true);
         customerRepository.save(customer);
     }
 
