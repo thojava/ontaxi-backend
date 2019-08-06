@@ -26,8 +26,7 @@ public class Customer extends AbstractEntity {
     private Date birthDay;
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", referencedColumnName = "customer_id", insertable = false, updatable = false)
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "customer")
     private CustomerAccount customerAccount;
 
     private boolean testedCustomer;
