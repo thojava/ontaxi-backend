@@ -67,7 +67,9 @@ public class CustomersComponent {
         List<Customer> wrappedData = lstCustomers.getWrappedData();
         for (Customer customer : wrappedData) {
             if (customer.isBeanSelected())
-                customerAccountRepository.delete(customer.getCustomerAccount());
+                if(customer.getCustomerAccount() != null) {
+                    customerAccountRepository.delete(customer.getCustomerAccount());
+                }
                 customerRepository.delete(customer);
         }
 
