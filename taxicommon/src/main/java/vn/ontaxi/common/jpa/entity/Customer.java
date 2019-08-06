@@ -26,6 +26,9 @@ public class Customer extends AbstractEntity {
     private Date birthDay;
     @Enumerated(EnumType.STRING)
     private Gender gender;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id", referencedColumnName = "customer_id", insertable = false, updatable = false)
+    private CustomerAccount customerAccount;
 
     private boolean testedCustomer;
 
@@ -143,5 +146,9 @@ public class Customer extends AbstractEntity {
     @JsonIgnore
     public String getKey() {
         return String.valueOf(getId());
+    }
+
+    public CustomerAccount getCustomerAccount() {
+        return customerAccount;
     }
 }

@@ -21,7 +21,6 @@ import java.util.UUID;
 public class CustomersComponent {
     private final CustomerRepository customerRepository;
     private final CustomerAccountRepository customerAccountRepository;
-    private final EmailService emailService;
     private final LazyDataService lazyDataService;
     private TaxiLazyDataModel<Customer> lstCustomers;
 
@@ -29,7 +28,6 @@ public class CustomersComponent {
     public CustomersComponent(CustomerRepository customerRepository, CustomerAccountRepository customerAccountRepository, EmailService emailService, LazyDataService lazyDataService) {
         this.customerRepository = customerRepository;
         this.customerAccountRepository = customerAccountRepository;
-        this.emailService = emailService;
         this.lazyDataService = lazyDataService;
     }
 
@@ -69,6 +67,7 @@ public class CustomersComponent {
         List<Customer> wrappedData = lstCustomers.getWrappedData();
         for (Customer customer : wrappedData) {
             if (customer.isBeanSelected())
+                customerAccountRepository.delete(customer.getCustomerAccount());
                 customerRepository.delete(customer);
         }
 
