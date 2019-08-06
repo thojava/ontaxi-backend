@@ -86,6 +86,7 @@ public class CustomerController {
 
         Customer persistedCustomer = customerRepository.findByPhoneOrEmail(customer.getPhone(), customer.getEmail());
         if (persistedCustomer == null) {
+            customer.getAddresses().forEach(address -> address.setCustomer(customer));
             persistedCustomer = customerRepository.save(customer);
         }
 
