@@ -102,8 +102,7 @@ public class CustomerController {
             String emailContent = EmailUtils.getEmailContentCustomizedForCustomer(activeAccount.getEmailContent(), finalPersistedCustomer);
             emailContent = StringUtils.fillRegexParams(emailContent, new HashMap<String, String>() {{
                 put("\\$\\{name\\}", customerRegistration.getName());
-                //TODO
-                put("\\$\\{active_link\\}", "điền link vào đây");
+                put("\\$\\{activate_link\\}", "https://ontaxi.vn/khach-hang/kich-hoat-tai-khoan?token=" + customerAccount.getToken());
             }});
             emailService.sendEmail(activeAccount.getSubject(), customerRegistration.getEmail(), emailContent);
         }).start();
