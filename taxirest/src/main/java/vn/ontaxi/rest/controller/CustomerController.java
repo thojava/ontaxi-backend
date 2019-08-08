@@ -187,13 +187,6 @@ public class CustomerController {
         return restResult;
     }
 
-    @RequestMapping(path = "/getCustomerInfo", method = RequestMethod.GET)
-    public RestResult<CustomerDTO> getCustomerInfo(@ApiIgnore @CurrentUser Customer customer) {
-        RestResult<CustomerDTO> restResult = new RestResult<>();
-        restResult.setData(mapper.toDtoBean(customer));
-        return restResult;
-    }
-
     @ApiOperation(value = "Login the customer with phone number and password")
     @ApiResponse(code = 200, message = "When the token is valid and data checking completed then the password will be set to the account and the account is activated. This API will return access token for client to access or update customer profile later")
     @RequestMapping(path = "/customerLogin", method = RequestMethod.POST)
