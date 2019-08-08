@@ -1,8 +1,6 @@
 package vn.ontaxi.rest.controller;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.MessageSource;
@@ -24,18 +22,14 @@ import vn.ontaxi.common.service.EmailService;
 import vn.ontaxi.common.utils.EmailUtils;
 import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
-import vn.ontaxi.rest.payload.CustomerLogin;
-import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
-import vn.ontaxi.rest.payload.SetPasswordRequest;
+import vn.ontaxi.rest.payload.*;
 import vn.ontaxi.rest.payload.dto.AddressDTO;
-import vn.ontaxi.rest.payload.dto.BehaviorDTO;
 import vn.ontaxi.rest.payload.dto.CustomerDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
 import vn.ontaxi.rest.utils.JwtTokenProvider;
 
 import javax.validation.Valid;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customer")
@@ -43,7 +37,6 @@ public class CustomerController {
 
     private BaseMapper<Customer, CustomerDTO> mapper = new BaseMapper<>(Customer.class, CustomerDTO.class);
     private BaseMapper<Address, AddressDTO> addressMapper = new BaseMapper<>(Address.class, AddressDTO.class);
-    private BaseMapper<Behavior, BehaviorDTO> behaviorMapper = new BaseMapper<>(Behavior.class, BehaviorDTO.class);
 
     private final CustomerRepository customerRepository;
     private final CustomerAccountRepository customerAccountRepository;
@@ -69,43 +62,68 @@ public class CustomerController {
     @ApiResponse(code = 200, message = "When all information is valid and customer account not existed there will be and email send to customer with set password link")
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value = "/createCustomerAccount", method = RequestMethod.POST)
-    public RestResult<String> createCustomerAccount(@Valid @RequestBody Customer customer) {
+    public RestResult<String> createCustomerAccount(@Valid @RequestBody CustomerRegistration customerRegistration) {
         RestResult<String> restResult = new RestResult<>();
-        if (StringUtils.isEmpty(customer.getEmail()) || StringUtils.isEmpty(customer.getPhone())) {
+        if (StringUtils.isEmpty(customerRegistration.getEmail()) || StringUtils.isEmpty(customerRegistration.getPhone())) {
             restResult.setSucceed(false);
             restResult.setMessage("Email và số điện thoại không được để trống");
             return restResult;
         }
 
-        CustomerAccount foundCustomerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customer.getEmail(), customer.getPhone());
+        CustomerAccount foundCustomerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customerRegistration.getEmail(), customerRegistration.getPhone());
         if (foundCustomerAccount != null) {
             restResult.setSucceed(false);
             restResult.setMessage("Email hoặc số điện thoại đã được đăng ký trước đó");
             return restResult;
         }
 
-        Customer persistedCustomer = customerRepository.findByPhoneOrEmail(customer.getPhone(), customer.getEmail());
+        Customer persistedCustomer = customerRepository.findByPhoneOrEmail(customerRegistration.getPhone(), customerRegistration.getEmail());
         if (persistedCustomer == null) {
-            customer.getAddresses().forEach(address -> address.setCustomer(customer));
-            persistedCustomer = customerRepository.save(customer);
+            persistedCustomer = new Customer();
+            persistedCustomer.setPhone(customerRegistration.getPhone());
+            persistedCustomer.setName(customerRegistration.getName());
+            persistedCustomer.setJob(customerRegistration.getJob());
+            persistedCustomer.setBirthDay(customerRegistration.getBirthDay());
+            persistedCustomer.setGender(customerRegistration.getGender());
+            persistedCustomer.setEmail(customerRegistration.getEmail());
+            persistedCustomer = customerRepository.save(persistedCustomer);
         }
 
         CustomerAccount customerAccount = new CustomerAccount();
         customerAccount.setCustomer(persistedCustomer);
         customerAccount.setActived(false);
+        customerAccount.setPassword(passwordEncoder.encode(customerRegistration.getPassword()));
         customerAccount.setToken(UUID.randomUUID().toString());
         customerAccountRepository.save(customerAccount);
 
+        Customer finalPersistedCustomer = persistedCustomer;
         new Thread(() -> {
-            EmailTemplate setPasswordTemplate = emailTemplateRepository.findByEmailType(EmailType.SET_PASSWORD);
-            String emailContent = EmailUtils.getEmailContentCustomizedForCustomer(setPasswordTemplate.getEmailContent(), customer);
+            EmailTemplate activeAccount = emailTemplateRepository.findByEmailType(EmailType.ACTIVE_ACCOUNT);
+            String emailContent = EmailUtils.getEmailContentCustomizedForCustomer(activeAccount.getEmailContent(), finalPersistedCustomer);
             emailContent = StringUtils.fillRegexParams(emailContent, new HashMap<String, String>() {{
-                put("\\$\\{activate_link\\}", "https://ontaxi.vn/khach-hang/nhap-mat-khau?token=" + customerAccount.getToken());
+                put("\\$\\{name\\}", customerRegistration.getName());
+                //TODO
+                put("\\$\\{active_link\\}", "điền link vào đây");
             }});
-            emailService.sendEmail(setPasswordTemplate.getSubject(), customer.getEmail(), emailContent);
+            emailService.sendEmail(activeAccount.getSubject(), customerRegistration.getEmail(), emailContent);
         }).start();
 
-        restResult.setMessage("Kiểm tra email để hoàn thành cài đặt");
+        restResult.setMessage("Kiểm tra email để kích hoạt tài khoản");
+        return restResult;
+    }
+
+    @ApiOperation("/activeAccount")
+    @RequestMapping(value = "/activeAccount/{token}", method = RequestMethod.GET)
+    public RestResult<String> activeAccount(@PathVariable String token) {
+        RestResult<String> restResult = new RestResult<>();
+        CustomerAccount customerAccount = customerAccountRepository.findByToken(token);
+        if (customerAccount != null) {
+            restResult.setData("Kích hoạt tài khoản thành công");
+        } else {
+            restResult.setSucceed(false);
+            restResult.setData("Tài khoản không tồn tại trong hệ thống");
+        }
+
         return restResult;
     }
 
@@ -143,22 +161,22 @@ public class CustomerController {
     @RequestMapping(path = "/resetPassword/{phone:.+}", method = RequestMethod.POST)
     public RestResult<String> customerRequestResetPassword(@PathVariable String phone) {
         RestResult<String> restResult = new RestResult<>();
-        CustomerAccount customer = customerAccountRepository.findByCustomerPhone(phone);
-        if (customer == null) {
+        CustomerAccount customerAccount = customerAccountRepository.findByCustomerPhone(phone);
+        if (customerAccount == null) {
             restResult.setSucceed(false);
             restResult.setMessage("Thông tin khách hàng không tồn tại");
             return restResult;
         }
-        customer.setToken(UUID.randomUUID().toString());
-        customerAccountRepository.save(customer);
+        customerAccount.setToken(UUID.randomUUID().toString());
+        customerAccountRepository.save(customerAccount);
         EmailTemplate resetPassword = emailTemplateRepository.findByEmailType(EmailType.RESET_PASSWORD);
         String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(resetPassword.getEmailContent(), new HashMap<String, String>() {{
-            put("\\$\\{name\\}", customer.getCustomer().getName());
-            put("\\$\\{reset_password_link\\}", customer.getToken());
+            put("\\$\\{name\\}", customerAccount.getCustomer().getName());
+            put("\\$\\{reset_password_link\\}", customerAccount.getToken());
         }});
 
-        emailService.sendEmail(resetPassword.getSubject(), customer.getCustomer().getEmail(), emailContent);
-        restResult.setData(customer.getToken());
+        emailService.sendEmail(resetPassword.getSubject(), customerAccount.getCustomer().getEmail(), emailContent);
+        restResult.setData(customerAccount.getToken());
         return restResult;
     }
 
@@ -169,10 +187,10 @@ public class CustomerController {
         return restResult;
     }
 
-    @RequestMapping(path = "/getCustomerInfo/{email:.+}", method = RequestMethod.GET)
-    public RestResult<CustomerDTO> getCustomerInfo(@PathVariable String email) {
+    @RequestMapping(path = "/getCustomerInfo", method = RequestMethod.GET)
+    public RestResult<CustomerDTO> getCustomerInfo(@ApiIgnore @CurrentUser Customer customer) {
         RestResult<CustomerDTO> restResult = new RestResult<>();
-        restResult.setData(mapper.toDtoBean(customerRepository.findByEmail(email)));
+        restResult.setData(mapper.toDtoBean(customer));
         return restResult;
     }
 
@@ -182,7 +200,7 @@ public class CustomerController {
     public RestResult customerLogin(@Valid @RequestBody CustomerLogin customerLogin) {
         RestResult restResult = new RestResult();
         CustomerAccount customerAccount = customerAccountRepository.findByCustomerEmailOrCustomerPhone(customerLogin.getPhone(), customerLogin.getPhone());
-        if (customerAccount == null) {
+        if (customerAccount == null || !customerAccount.isActived()) {
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("account_is_not_registered", new String[]{customerLogin.getPhone()}, Locale.getDefault()));
             return restResult;
@@ -190,7 +208,7 @@ public class CustomerController {
 
         if (!passwordEncoder.matches(customerLogin.getPassword(), customerAccount.getPassword())) {
             restResult.setSucceed(false);
-            restResult.setMessage(messageSource.getMessage("password_incorrect", new String[]{}, Locale.getDefault()));
+            restResult.setMessage(messageSource.getMessage("password_incorrect", new String []{}, Locale.getDefault()));
             return restResult;
         }
 
@@ -204,19 +222,17 @@ public class CustomerController {
     }
 
     @RequestMapping(path = "/updateCustomer", method = RequestMethod.POST)
-    public RestResult<CustomerDTO> updateCustomerInfo(@ApiIgnore @CurrentUser Customer customer, @RequestBody CustomerDTO customerDTO) {
+    public RestResult<CustomerDTO> updateCustomerInfo(@ApiIgnore @CurrentUser Customer customer,@Valid @RequestBody CustomerUpdateInfo customerUpdateInfo) {
 
-        customer.setPhone(customerDTO.getPhone());
-        customer.setEmail(customerDTO.getEmail());
-        customer.setName(customerDTO.getName());
-        customer.setGender(customerDTO.getGender());
-        customer.setBirthDay(customerDTO.getBirthDay());
-        customer.setJob(customerDTO.getJob());
-        customer.setAddresses(addressMapper.toPersistenceBean(customerDTO.getAddresses()));
+        customer.setPhone(customerUpdateInfo.getPhone());
+        customer.setEmail(customerUpdateInfo.getEmail());
+        customer.setName(customerUpdateInfo.getName());
+        customer.setGender(customerUpdateInfo.getGender());
+        customer.setBirthDay(customerUpdateInfo.getBirthDay());
+        customer.setJob(customerUpdateInfo.getJob());
+        customer.setAddresses(addressMapper.toPersistenceBean(customerUpdateInfo.getAddresses()));
         if (CollectionUtils.isNotEmpty(customer.getAddresses()))
             customer.getAddresses().forEach(address -> address.setCustomer(customer));
-        customer.setBehaviors(new HashSet<>(behaviorMapper.toPersistenceBean(new ArrayList<>(customerDTO.getBehaviors()))));
-
         customerRepository.save(customer);
         RestResult<CustomerDTO> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(customer));

@@ -95,7 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/driver/validateLoginEmail/**", "/driver/location", "/driver/location/**", "/driver/checkUpdate")
                 .permitAll()
-                .antMatchers("/customer/resetPassword/**","/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin")
+                .antMatchers("/customer/resetPassword/**","/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin", "/customer/activeAccount/**")
                 .permitAll()
                 .antMatchers("/booking/calculateDistanceAndPrice", "/booking/postBookingFromWebsite")
                 .permitAll()

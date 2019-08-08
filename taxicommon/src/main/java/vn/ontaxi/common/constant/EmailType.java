@@ -4,7 +4,8 @@ public enum EmailType {
     MARKETING("Marketing"),
     SET_PASSWORD("Khách hàng nhập password cho account mới"),
     ACCOUNT_ACTIVATED_NOTIFICATION("Thông báo cho khách hàng sau khi tài khoản được kích hoạt"),
-    RESET_PASSWORD("Khách hàng reset password cho account");
+    RESET_PASSWORD("Khách hàng reset password cho account"),
+    ACTIVE_ACCOUNT("Khách hàng kích hoạt tài khoản");
 
     private String description;
     EmailType(String description) {
