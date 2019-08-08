@@ -11,9 +11,9 @@ import java.util.Date;
 public class BookingCalculatePriceRequestDTO {
     private String from_location;
     private String to_location;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private Date departureTime;
     @Enumerated(EnumType.STRING)
+
     private CarTypes car_type;
     @ApiModelProperty(notes = "When invoked from the first booking page this value should be set as true." +
             "Later when visitor change the booking option to see the updated price this value should be set as false")
@@ -43,6 +43,8 @@ public class BookingCalculatePriceRequestDTO {
         this.to_location = to_location;
     }
 
+    @ApiModelProperty(example = "2016-01-01 15:30")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     public Date getDeparture_time() {
         return departureTime;
     }
