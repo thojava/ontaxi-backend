@@ -1,5 +1,6 @@
 package vn.ontaxi.rest.payload.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import vn.ontaxi.common.constant.CarTypes;
 
 import javax.persistence.EnumType;
@@ -9,6 +10,7 @@ import java.util.Date;
 public class BookingCalculatePriceResponseDTO {
     private String from_location;
     private String to_location;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     private Date departureTime;
     @Enumerated(EnumType.STRING)
     private CarTypes car_type;
