@@ -119,6 +119,7 @@ public class CustomerController {
         if (customerAccount != null) {
             customerAccount.setToken("");
             customerAccount.setActived(true);
+            customerAccountRepository.save(customerAccount);
             restResult.setData("Kích hoạt tài khoản thành công");
         } else {
             restResult.setSucceed(false);
