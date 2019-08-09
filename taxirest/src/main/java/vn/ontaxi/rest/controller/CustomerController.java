@@ -117,6 +117,8 @@ public class CustomerController {
         RestResult<String> restResult = new RestResult<>();
         CustomerAccount customerAccount = customerAccountRepository.findByToken(token);
         if (customerAccount != null) {
+            customerAccount.setToken("");
+            customerAccount.setActived(true);
             restResult.setData("Kích hoạt tài khoản thành công");
         } else {
             restResult.setSucceed(false);
