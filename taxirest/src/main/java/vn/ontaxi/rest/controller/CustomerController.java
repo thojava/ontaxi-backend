@@ -111,7 +111,7 @@ public class CustomerController {
         return restResult;
     }
 
-    @ApiOperation("/activeAccount")
+    @ApiOperation("Activate customer account. After this step, customer can login")
     @RequestMapping(value = "/activeAccount/{token}", method = RequestMethod.GET)
     public RestResult<String> activeAccount(@PathVariable String token) {
         RestResult<String> restResult = new RestResult<>();
