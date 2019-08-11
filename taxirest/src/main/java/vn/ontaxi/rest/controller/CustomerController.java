@@ -174,11 +174,10 @@ public class CustomerController {
         EmailTemplate resetPassword = emailTemplateRepository.findByEmailType(EmailType.RESET_PASSWORD);
         String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(resetPassword.getEmailContent(), new HashMap<String, String>() {{
             put("\\$\\{name\\}", customerAccount.getCustomer().getName());
-            put("\\$\\{reset_password_link\\}", customerAccount.getToken());
+            put("\\$\\{reset_password_link\\}", "https://ontaxi.vn/khach-hang/reset-password?token=" + customerAccount.getToken());
         }});
 
         emailService.sendEmail(resetPassword.getSubject(), customerAccount.getCustomer().getEmail(), emailContent);
-        restResult.setData(customerAccount.getToken());
         return restResult;
     }
 
