@@ -147,7 +147,7 @@ public class CustomerController {
         customerAccountRepository.save(customerAccount);
 
         new Thread(() -> {
-            EmailTemplate accountActivatedNotificationTemplate = emailTemplateRepository.findByEmailType(EmailType.ACCOUNT_ACTIVATED_NOTIFICATION);
+            EmailTemplate accountActivatedNotificationTemplate = emailTemplateRepository.findByEmailType(EmailType.RESET_PASSWORD_SUCCESSFUL);
             String emailContent = StringUtils.fillRegexParams(accountActivatedNotificationTemplate.getEmailContent(), new HashMap<String, String>() {{
                 put("\\$\\{name\\}", customerAccount.getCustomer().getName());
             }});
@@ -171,7 +171,7 @@ public class CustomerController {
         }
         customerAccount.setToken(UUID.randomUUID().toString());
         customerAccountRepository.save(customerAccount);
-        EmailTemplate resetPassword = emailTemplateRepository.findByEmailType(EmailType.RESET_PASSWORD);
+        EmailTemplate resetPassword = emailTemplateRepository.findByEmailType(EmailType.REQUEST_RESET_PASSWORD);
         String emailContent = vn.ontaxi.common.utils.StringUtils.fillRegexParams(resetPassword.getEmailContent(), new HashMap<String, String>() {{
             put("\\$\\{name\\}", customerAccount.getCustomer().getName());
             put("\\$\\{reset_password_link\\}", "https://ontaxi.vn/khach-hang/reset-password?token=" + customerAccount.getToken());
