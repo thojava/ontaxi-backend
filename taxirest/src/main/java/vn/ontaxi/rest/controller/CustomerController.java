@@ -157,7 +157,7 @@ public class CustomerController {
         return restResult;
     }
 
-    @ApiOperation("Reset password for a specific customer with input as his email")
+    @ApiOperation("Reset password for a specific customer with input as his phone number")
     @ApiResponse(code = 200, message = "Request is valid. If the checking is okay then there will be an email with reset password link is sent to customer")
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(path = "/resetPassword/{phone:.+}", method = RequestMethod.POST)
