@@ -8,7 +8,7 @@ var config = {
     arrowDisplay: 'top',//top | bottom | none
 
     //list your Stringee Number
-    fromNumbers: [{alias: '02436626626', number: '82436626626'}]
+    fromNumbers: [{alias: '02436626626', number: '842436626626'}]
 };
 StringeeSoftPhone.init(config);
 var access_token2 = $('#access_token').text();
