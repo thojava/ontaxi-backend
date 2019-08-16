@@ -5,25 +5,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.ontaxi.common.jpa.entity.Gender;
 import vn.ontaxi.rest.payload.dto.AddressDTO;
-import vn.ontaxi.rest.payload.dto.BehaviorDTO;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @NoArgsConstructor
 @Getter @Setter
 public class CustomerUpdateInfo {
 
-    @NotEmpty
+    @NotBlank
     private Long id;
-    @NotEmpty
+    @NotBlank
     private String phone;
-    @NotEmpty
+    @NotBlank
     private String name;
     private String email;
     private String job;

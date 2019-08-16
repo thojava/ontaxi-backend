@@ -1,29 +1,39 @@
 package vn.ontaxi.rest.payload.dto;
 
 import com.google.maps.model.LatLng;
+import io.swagger.annotations.ApiModelProperty;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.jpa.entity.Driver;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 public class DriverInfoDTO {
 
-    @NotEmpty
+    @NotBlank(message = "Tên người dùng không được để trống")
     private String name;
 
-    @NotEmpty
+    @NotBlank(message = "Số điện thoại không được để trống")
     private String phone;
 
-    @NotEmpty
+    @NotBlank
     private String licensePlates;
+    @ApiModelProperty(hidden = true)
     private LatLng location;
 
-    @NotEmpty
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không đúng định dạng")
     private String email;
     private CarTypes carTypes;
     private boolean airport;
 
     public DriverInfoDTO() {
+    }
+
+    public DriverInfoDTO(Driver driver) {
+        this.name = driver.getName();
+        this.phone = driver.getMobile();
+        this.licensePlates = driver.getLicense_plates();
     }
 
     public DriverInfoDTO(Driver driver, LatLng location) {

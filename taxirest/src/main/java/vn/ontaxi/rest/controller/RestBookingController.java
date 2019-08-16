@@ -1,5 +1,6 @@
 package vn.ontaxi.rest.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ import vn.ontaxi.rest.payload.dto.request.BookingCalculatePriceRequestDTO;
 import vn.ontaxi.rest.payload.dto.request.PostBookingRequestDTO;
 import vn.ontaxi.rest.payload.dto.response.BookingCalculatePriceResponseDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
+
+import java.util.Optional;
 
 @RestController
 @Transactional
@@ -69,6 +72,17 @@ public class RestBookingController {
         priceCalculator.calculateEstimatedPrice(booking);
 
         return booking;
+    }
+
+    @ApiOperation("Booking detail by id")
+    @RequestMapping(path = "/detail/{id}/{emailOrPhone:.+}")
+    public Booking getBookingDetail(@PathVariable Long id, @PathVariable String emailOrPhone) {
+        Optional<Booking> booking = bookingRepository.findById(id);
+        if (booking.isPresent()) {
+            if (booking.get().getMobile().equals(emailOrPhone) || booking.get().getEmail().equals(emailOrPhone))
+                return booking.get();
+        }
+        return null;
     }
 
 

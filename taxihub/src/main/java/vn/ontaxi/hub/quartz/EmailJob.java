@@ -29,7 +29,7 @@ public class EmailJob extends QuartzJobBean {
 
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
         Long emailSchedulerId = jobDataMap.getLong("emailSchedulerId");
-        EmailScheduler emailScheduler = emailScheduleRepository.findOne(emailSchedulerId);
+        EmailScheduler emailScheduler = emailScheduleRepository.findById(emailSchedulerId).get();
         if (emailScheduler != null)
             emailSchedulerService.sendEmailScheduler(emailScheduler);
 

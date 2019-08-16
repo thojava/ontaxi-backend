@@ -6,7 +6,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Entity
@@ -16,11 +16,11 @@ public class Customer extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
-    @NotEmpty(message = "SĐT không được để trống")
+    @NotBlank(message = "SĐT không được để trống")
     private String phone;
-    @NotEmpty(message = "Tên người dùng không được để trống")
+    @NotBlank(message = "Tên người dùng không được để trống")
     private String name;
-    @NotEmpty(message = "Email không được để trống")
+    @NotBlank(message = "Email không được để trống")
     private String email;
     private String job;
     private Date birthDay;

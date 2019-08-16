@@ -74,7 +74,7 @@ public class CustomerDetailComponent implements Serializable {
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String customerId = params.get("id");
         if (StringUtils.isNotEmpty(customerId) && NumberUtils.isDigits(customerId)) {
-            currentCustomer = customerRepository.findOne(Long.parseLong(customerId));
+            currentCustomer = customerRepository.findById(Long.parseLong(customerId)).get();
             List<Behavior> lstOldBehaviors = new ArrayList<>(currentCustomer.getBehaviors());
             List<Behavior> temp = new ArrayList<>(lstBehaviors);
             temp.removeAll(lstOldBehaviors);
@@ -180,7 +180,7 @@ public class CustomerDetailComponent implements Serializable {
         currentCustomer.getCustomerBehaviors().clear();
         for (Behavior behavior : dualListModel.getTarget())
             currentCustomer.getCustomerBehaviors().add(new CustomerBehavior(currentCustomer, behavior));
-        customerBehaviorRepository.save(this.currentCustomer.getCustomerBehaviors());
+        customerBehaviorRepository.saveAll(this.currentCustomer.getCustomerBehaviors());
 
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Đã lưu sở thích"));
     }

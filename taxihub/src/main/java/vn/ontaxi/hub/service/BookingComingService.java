@@ -27,7 +27,7 @@ public class BookingComingService {
         for (Booking booking : lstBookings)
             booking.setIdentify(UUID.randomUUID().toString());
 
-        bookingRepository.save(lstBookings);
+        bookingRepository.saveAll(lstBookings);
     }
 
 }

@@ -3,7 +3,6 @@ package vn.ontaxi.rest.config.security;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -53,8 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String accountType = tokenProvider.getAccountTypeFromJWT(jwt);
                 String email = tokenProvider.getEmailFromJWT(jwt);
                 if (accountType.equalsIgnoreCase(JwtTokenProvider.DRIVER)) {
-                    Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
-                    if (driver != null) {
+                    Driver driver = driverRepository.findByEmailAndDeletedFalse(email);
+                    if (driver != null && driver.getStatus() == Driver.Status.ACTIVATED) {
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(driver, null, Arrays.asList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name())));
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);

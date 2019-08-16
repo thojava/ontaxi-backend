@@ -42,7 +42,7 @@ public class DriverDetailComponent {
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         if (params.containsKey("id")) {
             String parameterOne = params.get("id");
-            newDriver = driverRepository.findOne(Long.parseLong(parameterOne));
+            newDriver = driverRepository.findById(Long.parseLong(parameterOne)).get();
         } else {
             newDriver = new Driver();
         }

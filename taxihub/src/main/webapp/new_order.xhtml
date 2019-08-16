@@ -197,7 +197,7 @@
                         </p:selectOneMenu>
                     </td>
                 </tr>
-                <tr>
+                <!--<tr>
                     <td class="label">
                         #{msg.driver_group_option}
                     </td>
@@ -211,7 +211,7 @@
                 <tr>
                     <td/>
                     <td>
-                        <!--@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"-->
+                        &lt;!&ndash;@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"&ndash;&gt;
                         <p:selectManyMenu id="chooseDriverMenu" style="width: 500px" disabled="#{!newOrderComponent.sendToIndividual}"
                                           value="#{newOrderComponent.selectedDrivers}"
                                           converter="#{driverConverter}" validator="#{newOrderComponent.validateSelectDriver}"
@@ -231,16 +231,16 @@
                         </p:selectManyMenu>
                         <h:message for="chooseDriverMenu"/>
                     </td>
-                </tr>
+                </tr>-->
             </table>
             <table>
                 <tr>
                     <td>
                         <p:commandButton value="#{msg.schedule}" action="#{newOrderComponent.scheduleBooking}" update="newOrderForm"/>
                     </td>
-                    <td>
+                    <!--<td>
                         <p:commandButton value="#{msg.send_to_driver}" action="#{newOrderComponent.postBooking}" update="newOrderForm"/>
-                    </td>
+                    </td>-->
                     <td>
                         <p:commandButton value="#{msg.danh_sach}" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
                     </td>
@@ -248,8 +248,6 @@
             </table>
         </h:form>
         <!-- admin@ontaxi.vn key -->
-        <script type="text/javascript"
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW25lEAB7icCTEGm_WKVELX27nXn7e0Z4&amp;libraries=places&amp;callback=initMap"/>
         <style type="text/css">
             /* Always set the map height explicitly to define the size of the div
              * element that contains the map. */

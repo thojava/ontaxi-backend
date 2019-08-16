@@ -42,7 +42,7 @@ public class CustomerService {
             List<Address> addresses = new ArrayList<>();
             addresses.add(new Address(booking.getFrom_location(), Address.AddressType.OTHER, booking.getActual_start_lat(), booking.getActual_start_lon(), savedCustomer));
             addresses.add(new Address(booking.getFrom_location(), Address.AddressType.OTHER, booking.getActual_end_lat(), booking.getActual_end_lon(), savedCustomer));
-            addressRepository.save(addresses);
+            addressRepository.saveAll(addresses);
         } else {
             Customer customer = customers.get(0);
             if (CollectionUtils.isNotEmpty(customer.getAddresses())){
@@ -67,7 +67,7 @@ public class CustomerService {
                 customer.getAddresses().add(new Address(booking.getTo_location(), Address.AddressType.OTHER, booking.getActual_end_lat(), booking.getActual_end_lon(), customer));
             }
 
-            addressRepository.save(customer.getAddresses());
+            addressRepository.saveAll(customer.getAddresses());
 
         }
 

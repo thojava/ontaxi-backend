@@ -1,12 +1,12 @@
 package vn.ontaxi.rest.payload;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 public class SetPasswordRequest {
 
-    @NotEmpty
+    @NotBlank
     private String password;
-    @NotEmpty
+    @NotBlank
     private String token;
 
     public String getPassword() {

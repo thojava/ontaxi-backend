@@ -9,7 +9,7 @@ public class RestResult<T> {
         return message;
     }
 
-    void setMessage(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
@@ -17,7 +17,7 @@ public class RestResult<T> {
         return succeed;
     }
 
-    void setSucceed(boolean succeed) {
+    public void setSucceed(boolean succeed) {
         this.succeed = succeed;
     }
 

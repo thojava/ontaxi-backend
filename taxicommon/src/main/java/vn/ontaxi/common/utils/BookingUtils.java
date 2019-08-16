@@ -33,7 +33,7 @@ public class BookingUtils {
         }
 
         // Filter out blocked driver
-        stream = stream.filter(driver -> !driver.isBlocked());
+        stream = stream.filter(driver -> driver.getStatus() == Driver.Status.ACTIVATED);
 
         // Send to related car type
         if (booking.getCar_type() == CarTypes.N7) {

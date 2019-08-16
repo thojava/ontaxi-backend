@@ -10,7 +10,9 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     Driver findByMobile(String phone);
 
-    Driver findByEmailAndBlockedFalse(String email);
+    Driver findByEmailAndDeletedFalse(String email);
+
+    List<Driver> findByDeletedFalseAndStatus(Driver.Status status);
 
     List<Driver> findAllByOrderByCarType();
 

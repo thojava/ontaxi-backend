@@ -45,9 +45,9 @@ public class CustomerSurveyComponent {
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String parameterOne = params.get("id");
         if (parameterOne != null) {
-            booking = bookingRepository.findOne(Long.parseLong(parameterOne));
+            booking = bookingRepository.findById(Long.parseLong(parameterOne)).get();
             if (booking.getSurveyId() > 0) {
-                customerSurvey = customerSurveyRepository.findOne(booking.getSurveyId());
+                customerSurvey = customerSurveyRepository.findById(booking.getSurveyId()).get();
             } else {
                 customerSurvey = new CustomerSurvey();
                 customerSurvey.setBooking(booking);
@@ -83,7 +83,7 @@ public class CustomerSurveyComponent {
             Map<String, String> params = FacesContext.getCurrentInstance().
                     getExternalContext().getRequestParameterMap();
             String parameterOne = params.get("id");
-            booking = bookingRepository.findOne(Long.parseLong(parameterOne));
+            booking = bookingRepository.findById(Long.parseLong(parameterOne)).get();
         }
 
         return booking;

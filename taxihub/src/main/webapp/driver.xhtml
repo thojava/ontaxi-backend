@@ -67,7 +67,7 @@
                                 <p:column headerText="Loại Xe">
                                     <p:outputLabel value="#{driver.carType.description}"/>
                                 </p:column>
-                                <p:column headerText="Phiên Bản Ứng Dụng">
+                                <p:column style="width: 50px" headerText="Phiên Bản Ứng Dụng">
                                     <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>
                                 </p:column>
                                 <p:column headerText="Tài Khoản">
@@ -81,10 +81,8 @@
                                         <f:selectItem itemLabel="Bình Thường" itemValue="2"/>
                                     </p:selectOneMenu>
                                 </p:column>
-                                <p:column style="width: 50px" headerText="#{msg.blocked}">
-                                    <p:selectBooleanCheckbox value="#{driver.blocked}">
-                                        <p:ajax listener="#{driversComponent.updateDriver(driver)}"/>
-                                    </p:selectBooleanCheckbox>
+                                <p:column headerText="#{msg.status}">
+                                    <p:outputLabel>#{driver.status.name}</p:outputLabel>
                                 </p:column>
                                 <f:facet name="footer">
                                     <table>

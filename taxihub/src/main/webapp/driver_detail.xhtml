@@ -86,6 +86,19 @@
                                 </p:selectOneMenu>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.status}
+                            </td>
+                            <td>
+                                <p:selectOneMenu value="#{driverDetailComponent.newDriver.status}">
+                                    <f:selectItem itemLabel="--Lựa Chọn--" itemValue=""/>
+                                    <f:selectItem itemLabel="Đã kích hoạt" itemValue="ACTIVATED"/>
+                                    <f:selectItem itemLabel="Chờ kích hoạt" itemValue="REGISTRY"/>
+                                    <f:selectItem itemLabel="Đã khóa" itemValue="BLOCKED"/>
+                                </p:selectOneMenu>
+                            </td>
+                        </tr>
                     </table>
 
                     <div>

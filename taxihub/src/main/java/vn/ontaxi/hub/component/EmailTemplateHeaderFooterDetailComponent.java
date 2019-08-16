@@ -28,7 +28,7 @@ public class EmailTemplateHeaderFooterDetailComponent {
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String templateId = params.get("id");
         if (StringUtils.isNotEmpty(templateId) && NumberUtils.isDigits(templateId)) {
-            currentEmailHeaderFooter = emailTemplateHeaderFooterRepository.findOne(Long.parseLong(templateId));
+            currentEmailHeaderFooter = emailTemplateHeaderFooterRepository.findById(Long.parseLong(templateId)).get();
         }
     }
 

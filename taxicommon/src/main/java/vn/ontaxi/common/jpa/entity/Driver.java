@@ -11,6 +11,20 @@ import java.util.Date;
 
 @Entity
 public class Driver extends AbstractEntity {
+
+    public enum Status {
+        ACTIVATED("Đã kích hoạt"), REGISTRY("Chờ kích hoạt"), BLOCKED("Đã khóa");
+        private String name;
+
+        Status(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
@@ -25,9 +39,18 @@ public class Driver extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private CarTypes carType;
     private int level;
-    private boolean blocked;
     private boolean deleted;
     private boolean airport;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public long getId() {
         return id;
@@ -101,15 +124,6 @@ public class Driver extends AbstractEntity {
 
     public void setCarType(CarTypes carType) {
         this.carType = carType;
-    }
-
-    @JsonIgnore
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
     }
 
     @JsonIgnore

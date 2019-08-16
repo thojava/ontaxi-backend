@@ -38,6 +38,9 @@
                 <ui:include src="order_summary/scheduled_bookings.xhtml"/>
             </p:tab>
 
+            <p:tab title="#{msg.confirmed_booking} (#{bookingListComponent.customerConfirmedBookingSize})" rendered="#{not userCredentialComponent.customer}">
+                <ui:include src="order_summary/cusomter_confirmed_bookings.xhtml"/>
+            </p:tab>
 
             <p:tab title="#{msg.send_to_driver} (#{bookingListComponent.newBookingSize})" rendered="#{not userCredentialComponent.customer}">
                 <ui:include src="order_summary/new_bookings.xhtml"/>

@@ -38,6 +38,7 @@ public class BookingListComponent {
     private final OrderSummaryTabStore orderSummaryTabStore;
 
     private TaxiLazyDataModel<Booking> scheduledBookings;
+    private TaxiLazyDataModel<Booking> customerConfirmedBookings;
     private TaxiLazyDataModel<Booking> newBookings;
     private TaxiLazyDataModel<Booking> acceptedBookings;
     private TaxiLazyDataModel<Booking> completedBookings;
@@ -124,6 +125,19 @@ public class BookingListComponent {
         }
 
         return scheduledBookings;
+    }
+
+    public TaxiLazyDataModel<Booking> getCustomerConfirmedBookings() {
+        if (customerConfirmedBookings == null) {
+            customerConfirmedBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.DEPARTURE_TIME_ASC);
+            customerConfirmedBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.equal(root.get("status"), OrderStatus.CUSTOEMR_CONFIRM)));
+        }
+
+        return customerConfirmedBookings;
+    }
+
+    public Long getCustomerConfirmedBookingSize() {
+        return getCustomerConfirmedBookings().getTotalSize();
     }
 
     public Long getScheduledBookingSize() {

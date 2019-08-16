@@ -188,6 +188,11 @@ public class Booking extends AbstractEntity {
     }
 
     @JsonIgnore
+    public boolean isConfirmed() {
+        return OrderStatus.CUSTOEMR_CONFIRM.equalsIgnoreCase(getStatus());
+    }
+
+    @JsonIgnore
     public boolean isNew() {
         return OrderStatus.NEW.equalsIgnoreCase(getStatus());
     }

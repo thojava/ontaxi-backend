@@ -7,22 +7,20 @@ import vn.ontaxi.common.jpa.entity.Gender;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @NoArgsConstructor
 @Getter @Setter
 public class CustomerRegistration {
 
-    @NotEmpty
+    @NotBlank
     private String phone;
-    @NotEmpty
+    @NotBlank
     private String name;
-    @NotEmpty
-    @Email
+    @NotBlank
     private String email;
-    @NotEmpty
+    @NotBlank
     private String password;
     private String job;
     private Date birthDay;

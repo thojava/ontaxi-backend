@@ -1,12 +1,13 @@
 package vn.ontaxi.rest.payload;
 
-import javax.validation.constraints.NotEmpty;
+
+import javax.validation.constraints.NotBlank;
 
 public class CustomerLogin {
 
-    @NotEmpty
+    @NotBlank
     private String phone;
-    @NotEmpty
+    @NotBlank
     private String password;
 
     public String getPhone() {

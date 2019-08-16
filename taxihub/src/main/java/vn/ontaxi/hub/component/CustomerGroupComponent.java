@@ -52,7 +52,7 @@ public class CustomerGroupComponent {
     public void deleteCustomerGroup() {
         try {
             List<CustomerGroup> deleteGroups = lstCustomerGroups.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
-            customerGroupRepository.delete(deleteGroups);
+            customerGroupRepository.deleteAll(deleteGroups);
             lstCustomerGroups = null;
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s nhóm", deleteGroups.size())));
         } catch (DataIntegrityViolationException ex) {

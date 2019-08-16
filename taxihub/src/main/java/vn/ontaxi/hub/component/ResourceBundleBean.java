@@ -12,7 +12,7 @@ import java.util.HashMap;
 @Component(value = "msg")
 public class ResourceBundleBean extends HashMap {
 
-    private final MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
     public ResourceBundleBean(MessageSource messageSource) {

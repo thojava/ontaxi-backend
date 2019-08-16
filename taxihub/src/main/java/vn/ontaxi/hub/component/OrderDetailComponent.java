@@ -106,6 +106,12 @@ public class OrderDetailComponent extends AbstractOrderComponent {
         return "index.jsf?faces-redirect=true";
     }
 
+    public String confirmOrder() {
+        booking.setStatus(OrderStatus.CUSTOEMR_CONFIRM);
+        bookingRepository.save(booking);
+        return "index.jsf?faces-redirect=true";
+    }
+
     public String sendOrderToDriver() {
         BookingUtils.setupToDriver(booking, selectedDrivers, sendToGroupOption, getDrivers());
 
@@ -178,7 +184,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     }
 
     public Iterable<Driver> getDrivers() {
-        return driverRepository.findAll();
+        return driverRepository.findByDeletedFalseAndStatus(Driver.Status.ACTIVATED);
     }
 
     public List<Driver> getSelectedDrivers() {
@@ -194,7 +200,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
             Map<String, String> params = FacesContext.getCurrentInstance().
                     getExternalContext().getRequestParameterMap();
             String parameterOne = params.get("id");
-            booking = bookingRepository.findOne(Long.parseLong(parameterOne));
+            booking = bookingRepository.findById(Long.parseLong(parameterOne)).get();
         }
 
         return booking;

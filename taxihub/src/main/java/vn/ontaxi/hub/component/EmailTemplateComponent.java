@@ -51,7 +51,7 @@ public class EmailTemplateComponent {
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String templateId = params.get("id");
         if (StringUtils.isNotEmpty(templateId) && NumberUtils.isDigits(templateId)) {
-            currentEmailTemplate = emailTemplateRepository.findOne(Long.parseLong(templateId));
+            currentEmailTemplate = emailTemplateRepository.findById(Long.parseLong(templateId)).get();
         }
     }
 
@@ -95,7 +95,7 @@ public class EmailTemplateComponent {
     private void deleteTemplates(List<EmailTemplate> emailTemplates) {
         try {
             List<EmailTemplate> deletedTemplates = emailTemplates.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
-            emailTemplateRepository.delete(deletedTemplates);
+            emailTemplateRepository.deleteAll(deletedTemplates);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s email mẫu", deletedTemplates.size())));
         } catch (DataIntegrityViolationException ex) {
             ex.printStackTrace();
@@ -105,7 +105,7 @@ public class EmailTemplateComponent {
 
     public void deleteEmailHeaderFooters() {
         List<EmailTemplateHeaderFooter> deleteHeaderFooters = emailTemplateHeaderFooters.stream().filter(AbstractEntity::isBeanSelected).collect(Collectors.toList());
-        emailTemplateHeaderFooterRepository.delete(deleteHeaderFooters);
+        emailTemplateHeaderFooterRepository.deleteAll(deleteHeaderFooters);
         emailTemplateHeaderFooters = null;
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", String.format("Đã xóa %s mẫu header & footer", deleteHeaderFooters.size())));
     }
@@ -142,10 +142,10 @@ public class EmailTemplateComponent {
     }
 
     public void changeActivatedHeaderFooter(Long id) {
-        EmailTemplateHeaderFooter changedHeaderFooter = emailTemplateHeaderFooterRepository.findOne(id);
+        EmailTemplateHeaderFooter changedHeaderFooter = emailTemplateHeaderFooterRepository.findById(id).get();
         List<EmailTemplateHeaderFooter> headerFooters = emailTemplateHeaderFooterRepository.findAll();
         headerFooters.forEach(headerFooter -> headerFooter.setActive(false));
-        emailTemplateHeaderFooterRepository.save(headerFooters);
+        emailTemplateHeaderFooterRepository.saveAll(headerFooters);
 
         changedHeaderFooter.setActive(!changedHeaderFooter.isActive());
         emailTemplateHeaderFooterRepository.save(changedHeaderFooter);

@@ -253,7 +253,7 @@
                     </td>
                 </tr>
 
-                <ui:fragment rendered="#{orderDetailComponent.booking.ordered || orderDetailComponent.booking.isNew()}">
+                <ui:fragment rendered="#{orderDetailComponent.booking.confirmed || orderDetailComponent.booking.isNew()}">
                     <tr>
                         <td class="label">
                             #{msg.driver_group_option}
@@ -269,7 +269,7 @@
                         <td/>
                         <td>
                             <!--@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"-->
-                            <ui:fragment rendered="#{orderDetailComponent.booking.ordered}">
+                            <ui:fragment rendered="#{orderDetailComponent.booking.confirmed}">
                                 <p:selectManyMenu id="chooseDriverMenu" style="width: 500px"
                                                   converter="#{driverConverter}" validator="#{orderDetailComponent.validateSelectDriver}"
                                                   disabled="#{!orderDetailComponent.sendToIndividual}"
@@ -393,6 +393,9 @@
             </table>
             <div>
                 <ui:fragment rendered="#{orderDetailComponent.booking.ordered}">
+                    <p:commandButton value="#{msg.confirm_order}" action="#{orderDetailComponent.confirmOrder}" update="contentForm"/>
+                </ui:fragment>
+                <ui:fragment rendered="#{orderDetailComponent.booking.confirmed}">
                     <p:commandButton value="#{msg.send_to_driver}" action="#{orderDetailComponent.sendOrderToDriver}" update="contentForm"/>
                 </ui:fragment>
                 <ui:fragment rendered="#{orderDetailComponent.booking.laterPaid and !orderDetailComponent.booking.paidToDriver}">

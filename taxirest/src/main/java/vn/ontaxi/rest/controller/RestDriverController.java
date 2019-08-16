@@ -43,6 +43,7 @@ import vn.ontaxi.rest.utils.SMSContentBuilder;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.Valid;
 import java.util.*;
 
 import static reactor.bus.selector.Selectors.$;
@@ -119,8 +120,8 @@ public class RestDriverController {
     @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.POST)
     public RestResult validateLoginEmail(@PathVariable String email) {
         RestResult<JwtAuthenticationResponse> restResult = new RestResult<>();
-        Driver driver = driverRepository.findByEmailAndBlockedFalse(email);
-        if (driver == null) {
+        Driver driver = driverRepository.findByEmailAndDeletedFalse(email);
+        if (driver == null || driver.getStatus() != Driver.Status.ACTIVATED) {
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("account_is_not_registered", new String[]{email}, Locale.getDefault()));
             return restResult;
@@ -152,7 +153,7 @@ public class RestDriverController {
     public synchronized RestResult acceptOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody long orderId) {
         em.flush();
         em.clear();
-        Booking booking = bookingRepository.findOne(orderId);
+        Booking booking = bookingRepository.findById(orderId).get();
         logger.debug(driver.getEmail() + " accept " + orderId + " start " + booking.getStatus());
         RestResult restResult = new RestResult();
 
@@ -192,7 +193,7 @@ public class RestDriverController {
 
     @RequestMapping(path = "/completeOrder", method = RequestMethod.POST)
     public synchronized RestResult completeOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody Booking booking) {
-        Booking persistedBooking = bookingRepository.findOne(booking.getId());
+        Booking persistedBooking = bookingRepository.findById(booking.getId()).get();
         if (!booking.isCompleted()) {
             persistedBooking.setActual_total_distance(booking.getActual_total_distance());
             persistedBooking.setOutward_distance(booking.getOutward_distance());
@@ -240,7 +241,7 @@ public class RestDriverController {
     public RestResult updateBookingStatus(@RequestBody List<Booking> bookings) {
         List<Booking> updatedBookings = new ArrayList<>();
         for (Booking booking : bookings) {
-            Booking serverBooking = bookingRepository.findOne(booking.getId());
+            Booking serverBooking = bookingRepository.findById(booking.getId()).get();
             if (!serverBooking.getStatus().equals(booking.getStatus())) {
                 booking.setStatus(serverBooking.getStatus());
                 updatedBookings.addAll(bookings);
@@ -270,6 +271,31 @@ public class RestDriverController {
         RestResult<List<BookingDTO>> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(allBooking));
         return restResult;
+    }
+
+    @ApiOperation("Register new driver")
+    @PostMapping(value = "/register")
+    public RestResult register(@Valid @RequestBody DriverInfoDTO driverInfoDTO) {
+
+        Driver existedDriverByPhone = driverRepository.findByMobile(driverInfoDTO.getPhone());
+        Driver existedDriverByEmail = driverRepository.findByEmail(driverInfoDTO.getEmail());
+        if (existedDriverByPhone != null || existedDriverByEmail != null) {
+            RestResult restResult = new RestResult();
+            restResult.setSucceed(false);
+            restResult.setMessage("Thông tin tài xế đã tồn tại trên hệ thống");
+            return restResult;
+        }
+
+        Driver driver = new Driver();
+        driver.setAirport(driverInfoDTO.isAirport());
+        driver.setMobile(driverInfoDTO.getPhone());
+        driver.setLicense_plates(driverInfoDTO.getLicensePlates());
+        driver.setEmail(driverInfoDTO.getEmail());
+        driver.setCarType(driverInfoDTO.getCarTypes());
+        driver.setName(driverInfoDTO.getName());
+        driver.setStatus(Driver.Status.REGISTRY);
+        driverRepository.save(driver);
+        return new RestResult();
     }
 
     @RequestMapping(value = "/getAppVersion", method = RequestMethod.GET)
