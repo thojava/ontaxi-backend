@@ -384,10 +384,9 @@
                     <td class="label">
                         <h:outputText value="#{msg.tong_tien}"/>
                     </td>
-                    <h:outputText id="totalAmount"
-                                  value="#{orderDetailComponent.booking.completed ? orderDetailComponent.booking.totalPriceInDetail : numberFormatterComponent.formatPrice(orderDetailComponent.booking.total_price)}"/>
                     <td>
-                        <!--@elvariable id="priceCalculator" type="vn.ontaxi.hub.service.PriceCalculator"-->
+                        <h:outputText id="totalAmount"
+                                      value="#{orderDetailComponent.booking.completed ? orderDetailComponent.booking.totalPriceInDetail : numberFormatterComponent.formatPrice(orderDetailComponent.booking.total_price)}"/>
                     </td>
                 </tr>
             </table>
