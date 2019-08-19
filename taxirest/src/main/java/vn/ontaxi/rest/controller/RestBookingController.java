@@ -75,7 +75,7 @@ public class RestBookingController {
     }
 
     @ApiOperation("Booking detail by id")
-    @RequestMapping(path = "/detail/{id}/{emailOrPhone:.+}")
+    @RequestMapping(path = "/detail/{id}/{emailOrPhone:.+}", method = RequestMethod.GET)
     public Booking getBookingDetail(@PathVariable Long id, @PathVariable String emailOrPhone) {
         Optional<Booking> booking = bookingRepository.findById(id);
         if (booking.isPresent()) {
