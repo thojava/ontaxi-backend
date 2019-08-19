@@ -30,6 +30,21 @@
             <h:outputText value="#{booking.mobile}&lt;br/&gt;#{booking.name}" escape="false"/>
         </p:column>
 
+        <p:column headerText="#{msg.gio_di}" filterBy="#{booking.departure_time}"
+                  filterFunction="#{bookingListComponent.filterByDate}">
+            <f:facet name="filter">
+                <p:calendar id="cal3" pattern="yyyy-MM-dd">
+                    <p:ajax event="dateSelect" oncomplete="PF('acceptedBookingTable').filter()"
+                            update="acceptedBookingTable"/>
+                    <p:ajax event="change" execute="@this" oncomplete="PF('acceptedBookingTable').filter()"
+                            update="acceptedBookingTable"/>
+                </p:calendar>
+            </f:facet>
+            <h:outputText value="#{booking.departure_time}">
+                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+            </h:outputText>
+        </p:column>
+
         <p:column headerText="#{msg.diem_di}">
             <h:outputText value="#{bookingListComponent.justifyLocation(booking.from_location)}"/>
         </p:column>
@@ -44,21 +59,6 @@
 
         <p:column headerText="#{msg.tong_tien}">
             <h:outputText value="#{numberFormatterComponent.formatPrice(booking.total_price)}"/>
-        </p:column>
-
-        <p:column headerText="#{msg.gio_di}" filterBy="#{booking.departure_time}"
-                  filterFunction="#{bookingListComponent.filterByDate}">
-            <f:facet name="filter">
-                <p:calendar id="cal3" pattern="yyyy-MM-dd">
-                    <p:ajax event="dateSelect" oncomplete="PF('acceptedBookingTable').filter()"
-                            update="acceptedBookingTable"/>
-                    <p:ajax event="change" execute="@this" oncomplete="PF('acceptedBookingTable').filter()"
-                            update="acceptedBookingTable"/>
-                </p:calendar>
-            </f:facet>
-            <h:outputText value="#{booking.departure_time}">
-                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
-            </h:outputText>
         </p:column>
 
         <p:column headerText="#{msg.tai_xe}">

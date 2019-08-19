@@ -4,8 +4,10 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
+import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.ViewPrice;
 import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
@@ -14,6 +16,7 @@ import vn.ontaxi.common.service.DistanceMatrixService;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.dto.request.BookingCalculatePriceRequestDTO;
 import vn.ontaxi.rest.payload.dto.request.PostBookingRequestDTO;
 import vn.ontaxi.rest.payload.dto.response.BookingCalculatePriceResponseDTO;
@@ -83,6 +86,23 @@ public class RestBookingController {
                 return booking.get();
         }
         return null;
+    }
+
+    @ApiOperation("In progress booking")
+    @GetMapping(path = "/inprogress/{id}")
+    public RestResult updateToInProgressStatus(@ApiIgnore @CurrentUser Driver driver, @PathVariable Long id) {
+        RestResult restResult = new RestResult();
+        Optional<Booking> booking = bookingRepository.findById(id);
+        if (booking.isPresent() && driver.getEmail().equals(booking.get().getAccepted_by())) {
+            Booking b = booking.get();
+            b.setStatus(OrderStatus.IN_PROGRESS);
+            bookingRepository.save(b);
+        } else {
+            restResult.setSucceed(false);
+            restResult.setMessage("Can't find this booking");
+        }
+
+        return restResult;
     }
 
 

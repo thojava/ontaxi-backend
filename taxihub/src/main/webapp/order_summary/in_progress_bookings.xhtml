@@ -6,18 +6,16 @@
     <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
     <!--@elvariable id="bookingListComponent" type="vn.ontaxi.hub.component.BookingListComponent"-->
 
-    <p:dataTable id="newBookingTable"
-                 value="#{bookingListComponent.newBookings}"
+    <p:dataTable value="#{bookingListComponent.inProgressBookings}"
                  var="booking"
-                 widgetVar="newBookingTable"
-                 filteredValue="#{bookingListComponent.filteredNewBookings}"
                  rows="10"
                  paginator="true"
+                 id="inProgressBookingTable"
                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                  rowsPerPageTemplate="5,10,15"
-                 rowStyleClass="#{booking.outOfDate ? 'out_of_date_order' : null}"
                  lazy="true">
-        <p:column style="width: 50px">
+
+        <p:column style="width: 20px">
             <p:selectBooleanCheckbox value="#{booking.beanSelected}">
                 <p:ajax/>
             </p:selectBooleanCheckbox>
@@ -25,22 +23,21 @@
 
         <p:column headerText="Id" style="width: 50px">
             <p:commandLink value="#{booking.id}"
-                           action="#{bookingListComponent.selectBooking(booking)}"
-                           update="@all"/>
+                           action="#{bookingListComponent.selectBooking(booking)}" update="@all"/>
         </p:column>
 
-        <p:column headerText="#{msg.khach_hang}" filterBy="#{booking.mobile}">
+        <p:column headerText="#{msg.khach_hang}">
             <h:outputText value="#{booking.mobile}&lt;br/&gt;#{booking.name}" escape="false"/>
         </p:column>
 
         <p:column headerText="#{msg.gio_di}" filterBy="#{booking.departure_time}"
                   filterFunction="#{bookingListComponent.filterByDate}">
             <f:facet name="filter">
-                <p:calendar id="cal1" pattern="yyyy-MM-dd">
-                    <p:ajax event="dateSelect" oncomplete="PF('newBookingTable').filter()"
-                            update="newBookingTable"/>
-                    <p:ajax event="change" execute="@this" oncomplete="PF('newBookingTable').filter()"
-                            update="newBookingTable"/>
+                <p:calendar id="cal3" pattern="yyyy-MM-dd">
+                    <p:ajax event="dateSelect" oncomplete="PF('inProgressBookingTable').filter()"
+                            update="inProgressBookingTable"/>
+                    <p:ajax event="change" execute="@this" oncomplete="PF('inProgressBookingTable').filter()"
+                            update="inProgressBookingTable"/>
                 </p:calendar>
             </f:facet>
             <h:outputText value="#{booking.departure_time}">
@@ -64,16 +61,14 @@
             <h:outputText value="#{numberFormatterComponent.formatPrice(booking.total_price)}"/>
         </p:column>
 
-        <f:facet name="footer">
-            <div class="ui-g">
-                <div class="ui-g-offset-4 ui-g-4">
-                    <p:commandButton value="#{msg.order_moi}" disabled="true" styleClass="btn-primary"/>
-                    <p:commandButton styleClass="btn-teal" value="#{msg.order_sap_toi}"
-                                     disabled="true"/>
-                    <p:commandButton styleClass="btn-warning" value="#{msg.order_da_qua_han}"
-                                     disabled="true"/>
-                </div>
-            </div>
-        </f:facet>
+        <p:column headerText="#{msg.tai_xe}">
+            <ui:fragment rendered="#{empty booking.accepted_by_driver.name}">
+                <h:outputText value="${booking.accepted_by_driver.email}"/>
+            </ui:fragment>
+            <ui:fragment rendered="#{not empty booking.accepted_by_driver.name}">
+                <h:outputText
+                        value="${booking.accepted_by_driver.name} ${booking.accepted_by_driver.mobile} ${booking.accepted_by_driver.license_plates}"/>
+            </ui:fragment>
+        </p:column>
     </p:dataTable>
 </ui:composition>

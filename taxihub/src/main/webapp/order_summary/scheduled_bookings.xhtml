@@ -33,22 +33,6 @@
             <h:outputText value="#{booking.mobile}&lt;br/&gt;#{booking.name}" escape="false"/>
         </p:column>
 
-        <p:column headerText="#{msg.diem_di}">
-            <h:outputText value="#{bookingListComponent.justifyLocation(booking.from_location)}"/>
-        </p:column>
-
-        <p:column headerText="#{msg.diem_den}">
-            <h:outputText value="#{bookingListComponent.justifyLocation(booking.to_location)}"/>
-        </p:column>
-
-        <p:column headerText="#{msg.quang_duong}">
-            <h:outputText value="#{numberFormatterComponent.formatDistance(booking.total_distance)}"/>
-        </p:column>
-
-        <p:column headerText="#{msg.tong_tien}">
-            <h:outputText value="#{numberFormatterComponent.formatPrice(booking.total_price)}"/>
-        </p:column>
-
         <p:column headerText="#{msg.gio_di}"
                   filterBy="#{booking.departure_time}"
                   filterFunction="#{bookingListComponent.filterByDate}">
@@ -65,6 +49,23 @@
                 <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
             </h:outputText>
         </p:column>
+
+        <p:column headerText="#{msg.diem_di}">
+            <h:outputText value="#{bookingListComponent.justifyLocation(booking.from_location)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.diem_den}">
+            <h:outputText value="#{bookingListComponent.justifyLocation(booking.to_location)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.quang_duong}">
+            <h:outputText value="#{numberFormatterComponent.formatDistance(booking.total_distance)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.tong_tien}">
+            <h:outputText value="#{numberFormatterComponent.formatPrice(booking.total_price)}"/>
+        </p:column>
+
         <p:column headerText="" style="width: 70px">
             <p:commandButton value="Gọi điện" process="@this" actionListener="#{callManagementDialogComponent.updateInfo(booking.mobile)}" update="@([id$=customerInfo])" oncomplete="PF('callDialog').show();"/>
         </p:column>

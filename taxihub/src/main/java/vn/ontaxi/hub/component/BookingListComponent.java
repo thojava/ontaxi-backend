@@ -41,6 +41,7 @@ public class BookingListComponent {
     private TaxiLazyDataModel<Booking> customerConfirmedBookings;
     private TaxiLazyDataModel<Booking> newBookings;
     private TaxiLazyDataModel<Booking> acceptedBookings;
+    private TaxiLazyDataModel<Booking> inProgressBookings;
     private TaxiLazyDataModel<Booking> completedBookings;
 
     private List<Booking> filteredNewBookings;
@@ -164,6 +165,19 @@ public class BookingListComponent {
         }
 
         return acceptedBookings;
+    }
+
+    public TaxiLazyDataModel<Booking> getInProgressBookings() {
+        if (inProgressBookings == null) {
+            inProgressBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.ARRIVAL_TIME_DESC);
+            inProgressBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.equal(root.get("status"), OrderStatus.IN_PROGRESS)));
+        }
+
+        return inProgressBookings;
+    }
+
+    public Long getInProgressBookingSize() {
+        return getInProgressBookings().getTotalSize();
     }
 
     public Long getAcceptedBookingSize() {

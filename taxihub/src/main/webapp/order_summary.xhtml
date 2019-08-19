@@ -50,6 +50,9 @@
                 <ui:include src="order_summary/accepted_bookings.xhtml"/>
             </p:tab>
 
+            <p:tab title="#{msg.in_progress} (#{bookingListComponent.inProgressBookingSize})" rendered="#{not userCredentialComponent.customer}">
+                <ui:include src="order_summary/in_progress_bookings.xhtml"/>
+            </p:tab>
 
             <p:tab title="#{msg.completed} (#{bookingListComponent.completedBookingSize})">
                 <ui:include src="order_summary/completed_bookings.xhtml"/>

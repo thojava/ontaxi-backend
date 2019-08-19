@@ -8,6 +8,7 @@ public class OrderStatus {
     public static final String CUSTOEMR_CONFIRM = "CF";
     public static final String NEW = "N";
     public static final String ACCEPTED = "A";
+    public static final String IN_PROGRESS = "P";
     public static final String COMPLETED = "C";
     public static final String ABORTED = "B";
 
@@ -18,6 +19,7 @@ public class OrderStatus {
         statusWithName.put(CUSTOEMR_CONFIRM, "Đã xác nhận");
         statusWithName.put(NEW, "Gửi cho lái xe");
         statusWithName.put(ACCEPTED, "Chấp nhận");
+        statusWithName.put(IN_PROGRESS, "Đang đi");
         statusWithName.put(COMPLETED, "Hoàn thành");
         statusWithName.put(ABORTED, "Đã hủy");
     }
