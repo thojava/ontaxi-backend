@@ -14,13 +14,13 @@ import java.util.Date;
 @Getter @Setter
 public class CustomerRegistration {
 
-    @NotBlank
+    @NotBlank(message = "SĐT không được để trống")
     private String phone;
-    @NotBlank
+    @NotBlank(message = "Tên không được để trống")
     private String name;
-    @NotBlank
+    @NotBlank(message = "Email không được để trống")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Mật khẩu không được để trống")
     private String password;
     private String job;
     private Date birthDay;

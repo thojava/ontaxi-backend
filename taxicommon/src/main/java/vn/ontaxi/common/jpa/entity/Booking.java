@@ -75,6 +75,7 @@ public class Booking extends AbstractEntity {
     private double promotionPercentage;
     private String isFixedPrice = BooleanConstants.NO;
     private long surveyId;
+    private String note;
 
     private String identify;
 
@@ -99,6 +100,14 @@ public class Booking extends AbstractEntity {
     public Booking(String from_location, String to_location) {
         this.from_location = from_location;
         this.to_location = to_location;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getIdentify() {

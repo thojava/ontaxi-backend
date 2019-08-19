@@ -28,19 +28,26 @@ public class Driver extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    private long id;
+    private Long id;
     private String email;
     private String mobile;
     private String name;
     private Date birthDay;
-    private String license_plates;
+    private String identity;
+    private String bankId;
+    private String address;
+    private String currentAddress;
     private LicenseTypes licenseType;
-    private double amount;
+    private String licenseNumber;
+    private boolean airport;
     @Enumerated(EnumType.STRING)
     private CarTypes carType;
+    private String carBrand;
+    private String manufactureYear;
+    private String license_plates;
     private int level;
     private boolean deleted;
-    private boolean airport;
+    private double amount;
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -56,7 +63,7 @@ public class Driver extends AbstractEntity {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -184,6 +191,62 @@ public class Driver extends AbstractEntity {
     @JsonIgnore
     public String getKey() {
         return String.valueOf(getId());
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    public String getBankId() {
+        return bankId;
+    }
+
+    public void setBankId(String bankId) {
+        this.bankId = bankId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCurrentAddress() {
+        return currentAddress;
+    }
+
+    public void setCurrentAddress(String currentAddress) {
+        this.currentAddress = currentAddress;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+
+    public String getCarBrand() {
+        return carBrand;
+    }
+
+    public void setCarBrand(String carBrand) {
+        this.carBrand = carBrand;
+    }
+
+    public String getManufactureYear() {
+        return manufactureYear;
+    }
+
+    public void setManufactureYear(String manufactureYear) {
+        this.manufactureYear = manufactureYear;
     }
 
     @Override

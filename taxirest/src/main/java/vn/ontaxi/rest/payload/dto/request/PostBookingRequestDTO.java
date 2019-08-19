@@ -1,10 +1,23 @@
 package vn.ontaxi.rest.payload.dto.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
+    @NotBlank
     private String mobile;
+    @NotBlank
     private String name;
     private String email;
     private String is_round_trip;
+    private String note;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     public String getMobile() {
         return mobile;

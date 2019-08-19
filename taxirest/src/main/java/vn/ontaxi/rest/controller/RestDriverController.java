@@ -34,6 +34,7 @@ import vn.ontaxi.common.utils.PriceUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
 import vn.ontaxi.rest.payload.dto.BookingDTO;
+import vn.ontaxi.rest.payload.dto.DriverDTO;
 import vn.ontaxi.rest.payload.dto.DriverInfoDTO;
 import vn.ontaxi.rest.service.LocationWithDriverService;
 import vn.ontaxi.rest.utils.BaseMapper;
@@ -55,6 +56,7 @@ public class RestDriverController {
     private static final Logger logger = LoggerFactory.getLogger(RestDriverController.class);
 
     private BaseMapper<Booking, BookingDTO> mapper = new BaseMapper<>(Booking.class, BookingDTO.class);
+    private BaseMapper<Driver, DriverDTO> driverMapper = new BaseMapper<>(Driver.class, DriverDTO.class);
 
     private final LocationWithDriverService driversMapComponent;
     private final AuthenticationManager authenticationManager;
@@ -275,10 +277,10 @@ public class RestDriverController {
 
     @ApiOperation("Register new driver")
     @PostMapping(value = "/register")
-    public RestResult register(@Valid @RequestBody DriverInfoDTO driverInfoDTO) {
+    public RestResult register(@Valid @RequestBody DriverDTO driverDTO) {
 
-        Driver existedDriverByPhone = driverRepository.findByMobile(driverInfoDTO.getPhone());
-        Driver existedDriverByEmail = driverRepository.findByEmail(driverInfoDTO.getEmail());
+        Driver existedDriverByPhone = driverRepository.findByMobile(driverDTO.getMobile());
+        Driver existedDriverByEmail = driverRepository.findByEmail(driverDTO.getEmail());
         if (existedDriverByPhone != null || existedDriverByEmail != null) {
             RestResult restResult = new RestResult();
             restResult.setSucceed(false);
@@ -286,13 +288,11 @@ public class RestDriverController {
             return restResult;
         }
 
-        Driver driver = new Driver();
-        driver.setAirport(driverInfoDTO.isAirport());
-        driver.setMobile(driverInfoDTO.getPhone());
-        driver.setLicense_plates(driverInfoDTO.getLicensePlates());
-        driver.setEmail(driverInfoDTO.getEmail());
-        driver.setCarType(driverInfoDTO.getCarTypes());
-        driver.setName(driverInfoDTO.getName());
+
+        Driver driver = driverMapper.toPersistenceBean(driverDTO);
+        driver.setId(null);
+        driver.setAmount(0.0);
+        driver.setLevel(0);
         driver.setStatus(Driver.Status.REGISTRY);
         driverRepository.save(driver);
         return new RestResult();

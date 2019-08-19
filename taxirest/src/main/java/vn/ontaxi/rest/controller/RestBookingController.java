@@ -116,6 +116,7 @@ public class RestBookingController {
         booking.setMobile(bookingDTO.getMobile());
         // Update status
         booking.setCreatedBy("site");
+        booking.setNote(bookingDTO.getNote());
         booking.setStatus(OrderStatus.ORDERED);
         // Recalculate the fee
         booking.setFee_percentage(12);

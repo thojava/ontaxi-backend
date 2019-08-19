@@ -92,6 +92,16 @@
                         <h:outputText id="toLocation" value="#{orderDetailComponent.booking.to_location}"/>
                     </td>
                 </tr>
+                <tr >
+                    <td class="label">
+                        Ghi chú
+                    </td>
+                    <td>
+                        <p:inputTextarea rendered="#{orderDetailComponent.booking.ordered}"
+                                         value="#{orderDetailComponent.booking.note}" />
+                        <h:outputText rendered="#{not (orderDetailComponent.booking.ordered)}" value="#{orderDetailComponent.booking.note}" />
+                    </td>
+                </tr>
                 <tr>
                     <td class="label">
                         #{msg.hai_chieu}
