@@ -42,7 +42,7 @@ public class SwaggerConfig {
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
-                .forPaths(regex("^/customer\\/(updateCustomer|getCustomerInfo|currentCustomerProfile)(\\/.*)?"))
+                .forPaths(regex("^/(customer|driver)\\/(updateCustomer|getCustomerInfo|currentCustomerProfile|downloadHistory|getNewBooking|updateBookingStatus|completeOrder|acceptOrder|getDriverDetail)(\\/.*)?"))
                 .build();
     }
 

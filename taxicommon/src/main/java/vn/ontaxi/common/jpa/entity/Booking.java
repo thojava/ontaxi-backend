@@ -1,6 +1,8 @@
 package vn.ontaxi.common.jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import vn.ontaxi.common.constant.BooleanConstants;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.constant.OrderStatus;
@@ -9,9 +11,9 @@ import vn.ontaxi.common.utils.PriceUtils;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Booking extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,6 @@ public class Booking extends AbstractEntity {
     private String to_location;
     private String to_city;
     private String to_district;
-    @Temporal(TemporalType.TIMESTAMP)
     private Date departureTime;
     private Date actual_departure_time;
     private Date arrivalTime;
@@ -142,10 +143,12 @@ public class Booking extends AbstractEntity {
         this.to_location = to_location;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public Date getDeparture_time() {
         return departureTime;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public void setDeparture_time(Date departure_time) {
         this.departureTime = departure_time;
     }
