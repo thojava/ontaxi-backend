@@ -40,7 +40,7 @@ public class DriversMapComponent implements Serializable {
 
     public String getLocationJson() {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> entity = restTemplate.getForEntity(restUrl + "/driver/location", String.class);
+        ResponseEntity<String> entity = restTemplate.getForEntity(restUrl + "/driver/location?showFullDriverInfo=true", String.class);
         Type locationType = new TypeToken<List<LocationWithDriver>>() {}.getType();
         List<LocationWithDriver> onlineDriverMap = ObjectUtils.defaultIfNull(new Gson().fromJson(entity.getBody(), locationType), new ArrayList<>());
         numOfActivatedCar = onlineDriverMap.size();

@@ -33,7 +33,7 @@ public class LocationWithDriverService implements Consumer<Event<LocationWithDri
         return driversLocation.getOrDefault(driverCode, new LocationWithDriver());
     }
 
-    public Map<String, LocationWithDriver> getOnlineDriversLocation(boolean fromWebsite) {
+    public Map<String, LocationWithDriver> getOnlineDriversLocation(boolean showFullDriverInfo) {
         long currentTime = new Date().getTime();
         Map<String, LocationWithDriver> onlineDriverMap = new HashMap<>();
         for (String driverCode : driversLocation.keySet()) {
@@ -42,7 +42,7 @@ public class LocationWithDriverService implements Consumer<Event<LocationWithDri
                 Driver driver = driverService.findByEmail(driverCode);
                 if (driver != null) {
                     String driverInfo;
-                    if (fromWebsite) {
+                    if (!showFullDriverInfo) {
                         driverInfo = driver.getLicense_plates() + " - " + driver.getCarType();
                     } else {
                         driverInfo = driver.getName() + " - " + driver.getMobile() + " - " + driver.getCarType();

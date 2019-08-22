@@ -96,8 +96,8 @@ public class RestDriverController {
 
     @CrossOrigin
     @RequestMapping(path = "/location", method = RequestMethod.GET)
-    public String getLocationJson() {
-        return new Gson().toJson(driversMapComponent.getOnlineDriversLocation(true).values());
+    public String getLocationJson(@RequestParam boolean showFullDriverInfo) {
+        return new Gson().toJson(driversMapComponent.getOnlineDriversLocation(showFullDriverInfo).values());
     }
 
     @CrossOrigin
