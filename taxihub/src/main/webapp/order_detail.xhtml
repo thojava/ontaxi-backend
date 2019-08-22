@@ -92,14 +92,14 @@
                         <h:outputText id="toLocation" value="#{orderDetailComponent.booking.to_location}"/>
                     </td>
                 </tr>
-                <tr >
+                <tr>
                     <td class="label">
                         Ghi chú
                     </td>
                     <td>
-                        <p:inputTextarea rendered="#{orderDetailComponent.booking.ordered}"
-                                         value="#{orderDetailComponent.booking.note}" />
-                        <h:outputText rendered="#{not (orderDetailComponent.booking.ordered)}" value="#{orderDetailComponent.booking.note}" />
+                        <p:inputTextarea rendered="#{orderDetailComponent.booking.ordered}" cols="10"
+                                         value="#{orderDetailComponent.booking.note}"/>
+                        <h:outputText rendered="#{not (orderDetailComponent.booking.ordered)}" value="#{orderDetailComponent.booking.note}"/>
                     </td>
                 </tr>
                 <tr>
@@ -297,7 +297,7 @@
                                         <h:outputText value="#{d.carType}"/>
                                     </p:column>
                                 </p:selectManyMenu>
-                                <h:message for="chooseDriverMenu" />
+                                <h:message for="chooseDriverMenu"/>
                             </ui:fragment>
                             <ui:fragment rendered="#{orderDetailComponent.booking.isNew()}">
                                 <h:outputText value="#{orderDetailComponent.booking.to_drivers}"/>
@@ -400,7 +400,8 @@
                     </td>
                 </tr>
             </table>
-            <div>
+            <p:spacer height="10px"/>
+            <div style="    display: flex;   justify-content: center;">
                 <ui:fragment rendered="#{orderDetailComponent.booking.ordered}">
                     <p:commandButton value="#{msg.confirm_order}" action="#{orderDetailComponent.confirmOrder}" update="contentForm"/>
                 </ui:fragment>
