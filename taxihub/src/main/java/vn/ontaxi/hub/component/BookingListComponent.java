@@ -78,6 +78,16 @@ public class BookingListComponent {
                 scheduledBookings = null;
                 break;
             case 1:
+                List<Booking> confirmedBookingsWrappedData = getCustomerConfirmedBookings().getWrappedData();
+                for (Booking confirmBooking : confirmedBookingsWrappedData) {
+                    if (confirmBooking.isBeanSelected()) {
+                        confirmBooking.setStatus(OrderStatus.ABORTED);
+                        bookingRepository.saveAndFlush(confirmBooking);
+                    }
+                }
+                customerConfirmedBookings = null;
+                break;
+            case 2:
                 List<Booking> newBookingsWrappedData = getNewBookings().getWrappedData();
                 for (Booking newBooking : newBookingsWrappedData) {
                     if (newBooking.isBeanSelected()) {
@@ -88,7 +98,7 @@ public class BookingListComponent {
                 }
                 newBookings = null;
                 break;
-            case 2:
+            case 3:
                 List<Booking> acceptedBookingsWrappedData = getAcceptedBookings().getWrappedData();
                 for (Booking acceptedBooking : acceptedBookingsWrappedData) {
                     if (acceptedBooking.isBeanSelected()) {
@@ -103,7 +113,21 @@ public class BookingListComponent {
                 }
                 acceptedBookings = null;
                 break;
-            case 3:
+            case 4:
+                List<Booking> onGoingBookingsWrappedData = getInProgressBookings().getWrappedData();
+                for (Booking onGoingBooking : onGoingBookingsWrappedData) {
+                    if (onGoingBooking.isBeanSelected()) {
+                        Driver accepted_by_driver = onGoingBooking.getAccepted_by_driver();
+                        accepted_by_driver.increaseAmt(onGoingBooking.getActual_total_fee(), logger);
+                        driverRepository.saveAndFlush(accepted_by_driver);
+                        onGoingBooking.setStatus(OrderStatus.ABORTED);
+                        bookingRepository.saveAndFlush(onGoingBooking);
+                        fcmService.abortNewTaxiOrder(onGoingBooking);
+                    }
+                }
+                inProgressBookings = null;
+                break;
+            case 5:
                 List<Booking> completedBookingsWrappedData = getCompletedBookings().getWrappedData();
                 for (Booking completedBooking : completedBookingsWrappedData) {
                     if (completedBooking.isBeanSelected()) {
