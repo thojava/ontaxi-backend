@@ -32,11 +32,81 @@
                         </tr>
                         <tr>
                             <td class="label">
+                                #{msg.birthday}
+                            </td>
+                            <td>
+                                <p:calendar id="birthday" required="true" pattern="dd-MM-yyyy" mask="true" value="#{driverDetailComponent.newDriver.birthDay}" />
+                                <p:message for="birthday"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
                                 #{msg.mobile}
                             </td>
                             <td>
                                 <p:inputText id="mobile" label="#{msg.mobile}" type="text" value="#{driverDetailComponent.newDriver.mobile}" required="true"/>
                                 <p:message for="mobile"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.email}
+                            </td>
+                            <td>
+                                <p:inputText id="email" label="#{msg.email}" type="text" value="#{driverDetailComponent.newDriver.email}" required="true"/>
+                                <p:message for="email"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.identity}
+                            </td>
+                            <td>
+                                <p:inputText id="identity" value="#{driverDetailComponent.newDriver.identity}" required="true" />
+                                <p:message for="identity" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.bank_account}
+                            </td>
+                            <td>
+                                <p:inputText id="bank_account" value="#{driverDetailComponent.newDriver.bankId}" required="true"/>
+                                <p:message for="bank_account" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                ${msg.address}
+                            </td>
+                            <td>
+                                <p:inputText required="true" id="address" value="#{driverDetailComponent.newDriver.address}"/>
+                                <p:message for="address" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.dia_chi_thuong_tru}
+                            </td>
+                            <td>
+                                <p:inputText required="true" id="dia_chi_thuong_tru" value="#{driverDetailComponent.newDriver.currentAddress}" />
+                                <p:message for="dia_chi_thuong_tru" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.bang_lai}
+                            </td>
+                            <td>
+                                <p:inputText required="true" id="bang_lai" placeholder="Số bằng lái" value="#{driverDetailComponent.newDriver.licenseNumber}" />
+                                <p:message for="bang_lai" />
+                            </td>
+                            <td>
+                                <p:selectOneMenu value="#{driverDetailComponent.newDriver.licenseType}">
+                                    <f:selectItem itemValue="B1" itemLabel="B1"/>
+                                    <f:selectItem itemValue="B2" itemLabel="B2"/>
+                                    <f:selectItem itemValue="C" itemLabel="C"/>
+                                </p:selectOneMenu>
                             </td>
                         </tr>
                         <tr>
@@ -48,14 +118,13 @@
                                     <f:selectItems value="#{selectItemGenerator.carTypeSelectItems}"/>
                                 </p:selectOneMenu>
                             </td>
-                        </tr>
-                        <tr>
-                            <td class="label">
-                                #{msg.email}
+                            <td>
+                                <p:inputText id="car_brand" placeholder="Hãng xe" required="true" value="#{driverDetailComponent.newDriver.carBrand}" />
+                                <p:message for="car_brand" />
                             </td>
                             <td>
-                                <p:inputText id="email" label="#{msg.email}" type="text" value="#{driverDetailComponent.newDriver.email}" required="true"/>
-                                <p:message for="email"/>
+                                <p:inputText id="doi_xe" placeholder="Đời xe" required="true" value="#{driverDetailComponent.newDriver.manufactureYear}" />
+                                <p:message for="doi_xe" />
                             </td>
                         </tr>
                         <tr>
