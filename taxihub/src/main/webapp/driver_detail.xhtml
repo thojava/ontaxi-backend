@@ -159,10 +159,13 @@
                                 #{msg.status}
                             </td>
                             <td>
-                                <p:selectOneButton value="#{driverDetailComponent.newDriver.status}">
-                                    <f:selectItem itemLabel="Kích hoạt" itemValue="ACTIVATED"/>
-                                    <f:selectItem itemLabel="Khóa Tài Khoản" itemValue="BLOCKED"/>
-                                </p:selectOneButton>
+                                <p:selectOneMenu value="#{driverDetailComponent.newDriver.status}" disabled="true" id="status" style="margin-right: 10px">
+                                    <f:selectItem itemLabel="Chưa kích hoạt" itemValue="REGISTRY"/>
+                                    <f:selectItem itemLabel="Đã kích hoạt" itemValue="ACTIVATED"/>
+                                    <f:selectItem itemLabel="Đã khóa" itemValue="BLOCKED"/>
+                                </p:selectOneMenu>
+                                <p:commandButton style="margin-right: 10px" process="@this" update="status" styleClass="btn btn-line" actionListener="#{driverDetailComponent.newDriver.setStatus('ACTIVATED')}" value="Kích Hoạt"/>
+                                <p:commandButton process="@this" update="status" styleClass="btn btn-primary" actionListener="#{driverDetailComponent.newDriver.setStatus('BLOCKED')}" value="Khóa Tài Khoản" />
                             </td>
                         </tr>
                     </table>
