@@ -19,14 +19,13 @@
             <p:tab title="#{msg.general_info}">
                 <h:form id="newOrderForm">
 
-                    <p:growl id="growl" showDetail="true" sticky="true" severity="error, info"/>
                     <table cellspacing="5px">
                         <tr>
                             <td class="label">
                                 #{msg.full_name}
                             </td>
                             <td>
-                                <p:inputText id="name" label="#{msg.full_name}" type="text" value="#{driverDetailComponent.newDriver.name}" required="true"/>
+                                <p:inputText id="name" label="#{msg.full_name}" type="text" value="#{driverDetailComponent.newDriver.name}" requiredMessage="${msg.require_field}" required="true"/>
                                 <p:message for="name"/>
                             </td>
                         </tr>
@@ -35,7 +34,7 @@
                                 #{msg.birthday}
                             </td>
                             <td>
-                                <p:calendar id="birthday" required="true" pattern="dd-MM-yyyy" mask="true" value="#{driverDetailComponent.newDriver.birthDay}" />
+                                <p:calendar id="birthday" required="true" pattern="dd-MM-yyyy" mask="true" requiredMessage="${msg.require_field}" value="#{driverDetailComponent.newDriver.birthDay}" />
                                 <p:message for="birthday"/>
                             </td>
                         </tr>
@@ -44,7 +43,7 @@
                                 #{msg.mobile}
                             </td>
                             <td>
-                                <p:inputText id="mobile" label="#{msg.mobile}" type="text" value="#{driverDetailComponent.newDriver.mobile}" required="true"/>
+                                <p:inputText id="mobile" label="#{msg.mobile}" type="text" value="#{driverDetailComponent.newDriver.mobile}" requiredMessage="${msg.require_field}" required="true"/>
                                 <p:message for="mobile"/>
                             </td>
                         </tr>
@@ -53,7 +52,7 @@
                                 #{msg.email}
                             </td>
                             <td>
-                                <p:inputText id="email" label="#{msg.email}" type="text" value="#{driverDetailComponent.newDriver.email}" required="true"/>
+                                <p:inputText id="email" label="#{msg.email}" type="text" value="#{driverDetailComponent.newDriver.email}" requiredMessage="${msg.require_field}" required="true"/>
                                 <p:message for="email"/>
                             </td>
                         </tr>
@@ -62,7 +61,7 @@
                                 #{msg.identity}
                             </td>
                             <td>
-                                <p:inputText id="identity" value="#{driverDetailComponent.newDriver.identity}" required="true" />
+                                <p:inputText id="identity" value="#{driverDetailComponent.newDriver.identity}" required="true" requiredMessage="${msg.require_field}" />
                                 <p:message for="identity" />
                             </td>
                         </tr>
@@ -71,7 +70,7 @@
                                 #{msg.bank_account}
                             </td>
                             <td>
-                                <p:inputText id="bank_account" value="#{driverDetailComponent.newDriver.bankId}" required="true"/>
+                                <p:inputText id="bank_account" value="#{driverDetailComponent.newDriver.bankId}" required="true" requiredMessage="${msg.require_field}"/>
                                 <p:message for="bank_account" />
                             </td>
                         </tr>
@@ -80,7 +79,7 @@
                                 ${msg.address}
                             </td>
                             <td>
-                                <p:inputText required="true" id="address" value="#{driverDetailComponent.newDriver.address}"/>
+                                <p:inputText required="true" id="address" value="#{driverDetailComponent.newDriver.address}" requiredMessage="${msg.require_field}"/>
                                 <p:message for="address" />
                             </td>
                         </tr>
@@ -89,7 +88,7 @@
                                 #{msg.dia_chi_thuong_tru}
                             </td>
                             <td>
-                                <p:inputText required="true" id="dia_chi_thuong_tru" value="#{driverDetailComponent.newDriver.currentAddress}" />
+                                <p:inputText required="true" id="dia_chi_thuong_tru" value="#{driverDetailComponent.newDriver.currentAddress}" requiredMessage="${msg.require_field}"/>
                                 <p:message for="dia_chi_thuong_tru" />
                             </td>
                         </tr>
@@ -98,7 +97,7 @@
                                 #{msg.bang_lai}
                             </td>
                             <td>
-                                <p:inputText required="true" id="bang_lai" placeholder="Số bằng lái" value="#{driverDetailComponent.newDriver.licenseNumber}" />
+                                <p:inputText required="true" id="bang_lai" placeholder="Số bằng lái" value="#{driverDetailComponent.newDriver.licenseNumber}" requiredMessage="${msg.require_field}"/>
                                 <p:message for="bang_lai" />
                             </td>
                             <td>
@@ -119,11 +118,11 @@
                                 </p:selectOneMenu>
                             </td>
                             <td>
-                                <p:inputText id="car_brand" placeholder="Hãng xe" required="true" value="#{driverDetailComponent.newDriver.carBrand}" />
+                                <p:inputText id="car_brand" placeholder="Hãng xe" required="true" value="#{driverDetailComponent.newDriver.carBrand}" requiredMessage="${msg.require_field}"/>
                                 <p:message for="car_brand" />
                             </td>
                             <td>
-                                <p:inputText id="doi_xe" placeholder="Đời xe" required="true" value="#{driverDetailComponent.newDriver.manufactureYear}" />
+                                <p:inputText id="doi_xe" placeholder="Đời xe" required="true" value="#{driverDetailComponent.newDriver.manufactureYear}" requiredMessage="${msg.require_field}"/>
                                 <p:message for="doi_xe" />
                             </td>
                         </tr>
@@ -132,7 +131,7 @@
                                 #{msg.license_plates}
                             </td>
                             <td>
-                                <p:inputText id="license_plates" label="#{msg.license_plates}" type="text" value="#{driverDetailComponent.newDriver.license_plates}" required="true"/>
+                                <p:inputText id="license_plates" label="#{msg.license_plates}" type="text" value="#{driverDetailComponent.newDriver.license_plates}" required="true" requiredMessage="${msg.require_field}"/>
                                 <p:message for="license_plates"/>
                             </td>
                         </tr>
@@ -160,12 +159,10 @@
                                 #{msg.status}
                             </td>
                             <td>
-                                <p:selectOneMenu value="#{driverDetailComponent.newDriver.status}">
-                                    <f:selectItem itemLabel="--Lựa Chọn--" itemValue=""/>
-                                    <f:selectItem itemLabel="Đã kích hoạt" itemValue="ACTIVATED"/>
-                                    <f:selectItem itemLabel="Chờ kích hoạt" itemValue="REGISTRY"/>
-                                    <f:selectItem itemLabel="Đã khóa" itemValue="BLOCKED"/>
-                                </p:selectOneMenu>
+                                <p:selectOneButton value="#{driverDetailComponent.newDriver.status}">
+                                    <f:selectItem itemLabel="Kích hoạt" itemValue="ACTIVATED"/>
+                                    <f:selectItem itemLabel="Khóa Tài Khoản" itemValue="BLOCKED"/>
+                                </p:selectOneButton>
                             </td>
                         </tr>
                     </table>
