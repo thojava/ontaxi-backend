@@ -122,7 +122,6 @@ public class RestBookingController {
         booking.setFee_percentage(12);
         booking.setTotal_fee(PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
 
-        bookingRepository.saveAndFlush(booking);
-        return booking;
+        return bookingRepository.saveAndFlush(booking);
     }
 }
