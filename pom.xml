@@ -208,6 +208,20 @@
                 <module>taxihub</module>
                 <module>taxirest</module>                
             </modules>
-        </profile>           
+            <properties>
+                <rest.url>http://localhost:8080/api</rest.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <modules>
+                <module>taxicommon</module>
+                <module>taxihub</module>
+                <module>taxirest</module>
+            </modules>
+            <properties>
+                <rest.url>https://api.ontaxi.vn</rest.url>
+            </properties>
+        </profile>
     </profiles>
 </project>
