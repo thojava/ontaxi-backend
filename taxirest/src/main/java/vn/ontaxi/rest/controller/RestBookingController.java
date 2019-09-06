@@ -78,9 +78,9 @@ public class RestBookingController {
     }
 
     @ApiOperation("Booking detail by id")
-    @RequestMapping(path = "/detail/{id}/{emailOrPhone:.+}", method = RequestMethod.GET)
-    public Booking getBookingDetail(@PathVariable Long id, @PathVariable String emailOrPhone) {
-        Optional<Booking> booking = bookingRepository.findById(id);
+    @RequestMapping(path = "/detail/{ticketCode}/{emailOrPhone:.+}", method = RequestMethod.GET)
+    public Booking getBookingDetail(@PathVariable String ticketCode, @PathVariable String emailOrPhone) {
+        Optional<Booking> booking = bookingRepository.findById(BookingUtils.getIdFromTicketCode(ticketCode));
         if (booking.isPresent()) {
             if (booking.get().getMobile().equals(emailOrPhone) || booking.get().getEmail().equals(emailOrPhone))
                 return booking.get();

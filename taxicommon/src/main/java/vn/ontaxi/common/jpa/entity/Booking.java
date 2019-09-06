@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import vn.ontaxi.common.constant.BooleanConstants;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.constant.OrderStatus;
+import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.NumberUtils;
 import vn.ontaxi.common.utils.PriceUtils;
 
@@ -77,7 +78,6 @@ public class Booking extends AbstractEntity {
     private String isFixedPrice = BooleanConstants.NO;
     private long surveyId;
     private String note;
-
     private String identify;
 
     @Lob
@@ -101,6 +101,11 @@ public class Booking extends AbstractEntity {
     public Booking(String from_location, String to_location) {
         this.from_location = from_location;
         this.to_location = to_location;
+    }
+
+    @Transient
+    public String getTicketCode() {
+        return BookingUtils.generateTicketCodeFromId(id);
     }
 
     public String getNote() {

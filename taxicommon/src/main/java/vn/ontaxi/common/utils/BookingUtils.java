@@ -17,6 +17,7 @@ import java.util.stream.StreamSupport;
 
 public class BookingUtils {
     private final static String DELIMITER = ",";
+    private final static String PREFIX_CODE = "DT";
 
     public static void setupToDriver(Booking booking, List<Driver> selectedDrivers, String sendToGroupOption, Iterable<Driver> allDrivers) {
         Stream<Driver> stream;
@@ -79,6 +80,18 @@ public class BookingUtils {
         } else {
             return 12;
         }
+    }
+
+    public static String generateTicketCodeFromId(Long id) {
+        if (id == null || id == 0)
+            return "";
+        String ticketCode = StringUtils.leftPad(id + "", 8, "0");
+        return PREFIX_CODE + ticketCode;
+    }
+
+    public static Long getIdFromTicketCode(String ticketCode) {
+        String code = ticketCode.replaceAll(PREFIX_CODE, "");
+        return Long.parseLong(code);
     }
 
 }
