@@ -6,7 +6,7 @@ import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.DriverRepository;
 import vn.ontaxi.common.jpa.repository.PersistentCustomerRepository;
 import vn.ontaxi.hub.service.ReportService;
-import vn.ontaxi.hub.utils.DateUtils;
+import vn.ontaxi.common.utils.DateUtils;
 import vn.ontaxi.hub.utils.HttpUtils;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;

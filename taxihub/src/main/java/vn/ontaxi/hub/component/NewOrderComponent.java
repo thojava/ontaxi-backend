@@ -22,7 +22,7 @@ import vn.ontaxi.common.service.FCMService;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.hub.service.CustomerService;
-import vn.ontaxi.hub.utils.DateUtils;
+import vn.ontaxi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;

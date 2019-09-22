@@ -1,5 +1,6 @@
 package vn.ontaxi.rest.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -7,6 +8,11 @@ import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import vn.ontaxi.common.utils.DateUtils;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
@@ -29,6 +35,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         AnnotationMBeanExporter annotationMBeanExporter = new AnnotationMBeanExporter();
         annotationMBeanExporter.addExcludedBean("dataSource");
         return annotationMBeanExporter;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper dateFormatMapper = new ObjectMapper();
+        dateFormatMapper.setDateFormat(DateUtils.yyyyMMddHHmmDateFormat);
+        return dateFormatMapper;
     }
 
     @Override

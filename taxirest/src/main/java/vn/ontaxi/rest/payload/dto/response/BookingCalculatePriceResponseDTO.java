@@ -36,7 +36,6 @@ public class BookingCalculatePriceResponseDTO {
     }
 
     @ApiModelProperty(example = "2016-01-01 15:30")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm")
     public Date getDeparture_time() {
         return departureTime;
     }

@@ -2,8 +2,10 @@ package vn.ontaxi.rest.controller;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
@@ -82,10 +84,10 @@ public class RestBookingController {
     public Booking getBookingDetail(@PathVariable String ticketCode, @PathVariable String emailOrPhone) {
         Optional<Booking> booking = bookingRepository.findById(BookingUtils.getIdFromTicketCode(ticketCode));
         if (booking.isPresent()) {
-            if (booking.get().getMobile().equals(emailOrPhone) || booking.get().getEmail().equals(emailOrPhone))
+            if (emailOrPhone.equals(booking.get().getMobile()) || emailOrPhone.equals(booking.get().getEmail()))
                 return booking.get();
         }
-        return null;
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
     }
 
     @ApiOperation("In progress booking")

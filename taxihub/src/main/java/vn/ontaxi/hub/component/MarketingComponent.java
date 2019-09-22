@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vn.ontaxi.common.jpa.entity.ViewPrice;
 import vn.ontaxi.common.jpa.repository.ViewPriceRepository;
-import vn.ontaxi.hub.utils.DateUtils;
+import vn.ontaxi.common.utils.DateUtils;
 
 import java.util.Date;
 import java.util.List;

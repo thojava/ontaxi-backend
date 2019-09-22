@@ -11,7 +11,7 @@ import vn.ontaxi.common.jpa.repository.DriverRepository;
 import vn.ontaxi.hub.service.BookingService;
 import vn.ontaxi.hub.service.LazyDataService;
 import vn.ontaxi.common.service.FCMService;
-import vn.ontaxi.hub.utils.DateUtils;
+import vn.ontaxi.common.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

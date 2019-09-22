@@ -12,6 +12,7 @@ import vn.ontaxi.common.utils.PriceUtils;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.TimeZone;
 
 @Entity
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -148,12 +149,10 @@ public class Booking extends AbstractEntity {
         this.to_location = to_location;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public Date getDeparture_time() {
         return departureTime;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     public void setDeparture_time(Date departure_time) {
         this.departureTime = departure_time;
     }

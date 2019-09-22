@@ -3,7 +3,7 @@ package vn.ontaxi.hub.component;
 import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.hub.service.BookingService;
-import vn.ontaxi.hub.utils.DateUtils;
+import vn.ontaxi.common.utils.DateUtils;
 import org.primefaces.model.chart.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
