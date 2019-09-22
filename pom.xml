@@ -209,7 +209,7 @@
                 <module>taxirest</module>                
             </modules>
             <properties>
-                <rest.url>http://localhost:8080/api</rest.url>
+                <swagger.docket.host>localhost:8080/api</swagger.docket.host>
             </properties>
         </profile>
         <profile>
@@ -220,7 +220,7 @@
                 <module>taxirest</module>
             </modules>
             <properties>
-                <rest.url>https://api.ontaxi.vn</rest.url>
+                <swagger.docket.host>api.ontaxi.vn</swagger.docket.host>
             </properties>
         </profile>
     </profiles>

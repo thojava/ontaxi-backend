@@ -24,13 +24,13 @@ public class SwaggerConfig {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
-    @Value("${rest.url}")
-    private String restUrl;
+    @Value("${swagger.docket.host}")
+    private String docketHost;
 
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .host(restUrl)
+                .host(docketHost)
                 .securityContexts(Lists.newArrayList(securityContext()))
                 .securitySchemes(Lists.newArrayList(apiKey()))
                 .select()
