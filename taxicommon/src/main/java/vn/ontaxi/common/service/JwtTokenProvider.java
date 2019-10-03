@@ -1,20 +1,22 @@
-package vn.ontaxi.rest.utils;
+package vn.ontaxi.common.service;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.Driver;
+import vn.ontaxi.common.jpa.entity.Partner;
 
 import java.util.Date;
 
-@Component
+@Service
 public class JwtTokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+    public static final String PARTNER = "partner";
     public static final String DRIVER = "driver";
     public static final String CUSTOMER = "customer";
 
@@ -28,22 +30,26 @@ public class JwtTokenProvider {
 
         String accountType = null;
         String email = null;
-        if (authentication.getPrincipal() instanceof Customer) {
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Customer) {
             accountType = CUSTOMER;
-            email = ((Customer) authentication.getPrincipal()).getEmail();
-        } else if (authentication.getPrincipal() instanceof Driver) {
+            email = ((Customer) principal).getEmail();
+        } else if (principal instanceof Driver) {
             accountType = DRIVER;
-            email = ((Driver) authentication.getPrincipal()).getEmail();
+            email = ((Driver) principal).getEmail();
+        } else if (principal instanceof Partner) {
+            accountType = PARTNER;
+            email = ((Partner) principal).getEmail();
         }
 
-        // Date now = new Date();
-        //Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
                 .setSubject(email)
                 .setAudience(accountType)
                 .setIssuedAt(new Date())
-                //.setExpiration(expiryDate)
+                .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }

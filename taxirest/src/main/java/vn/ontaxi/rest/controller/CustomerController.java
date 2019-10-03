@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.EmailType;
@@ -27,10 +26,13 @@ import vn.ontaxi.rest.payload.*;
 import vn.ontaxi.rest.payload.dto.AddressDTO;
 import vn.ontaxi.rest.payload.dto.CustomerDTO;
 import vn.ontaxi.rest.utils.BaseMapper;
-import vn.ontaxi.rest.utils.JwtTokenProvider;
+import vn.ontaxi.common.service.JwtTokenProvider;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/customer")

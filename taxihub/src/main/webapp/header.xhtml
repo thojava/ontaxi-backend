@@ -35,6 +35,10 @@
                     <p:menuitem value="Nhóm khách hàng" action="customer_group.xhtml" ajax="false" immediate="true"/>
                 </p:submenu>
 
+                <p:submenu label="Đối Tác">
+                    <p:menuitem value="Danh Sách" action="partner/partner_summary.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                </p:submenu>
+
                 <p:submenu label="Báo Cáo">
                     <p:menuitem value="Báo Cáo" action="report.jsf?faces-redirect=true" ajax="false" immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>

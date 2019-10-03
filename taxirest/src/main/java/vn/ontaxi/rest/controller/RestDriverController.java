@@ -38,7 +38,7 @@ import vn.ontaxi.rest.payload.dto.DriverDTO;
 import vn.ontaxi.rest.payload.dto.DriverInfoDTO;
 import vn.ontaxi.rest.service.LocationWithDriverService;
 import vn.ontaxi.rest.utils.BaseMapper;
-import vn.ontaxi.rest.utils.JwtTokenProvider;
+import vn.ontaxi.common.service.JwtTokenProvider;
 import vn.ontaxi.rest.utils.SMSContentBuilder;
 
 import javax.annotation.PostConstruct;

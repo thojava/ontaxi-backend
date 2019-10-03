@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+<!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+<!--@elvariable id="driverDetailComponent" type="vn.ontaxi.hub.component.DriverDetailComponent"-->
+<!--@elvariable id="selectItemGenerator" type="vn.ontaxi.hub.component.SelectItemGenerator"-->
+<ui:composition template="../layout.xhtml">
+    <ui:define name="content">
+        <h1 align="center">#{msg.partner_detail}</h1>
+        <p:spacer height="10px"/>
+
+        <p:tabView>
+            <p:tab title="#{msg.general_info}">
+                <h:form id="partnerForm">
+
+                    <table cellspacing="5px">
+                        <tr>
+                            <td class="label">
+                                #{msg.email}
+                            </td>
+                            <td>
+                                <p:inputText id="email" label="#{msg.email}" type="text" value="#{partnerDetailComponent.partner.email}" requiredMessage="${msg.require_field}" required="true">
+                                    <p:ajax event="change" listener="#{partnerDetailComponent.savePartner}"/>
+                                </p:inputText>
+                                <p:message for="email"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
+                                #{msg.api_token}
+                            </td>
+                            <td>
+                                <p:inputTextarea readonly="true" id="apiToken" value="#{partnerDetailComponent.partner.apiToken}" cols="50"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td>
+                                <p:commandButton value="#{msg.generate_token}" action="#{partnerDetailComponent.generateToken}" update="partnerForm"/>
+                            </td>
+                        </tr>
+                    </table>
+                </h:form>
+            </p:tab>
+        </p:tabView>
+    </ui:define>
+</ui:composition>
+</html>
