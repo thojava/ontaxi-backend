@@ -18,9 +18,6 @@ public class RestResponseEntityExceptionHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {
-        //logger.warn("Returning HTTP 400 Bad Request", e);
-        //System.out.println();
-        logger.error(e.getMessage());
-        logger.error("error", e);
+        logger.error(e.getMessage(), e);
     }
 }
