@@ -43,6 +43,8 @@ public class PriceCalculator {
             return priceConfiguration.getGood_4();
         } else if (CarTypes.N7 == car_type) {
             return priceConfiguration.getNormal_7();
+        } else if(CarTypes.N16 == car_type) {
+            return priceConfiguration.getNormal_16();
         }
 
         throw new IllegalArgumentException("Invalid type " + car_type);

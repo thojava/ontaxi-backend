@@ -13,6 +13,7 @@ public class PriceConfiguration {
     private double normal_4;
     private double good_4;
     private double normal_7;
+    private double normal_16;
 
     public double getNormal_4() {
         return normal_4;
@@ -36,5 +37,13 @@ public class PriceConfiguration {
 
     public void setNormal_7(double normal_7) {
         this.normal_7 = normal_7;
+    }
+
+    public double getNormal_16() {
+        return normal_16;
+    }
+
+    public void setNormal_16(double normal_16) {
+        this.normal_16 = normal_16;
     }
 }
