@@ -93,12 +93,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/driver/validateLoginEmail/**", "/driver/location", "/driver/location/**", "/driver/checkUpdate", "/driver/register")
-                .permitAll()
-                .antMatchers("/customer/resetPassword/**","/customer/createCustomerAccount", "/customer/setPassword", "/customer/customerLogin", "/customer/activeAccount/**")
-                .permitAll()
-                .antMatchers("/booking/calculateDistanceAndPrice", "/booking/postBookingFromWebsite", "/booking/detail/**")
-                .permitAll()
                 .antMatchers(SWAGGER_AUTH_WHITELIST)
                 .permitAll()
                 //.antMatchers("/customer/**").hasAnyRole(Role.ROLE_CUSTOMER.name())
