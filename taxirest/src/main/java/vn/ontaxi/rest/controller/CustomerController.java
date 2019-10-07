@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -185,6 +186,7 @@ public class CustomerController {
     }
 
     @RequestMapping(path = "/currentCustomerProfile", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public RestResult<CustomerDTO> getCustomerDetail(@ApiIgnore @CurrentUser Customer customer) {
         RestResult<CustomerDTO> restResult = new RestResult<>();
         restResult.setData(mapper.toDtoBean(customer));
@@ -219,6 +221,7 @@ public class CustomerController {
     }
 
     @RequestMapping(path = "/updateCustomer", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public RestResult<CustomerDTO> updateCustomerInfo(@ApiIgnore @CurrentUser Customer customer,@Valid @RequestBody CustomerUpdateInfo customerUpdateInfo) {
 
         customer.setPhone(customerUpdateInfo.getPhone());

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -139,6 +140,7 @@ public class RestDriverController {
     }
 
     @RequestMapping(path = "/getDriverDetail", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public RestResult getDriverDetail(@ApiIgnore @CurrentUser Driver driver) {
         RestResult<Driver> restResult = new RestResult<>();
         restResult.setData(driver);
@@ -146,12 +148,14 @@ public class RestDriverController {
     }
 
     @RequestMapping(value = "/uploadCurrentLocation/{versionCode}", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public void uploadCurrentLocation(@ApiIgnore @CurrentUser Driver driver, @PathVariable int versionCode, @RequestBody Location currentLocation) {
 //        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
         eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driver.getEmail(), versionCode, new Date())));
     }
 
     @RequestMapping(path = "/acceptOrder", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public synchronized RestResult acceptOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody long orderId) {
         em.flush();
         em.clear();
@@ -194,6 +198,7 @@ public class RestDriverController {
     }
 
     @RequestMapping(path = "/completeOrder", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public synchronized RestResult completeOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody Booking booking) {
         Booking persistedBooking = bookingRepository.findById(booking.getId()).get();
         if (!booking.isCompleted()) {
@@ -240,6 +245,7 @@ public class RestDriverController {
 
     // Get the updated booking status, there are case when the app is closed and the booking status may be missed
     @RequestMapping(value = "/updateBookingStatus", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public RestResult updateBookingStatus(@RequestBody List<Booking> bookings) {
         List<Booking> updatedBookings = new ArrayList<>();
         for (Booking booking : bookings) {
@@ -257,6 +263,7 @@ public class RestDriverController {
 
     @ApiOperation("Get new booking")
     @RequestMapping(value = "/getNewBooking", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public RestResult getNewBooking() {
         List<Booking> newBooking = bookingRepository.findByStatus(OrderStatus.NEW);
         RestResult<List<BookingDTO>> restResult = new RestResult<>();
@@ -267,6 +274,7 @@ public class RestDriverController {
 
     @ApiOperation("Download booking history")
     @RequestMapping(value = "/downloadHistory", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public RestResult getAllBooking(@ApiIgnore @CurrentUser Driver driver) {
 
         List<Booking> allBooking = bookingRepository.findByAcceptedByDriver_Email(driver.getEmail());

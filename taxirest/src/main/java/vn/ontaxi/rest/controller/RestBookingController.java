@@ -3,6 +3,7 @@ package vn.ontaxi.rest.controller;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -92,6 +93,7 @@ public class RestBookingController {
 
     @ApiOperation("In progress booking")
     @GetMapping(path = "/inprogress/{id}")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public RestResult updateToInProgressStatus(@ApiIgnore @CurrentUser Driver driver, @PathVariable Long id) {
         RestResult restResult = new RestResult();
         Optional<Booking> booking = bookingRepository.findById(id);
