@@ -34,6 +34,18 @@
 
                         <tr>
                             <td class="label">
+                                #{msg.name}
+                            </td>
+                            <td>
+                                <p:inputText id="name" label="#{msg.name}" type="text" value="#{partnerDetailComponent.partner.name}" requiredMessage="${msg.require_field}" required="true">
+                                    <p:ajax event="change" listener="#{partnerDetailComponent.savePartner}"/>
+                                </p:inputText>
+                                <p:message for="name"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="label">
                                 #{msg.api_token}
                             </td>
                             <td>

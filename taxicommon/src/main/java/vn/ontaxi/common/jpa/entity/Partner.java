@@ -14,6 +14,7 @@ public class Partner extends AbstractEntity {
     @JsonIgnore
     private Long id;
     private String email;
+    private String name;
     private String apiToken;
 
     @Override
@@ -40,5 +41,13 @@ public class Partner extends AbstractEntity {
 
     public void setApiToken(String apiToken) {
         this.apiToken = apiToken;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
