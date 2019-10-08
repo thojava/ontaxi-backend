@@ -15,9 +15,6 @@ public class BookingCalculatePriceRequestDTO {
     @Enumerated(EnumType.STRING)
 
     private CarTypes car_type;
-    @ApiModelProperty(notes = "When invoked from the first booking page this value should be set as true." +
-            "Later when visitor change the booking option to see the updated price this value should be set as false")
-    private boolean firstPriceView;
 
     public CarTypes getCar_type() {
         return car_type;
@@ -50,13 +47,5 @@ public class BookingCalculatePriceRequestDTO {
 
     public void setDeparture_time(Date departure_time) {
         this.departureTime = departure_time;
-    }
-
-    public boolean isFirstPriceView() {
-        return firstPriceView;
-    }
-
-    public void setFirstPriceView(boolean firstPriceView) {
-        this.firstPriceView = firstPriceView;
     }
 }

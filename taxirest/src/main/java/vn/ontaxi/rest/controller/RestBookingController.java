@@ -51,15 +51,13 @@ public class RestBookingController {
     public BookingCalculatePriceResponseDTO calculateDistanceAndPrice(@RequestBody BookingCalculatePriceRequestDTO bookingCalculatePriceRequestDTO) {
         Booking booking = calculateDistanceAndPriceHelper(bookingCalculatePriceRequestDTO);
 
-        if(bookingCalculatePriceRequestDTO.isFirstPriceView()) {
-            ViewPrice viewPrice = new ViewPrice();
-            viewPrice.setFrom_location(booking.getFrom_location());
-            viewPrice.setTo_location(booking.getTo_location());
-            viewPrice.setTotal_distance(booking.getTotal_distance());
-            viewPrice.setDepartureTime(booking.getDeparture_time());
-            viewPrice.setCar_type(booking.getCar_type().name());
-            viewPriceRepository.saveAndFlush(viewPrice);
-        }
+        ViewPrice viewPrice = new ViewPrice();
+        viewPrice.setFrom_location(booking.getFrom_location());
+        viewPrice.setTo_location(booking.getTo_location());
+        viewPrice.setTotal_distance(booking.getTotal_distance());
+        viewPrice.setDepartureTime(booking.getDeparture_time());
+        viewPrice.setCar_type(booking.getCar_type().name());
+        viewPriceRepository.saveAndFlush(viewPrice);
 
         BaseMapper<Booking, BookingCalculatePriceResponseDTO> mapper = new BaseMapper<>(Booking.class, BookingCalculatePriceResponseDTO.class);
         return mapper.toDtoBean(booking);
