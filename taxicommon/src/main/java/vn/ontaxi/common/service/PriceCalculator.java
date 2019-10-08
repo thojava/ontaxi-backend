@@ -11,6 +11,7 @@ import vn.ontaxi.common.model.PriceInfo;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.concurrent.TimeUnit;
 
 import static vn.ontaxi.common.utils.PriceUtils.calculatePrice;
 
@@ -27,9 +28,8 @@ public class PriceCalculator {
         double estimatedWaitHours = 0.d;
         if(booking.isRoundTrip()) {
             double estimatedTripHours = booking.getTotal_distance() / 60;
-            LocalDate d1 = booking.getDeparture_time().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate d2 = booking.getReturnDepartureTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            estimatedWaitHours = Duration.between(d1, d2).toMinutes() / 60f - estimatedTripHours;
+            long differenceInMillis = booking.getReturnDepartureTime().getTime() - booking.getDeparture_time().getTime();
+            estimatedWaitHours = TimeUnit.SECONDS.toHours(differenceInMillis / 1000) - estimatedTripHours;
         }
 
         PriceInfo priceInfo = calculatePrice(booking.getUnit_price(), booking.getTotal_distance(), booking.getTotal_distance(), booking.getCar_type(),
