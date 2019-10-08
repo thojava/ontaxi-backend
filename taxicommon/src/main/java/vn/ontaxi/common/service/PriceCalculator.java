@@ -7,12 +7,10 @@ import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.PriceConfiguration;
 import vn.ontaxi.common.jpa.repository.PriceConfigurationRepository;
 import vn.ontaxi.common.model.PriceInfo;
-import vn.ontaxi.common.utils.DateUtils;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 
 import static vn.ontaxi.common.utils.PriceUtils.calculatePrice;
 
@@ -31,7 +29,7 @@ public class PriceCalculator {
             double estimatedTripHours = booking.getTotal_distance() / 60;
             LocalDate d1 = booking.getDeparture_time().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             LocalDate d2 = booking.getReturnDepartureTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            estimatedWaitHours = ChronoUnit.HOURS.between(d1, d2) - estimatedTripHours;
+            estimatedWaitHours = Duration.between(d1, d2).toMinutes() / 60f - estimatedTripHours;
         }
 
         PriceInfo priceInfo = calculatePrice(booking.getUnit_price(), booking.getTotal_distance(), booking.getTotal_distance(), booking.getCar_type(),
