@@ -39,6 +39,7 @@ public class PriceCalculator {
         booking.setOutward_price(priceInfo.outwardPrice);
         booking.setReturn_price(priceInfo.returnPrice);
         booking.setWait_price(priceInfo.waitPrice);
+        booking.setWait_hours(estimatedWaitHours);
     }
 
 

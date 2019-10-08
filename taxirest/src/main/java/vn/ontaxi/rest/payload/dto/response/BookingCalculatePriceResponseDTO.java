@@ -1,6 +1,5 @@
 package vn.ontaxi.rest.payload.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import vn.ontaxi.common.constant.CarTypes;
 
@@ -22,6 +21,7 @@ public class BookingCalculatePriceResponseDTO {
     private double outward_price;
     private double return_price;
     private double wait_price;
+    private double wait_hours;
 
     public String getFrom_location() {
         return from_location;
@@ -118,5 +118,13 @@ public class BookingCalculatePriceResponseDTO {
 
     public void setWait_price(double wait_price) {
         this.wait_price = wait_price;
+    }
+
+    public double getWait_hours() {
+        return wait_hours;
+    }
+
+    public void setWait_hours(double wait_hours) {
+        this.wait_hours = wait_hours;
     }
 }
