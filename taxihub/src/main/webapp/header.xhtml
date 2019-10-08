@@ -11,52 +11,52 @@
         <h:form>
             <p:menubar autoDisplay="false">
                 <p:submenu label="Đơn Hàng">
-                    <p:menuitem value="Danh Sách" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
-                    <p:menuitem value="Tạo Mới" action="new_order.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Danh Sách" action="/index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                    <p:menuitem value="Tạo Mới" action="/new_order.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"/>
                 </p:submenu>
 
                 <p:submenu label="Lái Xe">
-                    <p:menuitem value="Danh Sách" action="driver.jsf?faces-redirect=true" ajax="false" immediate="true"
+                    <p:menuitem value="Danh Sách" action="/driver.jsf?faces-redirect=true" ajax="false" immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
-                    <p:menuitem value="Tạo Mới" action="driver_detail.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Tạo Mới" action="/driver_detail.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"/>
-                    <p:menuitem value="Bản Đồ Vị Trí" action="driver_map.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Bản Đồ Vị Trí" action="/driver_map.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"/>
                 </p:submenu>
 
                 <p:submenu label="Khách Hàng">
-                    <p:menuitem value="Danh Sách" action="customer_summary.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Danh Sách" action="/customer_summary.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"/>
-                    <p:menuitem value="Tạo Mới" action="customer_detail.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Tạo Mới" action="/customer_detail.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"/>
-                    <p:menuitem value="Danh Sách Hành Vi" action="customer_behaviour.xhtml" ajax="false"
+                    <p:menuitem value="Danh Sách Hành Vi" action="/customer_behaviour.xhtml" ajax="false"
                                 immediate="true"/>
-                    <p:menuitem value="Nhóm khách hàng" action="customer_group.xhtml" ajax="false" immediate="true"/>
+                    <p:menuitem value="Nhóm khách hàng" action="/customer_group.xhtml" ajax="false" immediate="true"/>
                 </p:submenu>
 
                 <p:submenu label="Đối Tác">
-                    <p:menuitem value="Danh Sách" action="partner/partner_summary.jsf?faces-redirect=true" ajax="false" immediate="true"/>
+                    <p:menuitem value="Danh Sách" action="/partner/partner_summary.jsf?faces-redirect=true" ajax="false" immediate="true"/>
                 </p:submenu>
 
                 <p:submenu label="Báo Cáo">
-                    <p:menuitem value="Báo Cáo" action="report.jsf?faces-redirect=true" ajax="false" immediate="true"
+                    <p:menuitem value="Báo Cáo" action="/report.jsf?faces-redirect=true" ajax="false" immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
-                    <p:menuitem value="Thống Kê" action="statistic.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Thống Kê" action="/statistic.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
                 </p:submenu>
 
                 <p:submenu label="Cài Đặt">
-                    <p:menuitem value="Cài Đặt Chung" action="configuration.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Cài Đặt Chung" action="/configuration.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
 
-                    <p:menuitem value="Mẫu Email" action="email_template.jsf?faces-redirect=true" ajax="false"
+                    <p:menuitem value="Mẫu Email" action="/email_template.jsf?faces-redirect=true" ajax="false"
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
 
-                    <p:menuitem value="Lập Lịch Gửi Email" action="emaill_scheduler.jsf?faces-redirect=true"
+                    <p:menuitem value="Lập Lịch Gửi Email" action="/emaill_scheduler.jsf?faces-redirect=true"
                                 ajax="false"
                                 immediate="true"
                                 rendered="#{not userCredentialComponent.customer}"/>
