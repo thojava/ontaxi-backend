@@ -12,6 +12,7 @@ public class BookingCalculatePriceRequestDTO {
     private String from_location;
     private String to_location;
     private Date departureTime;
+    private String is_round_trip;
     @Enumerated(EnumType.STRING)
 
     private CarTypes car_type;
@@ -47,5 +48,13 @@ public class BookingCalculatePriceRequestDTO {
 
     public void setDeparture_time(Date departure_time) {
         this.departureTime = departure_time;
+    }
+
+    public String getIs_round_trip() {
+        return is_round_trip;
+    }
+
+    public void setIs_round_trip(String is_round_trip) {
+        this.is_round_trip = is_round_trip;
     }
 }

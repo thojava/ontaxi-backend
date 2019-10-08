@@ -11,13 +11,11 @@ public class PriceUtils {
             double lowDistance = Math.min(outwardDistant, returnDistant);
             double highDistance = Math.max(outwardDistant, returnDistant);
 
-            double freeWaitTime = getFreeWaitTime(highDistance);
-
             double outwardPrice = highDistance * pricePerKm;
 
             double returnPrice = lowDistance * pricePerKm * getReturnRoundPercentage(lowDistance) / 100;
 
-            double waitPrice = Math.max(0, wait_hours - freeWaitTime) * getPricePerWaitHour(car_type);
+            double waitPrice = wait_hours * getPricePerWaitHour(car_type);
 
             return new PriceInfo(outwardPrice, returnPrice, waitPrice, transportFee, promotionPercentage);
         } else {
@@ -31,27 +29,11 @@ public class PriceUtils {
     }
 
     public static int getReturnRoundPercentage(double distance) {
-        if (distance <= 20) {
-            return 0;
-        } else if (distance <= 30) {
-            return 50;
-        } else if (distance <= 100) {
-            return 30;
-        } else {
-            return 20;
-        }
+        return 40;
     }
 
     public static int getPricePerWaitHour(CarTypes car_type) {
-        if (CarTypes.N4 == car_type) {
-            return 40000;
-        } else if (CarTypes.G4 == car_type) {
-            return 40000;
-        } else if (CarTypes.N7 == car_type) {
-            return 50000;
-        }
-
-        throw new IllegalArgumentException("Invalid type " + car_type);
+        return 40000;
     }
 
     public static void calculateActualPrice(Booking booking) {

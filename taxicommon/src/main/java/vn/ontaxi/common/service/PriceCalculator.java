@@ -7,6 +7,12 @@ import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.PriceConfiguration;
 import vn.ontaxi.common.jpa.repository.PriceConfigurationRepository;
 import vn.ontaxi.common.model.PriceInfo;
+import vn.ontaxi.common.utils.DateUtils;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 
 import static vn.ontaxi.common.utils.PriceUtils.calculatePrice;
 
@@ -20,19 +26,22 @@ public class PriceCalculator {
     }
 
     public void calculateEstimatedPrice(Booking booking) {
+        double estimatedWaitHours = 0.d;
+        if(booking.isRoundTrip()) {
+            double estimatedTripHours = booking.getTotal_distance() / 60;
+            LocalDate d1 = booking.getDeparture_time().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate d2 = booking.getReturnDepartureTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            estimatedWaitHours = ChronoUnit.HOURS.between(d1, d2) - estimatedTripHours;
+        }
+
         PriceInfo priceInfo = calculatePrice(booking.getUnit_price(), booking.getTotal_distance(), booking.getTotal_distance(), booking.getCar_type(),
-                booking.isRoundTrip(), booking.getWait_hours(), 0, booking.getPromotionPercentage());
+                booking.isRoundTrip(), estimatedWaitHours, 0, booking.getPromotionPercentage());
         booking.setTotal_price(priceInfo.getTotal_price());
         booking.setTotalPriceBeforePromotion(priceInfo.getTotal_price_before_promotion());
         booking.setOutward_price(priceInfo.outwardPrice);
         booking.setReturn_price(priceInfo.returnPrice);
         booking.setWait_price(priceInfo.waitPrice);
     }
-
-
-
-
-
 
 
     public double getPricePerKm(CarTypes car_type) {
@@ -49,18 +58,4 @@ public class PriceCalculator {
 
         throw new IllegalArgumentException("Invalid type " + car_type);
     }
-
-
-
-
-
-//    public static void main(String[] args) {
-//        FacebookClient facebookClient = new DefaultFacebookClient(MY_ACCESS_TOKEN, Version.LATEST);
-
-////        System.out.println(getFreeWaitTime(75));
-////        System.out.println(calculatePrice(80, 80, CarTypes.GOOD_4, false, 0));
-////        System.out.println(getFreeWaitTime(170));
-//        System.out.println(calculatePrice(132, 170, CarTypes.GOOD_4, true, 10, 0));
-////        System.out.println(132 * 8500 * 0.2 + 170 * 8500 + 230000);
-//    }
 }

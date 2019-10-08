@@ -18,6 +18,10 @@ public class BookingCalculatePriceResponseDTO {
     private double total_price;
     private double unit_price;
     private double promotionPercentage;
+    private String is_round_trip;
+    private double outward_price;
+    private double return_price;
+    private double wait_price;
 
     public String getFrom_location() {
         return from_location;
@@ -82,5 +86,37 @@ public class BookingCalculatePriceResponseDTO {
 
     public void setPromotionPercentage(double promotionPercentage) {
         this.promotionPercentage = promotionPercentage;
+    }
+
+    public String getIs_round_trip() {
+        return is_round_trip;
+    }
+
+    public void setIs_round_trip(String is_round_trip) {
+        this.is_round_trip = is_round_trip;
+    }
+
+    public double getOutward_price() {
+        return outward_price;
+    }
+
+    public void setOutward_price(double outward_price) {
+        this.outward_price = outward_price;
+    }
+
+    public double getReturn_price() {
+        return return_price;
+    }
+
+    public void setReturn_price(double return_price) {
+        this.return_price = return_price;
+    }
+
+    public double getWait_price() {
+        return wait_price;
+    }
+
+    public void setWait_price(double wait_price) {
+        this.wait_price = wait_price;
     }
 }
