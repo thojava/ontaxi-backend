@@ -59,6 +59,7 @@ public class BookingCalculatePriceRequestDTO {
         this.is_round_trip = is_round_trip;
     }
 
+    @ApiModelProperty(example = "2016-01-01 21:30")
     public Date getReturnDepartureTime() {
         return returnDepartureTime;
     }
