@@ -19,7 +19,7 @@ public class PriceUtils {
     public PriceInfo calculatePrice(String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes car_type, boolean isRoundTrip,
                                            double wait_hours, double transportFee, double promotionPercentage) {
         double terrain_price = 0.D;
-        if(distanceMatrixService.getDistance(toLocation, TAM_DAO_LOCATION) < 1000) {
+        if(distanceMatrixService.getDistance(toLocation, TAM_DAO_LOCATION) < 4000) {
             terrain_price = 50000;
         }
 
