@@ -36,14 +36,16 @@ public class RestBookingController {
     private final PromotionPlanRepository promotionPlanRepository;
     private final PriceCalculator priceCalculator;
     private final DistanceMatrixService distanceMatrixService;
+    private final PriceUtils priceUtils;
 
     @Autowired
-    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator, DistanceMatrixService distanceMatrixService) {
+    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils) {
         this.bookingRepository = bookingRepository;
         this.viewPriceRepository = viewPriceRepository;
         this.promotionPlanRepository = promotionPlanRepository;
         this.priceCalculator = priceCalculator;
         this.distanceMatrixService = distanceMatrixService;
+        this.priceUtils = priceUtils;
     }
 
     @CrossOrigin
@@ -122,7 +124,7 @@ public class RestBookingController {
         booking.setStatus(OrderStatus.ORDERED);
         // Recalculate the fee
         booking.setFee_percentage(12);
-        booking.setTotal_fee(PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
+        booking.setTotal_fee(priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
 
         return bookingRepository.saveAndFlush(booking);
     }

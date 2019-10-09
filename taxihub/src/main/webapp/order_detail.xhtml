@@ -316,6 +316,17 @@
                                 value="#{numberFormatterComponent.formatDistance(orderDetailComponent.booking.total_distance)}"/>
                     </td>
                 </tr>
+                <ui:fragment rendered="#{orderDetailComponent.booking.terrain_price > 0}">
+                    <tr>
+                        <td class="label">
+                            <h:outputText value="#{msg.phu_thu_dia_hinh}"/>
+                        </td>
+                        <td>
+                            <h:outputText
+                                    value="#{numberFormatterComponent.formatPrice(orderDetailComponent.booking.terrain_price)}"/>
+                        </td>
+                    </tr>
+                </ui:fragment>
                 <ui:fragment rendered="#{orderDetailComponent.booking.completed}">
                     <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
                         <tr>

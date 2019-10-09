@@ -70,12 +70,13 @@ public class RestDriverController {
     private final FCMService fcmService;
     private final SMSService smsService;
     private final ConfigurationService configurationService;
+    private final PriceUtils priceUtils;
 
     @PersistenceContext
     private EntityManager em;
 
     @Autowired
-    public RestDriverController(LocationWithDriverService driversMapComponent, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource, DriverRepository driverRepository, EventBus eventBus, LocationWithDriverService locationWithDriverService, BookingRepository bookingRepository, FCMService fcmService, SMSService smsService, ConfigurationService configurationService) {
+    public RestDriverController(LocationWithDriverService driversMapComponent, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource, DriverRepository driverRepository, EventBus eventBus, LocationWithDriverService locationWithDriverService, BookingRepository bookingRepository, FCMService fcmService, SMSService smsService, ConfigurationService configurationService, PriceUtils priceUtils) {
         this.driversMapComponent = driversMapComponent;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
@@ -87,6 +88,7 @@ public class RestDriverController {
         this.fcmService = fcmService;
         this.smsService = smsService;
         this.configurationService = configurationService;
+        this.priceUtils = priceUtils;
     }
 
     @PostConstruct
@@ -215,14 +217,14 @@ public class RestDriverController {
             persistedBooking.setOutwardArrivalTime(booking.getOutwardArrivalTime());
 
             if (!BooleanConstants.YES.equalsIgnoreCase(persistedBooking.getIsFixedPrice())) {
-                PriceUtils.calculateActualPrice(persistedBooking);
+                priceUtils.calculateActualPrice(persistedBooking);
             } else {
                 persistedBooking.setActual_total_price(persistedBooking.getTotal_price());
                 persistedBooking.setActualTotalPriceBeforePromotion(persistedBooking.getTotal_price());
             }
 
             double priceBeforePromotionWithoutTransportFee = persistedBooking.getActualTotalPriceBeforePromotion() - persistedBooking.getTransport_fee();
-            double fee = PriceUtils.calculateDriverFee(priceBeforePromotionWithoutTransportFee, persistedBooking.getFee_percentage(), persistedBooking.getPromotionPercentage());
+            double fee = priceUtils.calculateDriverFee(priceBeforePromotionWithoutTransportFee, persistedBooking.getFee_percentage(), persistedBooking.getPromotionPercentage());
             persistedBooking.setActual_total_fee(fee);
             persistedBooking.setStatus(OrderStatus.COMPLETED);
             bookingRepository.saveAndFlush(persistedBooking);

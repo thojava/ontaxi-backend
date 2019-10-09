@@ -52,13 +52,14 @@ public class NewOrderComponent extends AbstractOrderComponent {
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
     private final DistanceMatrixService distanceMatrixService;
+    private final PriceUtils priceUtils;
     private final Environment env;
     private String GOOGLE_MAP_PLACE_API_KEY;
 
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService, CustomerRepository customerRepository, DistanceMatrixService distanceMatrixService, Environment env) {
+    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService, CustomerRepository customerRepository, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils, Environment env) {
         super(messageSource, persistentCustomerRepository);
         this.driverRepository = driverRepository;
         this.bookingRepository = bookingRepository;
@@ -69,6 +70,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         this.customerService = customerService;
         this.customerRepository = customerRepository;
         this.distanceMatrixService = distanceMatrixService;
+        this.priceUtils = priceUtils;
         this.env = env;
     }
 
@@ -155,7 +157,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
             booking.setTotalPriceBeforePromotion(booking.getTotal_price());
         }
 
-        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
     }
 

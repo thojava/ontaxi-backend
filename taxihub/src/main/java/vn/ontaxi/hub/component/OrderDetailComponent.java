@@ -45,13 +45,14 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     private final ConfigurationService configurationService;
     private final PriceCalculator priceCalculator;
     private final CustomerService customerService;
+    private final PriceUtils priceUtils;
 
     private boolean with_snap;
     private boolean display_outward_routes = true;
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public OrderDetailComponent(Environment env, BookingRepository bookingRepository, DriverRepository driverRepository, FCMService fcmService, DistanceMatrixService distanceMatrixService, ConfigurationService configurationService, MessageSource messageSource, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService) {
+    public OrderDetailComponent(Environment env, BookingRepository bookingRepository, DriverRepository driverRepository, FCMService fcmService, DistanceMatrixService distanceMatrixService, ConfigurationService configurationService, MessageSource messageSource, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService, PriceUtils priceUtils) {
         super(messageSource, persistentCustomerRepository);
         this.env = env;
         this.bookingRepository = bookingRepository;
@@ -61,6 +62,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
         this.configurationService = configurationService;
         this.priceCalculator = priceCalculator;
         this.customerService = customerService;
+        this.priceUtils = priceUtils;
     }
 
     @PostConstruct
@@ -69,7 +71,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     }
 
     public void recalculateDriverFee() {
-        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
         saveBooking();
     }
@@ -80,7 +82,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
             priceCalculator.calculateEstimatedPrice(booking);
         }
 
-        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
 
         saveBooking();
@@ -93,7 +95,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     public void onChangeFixedPrice() {
         booking.setTotalPriceBeforePromotion(booking.getTotal_price());
 
-        double fee = PriceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
+        double fee = priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion() - booking.getTransport_fee(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
 
         saveBooking();

@@ -1,12 +1,28 @@
 package vn.ontaxi.common.utils;
 
+import org.springframework.stereotype.Service;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.model.PriceInfo;
+import vn.ontaxi.common.service.DistanceMatrixService;
 
+@Service
 public class PriceUtils {
-    public static PriceInfo calculatePrice(double pricePerKm, double outwardDistant, double returnDistant, CarTypes car_type, boolean isRoundTrip,
+    private final DistanceMatrixService distanceMatrixService;
+
+    private static final String TAM_DAO_LOCATION = "Tam Đảo, Vinh Phuc Province, Vietnam";
+
+    public PriceUtils(DistanceMatrixService distanceMatrixService) {
+        this.distanceMatrixService = distanceMatrixService;
+    }
+
+    public PriceInfo calculatePrice(String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes car_type, boolean isRoundTrip,
                                            double wait_hours, double transportFee, double promotionPercentage) {
+        double terrain_price = 0.D;
+        if(distanceMatrixService.getDistance(toLocation, TAM_DAO_LOCATION) < 1000) {
+            terrain_price = 50000;
+        }
+
         if (isRoundTrip) {
             double lowDistance = Math.min(outwardDistant, returnDistant);
             double highDistance = Math.max(outwardDistant, returnDistant);
@@ -17,9 +33,9 @@ public class PriceUtils {
 
             double waitPrice = wait_hours * getPricePerWaitHour(car_type);
 
-            return new PriceInfo(outwardPrice, returnPrice, waitPrice, transportFee, promotionPercentage);
+            return new PriceInfo(outwardPrice, returnPrice, waitPrice, terrain_price * 2, transportFee, promotionPercentage);
         } else {
-            return new PriceInfo(outwardDistant * pricePerKm, 0, 0, transportFee, promotionPercentage);
+            return new PriceInfo(outwardDistant * pricePerKm, 0, 0, terrain_price, transportFee, promotionPercentage);
         }
     }
 
@@ -36,17 +52,18 @@ public class PriceUtils {
         return 40000;
     }
 
-    public static void calculateActualPrice(Booking booking) {
-        PriceInfo priceInfo = calculatePrice(booking.getUnit_price(), booking.isRoundTrip() ? booking.getOutward_distance() : booking.getActual_total_distance(), booking.getReturn_distance(),
+    public void calculateActualPrice(Booking booking) {
+        PriceInfo priceInfo = calculatePrice(booking.getTo_location(), booking.getUnit_price(), booking.isRoundTrip() ? booking.getOutward_distance() : booking.getActual_total_distance(), booking.getReturn_distance(),
                 booking.getCar_type(), booking.isRoundTrip(), booking.getWait_hours(), booking.getTransport_fee(), booking.getPromotionPercentage());
         booking.setActual_total_price(priceInfo.getTotal_price());
         booking.setActualTotalPriceBeforePromotion(priceInfo.getTotal_price_before_promotion());
         booking.setActual_outward_price(priceInfo.outwardPrice);
         booking.setActual_return_price(priceInfo.returnPrice);
         booking.setActual_wait_price(priceInfo.waitPrice);
+        booking.setActual_terrain_price(priceInfo.terrainPrice);
     }
 
-    public static double calculateDriverFee(double priceWithoutTransportFee, double fee_percentage, double promotion_percentage) {
+    public double calculateDriverFee(double priceWithoutTransportFee, double fee_percentage, double promotion_percentage) {
         return priceWithoutTransportFee * (fee_percentage - promotion_percentage) / 100;
     }
 }

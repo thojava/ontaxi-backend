@@ -43,6 +43,7 @@ public class Booking extends AbstractEntity {
     private double outward_price;
     private double return_price;
     private double wait_price;
+    private double terrain_price;
 
     private double total_fee;
     private double actual_total_distance;
@@ -51,6 +52,7 @@ public class Booking extends AbstractEntity {
     private double actual_outward_price;
     private double actual_return_price;
     private double actual_wait_price;
+    private double actual_terrain_price;
 
     private double actual_total_fee;
     private String status = OrderStatus.NEW;
@@ -684,5 +686,21 @@ public class Booking extends AbstractEntity {
 
     public void setUnit_price(double unit_price) {
         this.unit_price = unit_price;
+    }
+
+    public double getTerrain_price() {
+        return terrain_price;
+    }
+
+    public void setTerrain_price(double terrain_price) {
+        this.terrain_price = terrain_price;
+    }
+
+    public double getActual_terrain_price() {
+        return actual_terrain_price;
+    }
+
+    public void setActual_terrain_price(double actual_terrain_price) {
+        this.actual_terrain_price = actual_terrain_price;
     }
 }

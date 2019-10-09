@@ -20,6 +20,7 @@ public class BookingCalculatePriceResponseDTO {
     private String is_round_trip;
     private double outward_price;
     private double return_price;
+    private double terrain_price;
     private double wait_price;
     private double wait_hours;
 
@@ -126,5 +127,13 @@ public class BookingCalculatePriceResponseDTO {
 
     public void setWait_hours(double wait_hours) {
         this.wait_hours = wait_hours;
+    }
+
+    public double getTerrain_price() {
+        return terrain_price;
+    }
+
+    public void setTerrain_price(double terrain_price) {
+        this.terrain_price = terrain_price;
     }
 }
