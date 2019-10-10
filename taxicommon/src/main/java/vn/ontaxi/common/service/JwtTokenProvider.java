@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.Partner;
+import vn.ontaxi.common.utils.DateUtils;
 
 import java.util.Date;
 
@@ -23,8 +24,8 @@ public class JwtTokenProvider {
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${app.jwtExpirationInMs}")
-    private int jwtExpirationInMs;
+    @Value("${app.jwtExpirationInDays}")
+    private int jwtExpirationInDays;
 
     public String generateToken(Authentication authentication) {
 
@@ -43,7 +44,7 @@ public class JwtTokenProvider {
         }
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date expiryDate = DateUtils.addDays(now, jwtExpirationInDays);
 
         return Jwts.builder()
                 .setSubject(email)
