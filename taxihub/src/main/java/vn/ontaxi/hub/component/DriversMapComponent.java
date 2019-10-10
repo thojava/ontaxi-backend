@@ -10,7 +10,9 @@ import org.primefaces.model.map.Marker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -45,7 +47,7 @@ public class DriversMapComponent implements Serializable {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + taxiApiKey);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> entity = restTemplate.getForEntity(restUrl + "/driver/location?showFullDriverInfo=true", String.class);
+        ResponseEntity<String> entity = restTemplate.exchange(restUrl + "/driver/location?showFullDriverInfo=true", HttpMethod.GET, new HttpEntity<>(headers), String.class);
         Type locationType = new TypeToken<List<LocationWithDriver>>() {}.getType();
         List<LocationWithDriver> onlineDriverMap = ObjectUtils.defaultIfNull(new Gson().fromJson(entity.getBody(), locationType), new ArrayList<>());
         numOfActivatedCar = onlineDriverMap.size();
