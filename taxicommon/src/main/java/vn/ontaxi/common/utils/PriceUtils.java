@@ -10,7 +10,7 @@ import vn.ontaxi.common.service.DistanceMatrixService;
 public class PriceUtils {
     private final DistanceMatrixService distanceMatrixService;
 
-    private static final String TAM_DAO_LOCATION = "Tam Đảo, Vinh Phuc Province, Vietnam";
+    private static final String TAM_DAO_LOCATION = "Tam Dao, Tam Đảo, Vĩnh Phúc";
 
     public PriceUtils(DistanceMatrixService distanceMatrixService) {
         this.distanceMatrixService = distanceMatrixService;
