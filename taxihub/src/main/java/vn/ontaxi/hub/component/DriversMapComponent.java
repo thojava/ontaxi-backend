@@ -10,6 +10,7 @@ import org.primefaces.model.map.Marker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -28,6 +29,8 @@ public class DriversMapComponent implements Serializable {
 
     @Value("${rest.url}")
     private String restUrl;
+    @Value("${taxiApiKey}")
+    private String taxiApiKey;
     private int numOfActivatedCar;
 
     @PostConstruct
@@ -39,6 +42,8 @@ public class DriversMapComponent implements Serializable {
     }
 
     public String getLocationJson() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + taxiApiKey);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> entity = restTemplate.getForEntity(restUrl + "/driver/location?showFullDriverInfo=true", String.class);
         Type locationType = new TypeToken<List<LocationWithDriver>>() {}.getType();
