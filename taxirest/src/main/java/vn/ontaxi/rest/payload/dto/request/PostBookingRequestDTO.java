@@ -1,5 +1,7 @@
 package vn.ontaxi.rest.payload.dto.request;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotBlank;
 
 public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
@@ -8,9 +10,9 @@ public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
     @NotBlank
     private String name;
     private String email;
-    private String is_round_trip;
     private String note;
 
+    @ApiModelProperty(value="Some additional notes about the trip which customer want to send to driver")
     public String getNote() {
         return note;
     }
@@ -19,6 +21,7 @@ public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
         this.note = note;
     }
 
+    @ApiModelProperty(value="Customer phone number", required = true)
     public String getMobile() {
         return mobile;
     }
@@ -27,6 +30,7 @@ public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
         this.mobile = mobile;
     }
 
+    @ApiModelProperty(value="Customer name", required = true)
     public String getName() {
         return name;
     }
@@ -35,19 +39,12 @@ public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
         this.name = name;
     }
 
+    @ApiModelProperty(value="Customer email address")
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getIs_round_trip() {
-        return is_round_trip;
-    }
-
-    public void setIs_round_trip(String is_round_trip) {
-        this.is_round_trip = is_round_trip;
     }
 }
