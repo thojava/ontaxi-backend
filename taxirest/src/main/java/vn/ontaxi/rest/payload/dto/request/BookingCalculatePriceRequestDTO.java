@@ -51,6 +51,7 @@ public class BookingCalculatePriceRequestDTO {
         this.departureTime = departure_time;
     }
 
+    @ApiModelProperty(example = "N", value="Values: N or Y to indicate if this booking is one way trip or round trip")
     public String getIs_round_trip() {
         return is_round_trip;
     }
