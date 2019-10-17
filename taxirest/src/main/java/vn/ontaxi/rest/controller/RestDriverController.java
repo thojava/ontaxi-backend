@@ -156,6 +156,24 @@ public class RestDriverController {
         eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driver.getEmail(), versionCode, new Date())));
     }
 
+    @ApiOperation("In progress booking")
+    @GetMapping(path = "/inprogress/{id}")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public RestResult updateToInProgressStatus(@ApiIgnore @CurrentUser Driver driver, @PathVariable Long id) {
+        RestResult restResult = new RestResult();
+        Optional<Booking> booking = bookingRepository.findById(id);
+        if (booking.isPresent() && driver.getEmail().equals(booking.get().getAccepted_by())) {
+            Booking b = booking.get();
+            b.setStatus(OrderStatus.IN_PROGRESS);
+            bookingRepository.save(b);
+        } else {
+            restResult.setSucceed(false);
+            restResult.setMessage("Can't find this booking");
+        }
+
+        return restResult;
+    }
+
     @RequestMapping(path = "/acceptOrder", method = RequestMethod.POST)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public synchronized RestResult acceptOrder(@ApiIgnore @CurrentUser Driver driver, @RequestBody long orderId) {

@@ -91,25 +91,6 @@ public class RestBookingController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
     }
 
-    @ApiOperation("In progress booking")
-    @GetMapping(path = "/inprogress/{id}")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public RestResult updateToInProgressStatus(@ApiIgnore @CurrentUser Driver driver, @PathVariable Long id) {
-        RestResult restResult = new RestResult();
-        Optional<Booking> booking = bookingRepository.findById(id);
-        if (booking.isPresent() && driver.getEmail().equals(booking.get().getAccepted_by())) {
-            Booking b = booking.get();
-            b.setStatus(OrderStatus.IN_PROGRESS);
-            bookingRepository.save(b);
-        } else {
-            restResult.setSucceed(false);
-            restResult.setMessage("Can't find this booking");
-        }
-
-        return restResult;
-    }
-
-
     @CrossOrigin
     @RequestMapping(path = "/postBookingFromWebsite", method = RequestMethod.POST)
     public Booking postBookingFromWebsite(@RequestBody PostBookingRequestDTO bookingDTO) {
