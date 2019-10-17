@@ -80,17 +80,6 @@ public class RestBookingController {
         return booking;
     }
 
-    @ApiOperation("Booking detail by id")
-    @RequestMapping(path = "/detail/{ticketCode}/{emailOrPhone:.+}", method = RequestMethod.GET)
-    public Booking getBookingDetail(@PathVariable String ticketCode, @PathVariable String emailOrPhone) {
-        Optional<Booking> booking = bookingRepository.findById(BookingUtils.getIdFromTicketCode(ticketCode));
-        if (booking.isPresent()) {
-            if (emailOrPhone.equals(booking.get().getMobile()) || emailOrPhone.equals(booking.get().getEmail()))
-                return booking.get();
-        }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
-    }
-
     @CrossOrigin
     @RequestMapping(path = "/postBookingFromWebsite", method = RequestMethod.POST)
     public Booking postBookingFromWebsite(@RequestBody PostBookingRequestDTO bookingDTO) {
@@ -108,5 +97,16 @@ public class RestBookingController {
         booking.setTotal_fee(priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
 
         return bookingRepository.saveAndFlush(booking);
+    }
+
+    @ApiOperation("Booking detail by id")
+    @RequestMapping(path = "/detail/{ticketCode}/{emailOrPhone:.+}", method = RequestMethod.GET)
+    public Booking getBookingDetail(@PathVariable String ticketCode, @PathVariable String emailOrPhone) {
+        Optional<Booking> booking = bookingRepository.findById(BookingUtils.getIdFromTicketCode(ticketCode));
+        if (booking.isPresent()) {
+            if (emailOrPhone.equals(booking.get().getMobile()) || emailOrPhone.equals(booking.get().getEmail()))
+                return booking.get();
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Booking not found");
     }
 }

@@ -26,6 +26,7 @@ public class BookingCalculatePriceRequestDTO {
         this.car_type = car_type;
     }
 
+    @ApiModelProperty(example = "Hà Nội", value="From location of the trip")
     public String getFrom_location() {
         return from_location;
     }
@@ -34,6 +35,7 @@ public class BookingCalculatePriceRequestDTO {
         this.from_location = from_location;
     }
 
+    @ApiModelProperty(example = "Bắc Ninh", value="To location of the trip")
     public String getTo_location() {
         return to_location;
     }
@@ -42,7 +44,7 @@ public class BookingCalculatePriceRequestDTO {
         this.to_location = to_location;
     }
 
-    @ApiModelProperty(example = "2016-01-01 15:30")
+    @ApiModelProperty(example = "2016-01-01 15:30", value="Departure time of the trip")
     public Date getDeparture_time() {
         return departureTime;
     }
@@ -60,7 +62,7 @@ public class BookingCalculatePriceRequestDTO {
         this.is_round_trip = is_round_trip;
     }
 
-    @ApiModelProperty(example = "2016-01-01 21:30")
+    @ApiModelProperty(example = "2016-01-01 21:30", value="In case the booking is round trip, need to choose return departure time")
     public Date getReturnDepartureTime() {
         return returnDepartureTime;
     }
