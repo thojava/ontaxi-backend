@@ -52,6 +52,14 @@
                                 <p:inputTextarea readonly="true" id="apiToken" value="#{partnerDetailComponent.partner.apiToken}" cols="50"/>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="label">
+                                #{msg.expiration_date}
+                            </td>
+                            <td>
+                                <h:outputText value="#{jwtTokenProvider.getAccountExpirationDateFromJWT(partnerDetailComponent.partner.apiToken)}"/>
+                            </td>
+                        </tr>
                     </table>
                     <table>
                         <tr>

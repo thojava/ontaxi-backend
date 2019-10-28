@@ -71,6 +71,19 @@ public class JwtTokenProvider {
         return claims.getAudience();
     }
 
+    public String getAccountExpirationDateFromJWT(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(token)
+                    .getBody();
+            return DateUtils.ddMMyyyyDateFormat.format(claims.getExpiration());
+        } catch(ExpiredJwtException exp) {
+            return exp.getMessage();
+        }
+
+    }
+
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);

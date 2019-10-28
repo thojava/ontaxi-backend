@@ -14,10 +14,7 @@ import vn.ontaxi.common.service.JwtTokenProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Scope("view")
