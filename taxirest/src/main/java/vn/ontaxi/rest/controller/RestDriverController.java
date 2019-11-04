@@ -245,7 +245,7 @@ public class RestDriverController {
             double fee = priceUtils.calculateDriverFee(priceBeforePromotionWithoutTransportFee, persistedBooking.getFee_percentage(), persistedBooking.getPromotionPercentage());
             persistedBooking.setActual_total_fee(fee);
             persistedBooking.setStatus(OrderStatus.COMPLETED);
-            bookingRepository.saveAndFlush(persistedBooking);
+            persistedBooking = bookingRepository.saveAndFlush(persistedBooking);
 
             double amt = persistedBooking.getActual_total_fee() - persistedBooking.getTotal_fee();
             driver.decreaseAmt(amt, logger);
@@ -253,7 +253,8 @@ public class RestDriverController {
 
             // Do not send message for contract customer
             if (!persistedBooking.isLaterPaidPersistentCustomer()) {
-                new Thread(() -> smsService.sendSMS(persistedBooking.getMobile(), SMSContentBuilder.buildCompleteOrderSMSContent(persistedBooking))).start();
+                Booking finalPersistedBooking = persistedBooking;
+                new Thread(() -> smsService.sendSMS(finalPersistedBooking.getMobile(), SMSContentBuilder.buildCompleteOrderSMSContent(finalPersistedBooking))).start();
             }
         }
 
