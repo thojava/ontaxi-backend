@@ -95,6 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(SWAGGER_AUTH_WHITELIST)
                 .permitAll()
+                .antMatchers("/driver/validateLoginEmail/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
