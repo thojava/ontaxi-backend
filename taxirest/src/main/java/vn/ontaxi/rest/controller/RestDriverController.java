@@ -31,6 +31,7 @@ import vn.ontaxi.common.model.LocationWithDriver;
 import vn.ontaxi.common.service.ConfigurationService;
 import vn.ontaxi.common.service.FCMService;
 import vn.ontaxi.common.service.SMSService;
+import vn.ontaxi.common.utils.NumberUtils;
 import vn.ontaxi.common.utils.PriceUtils;
 import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.JwtAuthenticationResponse;
@@ -209,6 +210,9 @@ public class RestDriverController {
 
             // Need this flush to make sure other thread trying to accept does not using old data
             em.flush();
+
+            restResult.setMessage(messageSource.getMessage("order_has_been_accepted_successfully",
+                    new Object[]{NumberUtils.formatAmountInVND(booking.getTotal_fee()), NumberUtils.formatAmountInVND(driver.getAmount())}, Locale.getDefault()));
         } else {
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("order_has_been_accepted_by_other_driver", null, Locale.getDefault()));
