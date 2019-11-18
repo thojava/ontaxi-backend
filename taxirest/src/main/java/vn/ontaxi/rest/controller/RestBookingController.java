@@ -88,6 +88,7 @@ public class RestBookingController {
         booking.setName(bookingDTO.getName());
         booking.setEmail(bookingDTO.getEmail());
         booking.setMobile(bookingDTO.getMobile());
+        booking.setNoOfGuests(bookingDTO.getNoOfGuests());
         // Update status
         booking.setCreatedBy("site");
         booking.setNote(bookingDTO.getNote());
