@@ -65,6 +65,7 @@ public class BookingDTO extends BookingCalculatePriceRequestDTO {
     private long surveyId;
     private String routes = "";
     private String return_routes = "";
+    private short noOfGuests;
 
     public BookingDTO() {
     }
@@ -488,4 +489,11 @@ public class BookingDTO extends BookingCalculatePriceRequestDTO {
         this.unit_price = unit_price;
     }
 
+    public short getNoOfGuests() {
+        return noOfGuests;
+    }
+
+    public void setNoOfGuests(short noOfGuests) {
+        this.noOfGuests = noOfGuests;
+    }
 }

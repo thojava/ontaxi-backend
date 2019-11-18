@@ -11,6 +11,7 @@ public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
     private String name;
     private String email;
     private String note;
+    private short noOfGuests;
 
     @ApiModelProperty(value="Some additional notes about the trip which customer want to send to driver")
     public String getNote() {
@@ -46,5 +47,14 @@ public class PostBookingRequestDTO extends BookingCalculatePriceRequestDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @ApiModelProperty(value="Number of guests on the ride")
+    public short getNoOfGuests() {
+        return noOfGuests;
+    }
+
+    public void setNoOfGuests(short noOfGuests) {
+        this.noOfGuests = noOfGuests;
     }
 }

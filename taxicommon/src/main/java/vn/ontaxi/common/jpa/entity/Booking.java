@@ -82,6 +82,7 @@ public class Booking extends AbstractEntity {
     private long surveyId;
     private String note;
     private String identify;
+    private short noOfGuests;
 
     @Lob
     @Column
@@ -702,5 +703,13 @@ public class Booking extends AbstractEntity {
 
     public void setActual_terrain_price(double actual_terrain_price) {
         this.actual_terrain_price = actual_terrain_price;
+    }
+
+    public short getNoOfGuests() {
+        return noOfGuests;
+    }
+
+    public void setNoOfGuests(short noOfGuests) {
+        this.noOfGuests = noOfGuests;
     }
 }
