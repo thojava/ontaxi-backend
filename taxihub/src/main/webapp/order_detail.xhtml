@@ -45,14 +45,15 @@
                     </td>
                     <td>
                         <h:outputText type="text" value="#{orderDetailComponent.booking.name}"/>
+                        <h:outputText rendered="#{orderDetailComponent.booking.returnedCustomer}" type="text" value="(#{msg.returned_customer})"/>
                     </td>
                 </tr>
                 <tr>
                     <td class="label">
-                        #{msg.returned_customer}
+                        value="#{msg.no_of_guests}"
                     </td>
                     <td>
-                        <p:selectBooleanCheckbox value="#{orderDetailComponent.booking.returnedCustomer}" disabled="true"/>
+                        <h:outputText type="text" value="#{orderDetailComponent.booking.noOfGuests} người"/>
                     </td>
                 </tr>
                 <tr>
@@ -97,7 +98,7 @@
                         Ghi chú
                     </td>
                     <td>
-                        <p:inputTextarea rendered="#{orderDetailComponent.booking.ordered}" cols="10"
+                        <p:inputTextarea rendered="#{orderDetailComponent.booking.ordered}" cols="40"
                                          value="#{orderDetailComponent.booking.note}"/>
                         <h:outputText rendered="#{not (orderDetailComponent.booking.ordered)}" value="#{orderDetailComponent.booking.note}"/>
                     </td>
