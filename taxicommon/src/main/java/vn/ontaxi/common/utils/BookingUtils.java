@@ -74,14 +74,6 @@ public class BookingUtils {
         return 0;
     }
 
-    public static double calculateFeePercentage(Booking booking) {
-        if (booking.getPromotionPercentage() >= 4) {
-            return 12;
-        } else {
-            return 12;
-        }
-    }
-
     public static String generateTicketCodeFromId(Long id) {
         if (id == null || id == 0)
             return "";

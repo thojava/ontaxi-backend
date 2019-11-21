@@ -258,7 +258,7 @@
                     <td>
                         <p:selectOneMenu id="feePercentage" disabled="#{not (orderDetailComponent.booking.ordered)}"
                                          value="#{orderDetailComponent.booking.fee_percentage}">
-                            <f:selectItems value="#{orderDetailComponent.feePercentageSelectItems}"/>
+                            <f:selectItems value="#{selectItemGenerator.feePercentageSelectItems}"/>
                             <p:ajax update="feePercentage" listener="#{orderDetailComponent.recalculateDriverFee}"/>
                         </p:selectOneMenu>
                     </td>

@@ -188,11 +188,11 @@
                 </tr>
                 <tr>
                     <td class="label">
-                        Phần Trăm Thu
+                        Triết Khấu
                     </td>
                     <td>
                         <p:selectOneMenu id="feePercentage" value="#{newOrderComponent.booking.fee_percentage}">
-                            <f:selectItems value="#{newOrderComponent.feePercentageSelectItems}"/>
+                            <f:selectItems value="#{selectItemGenerator.feePercentageSelectItems}"/>
                             <p:ajax update="feePercentage"/>
                         </p:selectOneMenu>
                     </td>

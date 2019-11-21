@@ -33,10 +33,6 @@ public abstract class AbstractOrderComponent extends AbstractComponent {
         }
     }
 
-    public List<SelectItem> getFeePercentageSelectItems() {
-        return Stream.of(12, 10, 15, 6, 0).map(i -> new SelectItem(i, i + "%")).collect(Collectors.toList());
-    }
-
     public List<SelectItem> getPromotionPercentageSelectItems() {
         return Stream.of(10, 6, 4, 0).map(i -> new SelectItem(i, i + "%")).collect(Collectors.toList());
     }

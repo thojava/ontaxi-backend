@@ -11,6 +11,7 @@ import javax.faces.model.SelectItem;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class SelectItemGenerator {
@@ -32,5 +33,9 @@ public class SelectItemGenerator {
 
     public List<SelectItem> getEmailTypeSelectItems() {
         return Arrays.stream(EmailType.values()).map(c -> new SelectItem(c, c.getDescription())).collect(Collectors.toList());
+    }
+
+    public List<SelectItem> getFeePercentageSelectItems() {
+        return Stream.of(15, 12, 10, 6, 0).map(i -> new SelectItem(i, i + "%")).collect(Collectors.toList());
     }
 }

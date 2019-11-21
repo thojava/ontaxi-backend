@@ -3,23 +3,20 @@ package vn.ontaxi.rest.controller;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import springfox.documentation.annotations.ApiIgnore;
 import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
-import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.ViewPrice;
 import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
 import vn.ontaxi.common.jpa.repository.ViewPriceRepository;
 import vn.ontaxi.common.service.DistanceMatrixService;
+import vn.ontaxi.common.service.FeeCalculator;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.PriceUtils;
-import vn.ontaxi.rest.config.security.CurrentUser;
 import vn.ontaxi.rest.payload.dto.request.BookingCalculatePriceRequestDTO;
 import vn.ontaxi.rest.payload.dto.request.PostBookingRequestDTO;
 import vn.ontaxi.rest.payload.dto.response.BookingCalculatePriceResponseDTO;
@@ -35,15 +32,17 @@ public class RestBookingController {
     private final ViewPriceRepository viewPriceRepository;
     private final PromotionPlanRepository promotionPlanRepository;
     private final PriceCalculator priceCalculator;
+    private final FeeCalculator feeCalculator;
     private final DistanceMatrixService distanceMatrixService;
     private final PriceUtils priceUtils;
 
     @Autowired
-    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils) {
+    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator, FeeCalculator feeCalculator, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils) {
         this.bookingRepository = bookingRepository;
         this.viewPriceRepository = viewPriceRepository;
         this.promotionPlanRepository = promotionPlanRepository;
         this.priceCalculator = priceCalculator;
+        this.feeCalculator = feeCalculator;
         this.distanceMatrixService = distanceMatrixService;
         this.priceUtils = priceUtils;
     }
@@ -94,7 +93,7 @@ public class RestBookingController {
         booking.setNote(bookingDTO.getNote());
         booking.setStatus(OrderStatus.ORDERED);
         // Recalculate the fee
-        booking.setFee_percentage(12);
+        booking.setFee_percentage(feeCalculator.getDefaultFeePercentage());
         booking.setTotal_fee(priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
 
         return bookingRepository.saveAndFlush(booking);

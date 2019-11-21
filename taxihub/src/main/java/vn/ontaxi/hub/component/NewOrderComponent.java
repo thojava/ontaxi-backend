@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.env.Environment;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.repository.*;
+import vn.ontaxi.common.service.FeeCalculator;
 import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
 import vn.ontaxi.common.constant.BookingTypes;
@@ -49,6 +50,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
     private final PromotionPlanRepository promotionPlanRepository;
     private final UserCredentialComponent userCredentialComponent;
     private final PriceCalculator priceCalculator;
+    private final FeeCalculator feeCalculator;
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
     private final DistanceMatrixService distanceMatrixService;
@@ -59,7 +61,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
     private List<Driver> selectedDrivers = new ArrayList<>();
 
     @Autowired
-    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, CustomerService customerService, CustomerRepository customerRepository, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils, Environment env) {
+    public NewOrderComponent(DriverRepository driverRepository, BookingRepository bookingRepository, FCMService fcmService, UserCredentialComponent userCredentialComponent, MessageSource messageSource, PromotionPlanRepository promotionPlanRepository, PersistentCustomerRepository persistentCustomerRepository, PriceCalculator priceCalculator, FeeCalculator feeCalculator, CustomerService customerService, CustomerRepository customerRepository, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils, Environment env) {
         super(messageSource, persistentCustomerRepository);
         this.driverRepository = driverRepository;
         this.bookingRepository = bookingRepository;
@@ -67,6 +69,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         this.fcmService = fcmService;
         this.promotionPlanRepository = promotionPlanRepository;
         this.priceCalculator = priceCalculator;
+        this.feeCalculator = feeCalculator;
         this.customerService = customerService;
         this.customerRepository = customerRepository;
         this.distanceMatrixService = distanceMatrixService;
@@ -80,7 +83,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
 
         booking = new Booking();
         booking.setPromotionPercentage(BookingUtils.calculatePromotionPercentage(DateUtils.today(), 0, false, promotionPlanRepository));
-        booking.setFee_percentage(BookingUtils.calculateFeePercentage(booking));
+        booking.setFee_percentage(feeCalculator.getDefaultFeePercentage());
         booking.setStatus(OrderStatus.NEW);
 
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -149,7 +152,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         booking.setTotal_distance(distanceMatrixService.getDistance(booking.getFrom_location(), booking.getTo_location()) / 1000);
         if(recalculateFee) {
             booking.setPromotionPercentage(BookingUtils.calculatePromotionPercentage(booking.getDeparture_time(), booking.getTotal_distance(), booking.isLaterPaidPersistentCustomer(), promotionPlanRepository));
-            booking.setFee_percentage(BookingUtils.calculateFeePercentage(booking));
+            booking.setFee_percentage(feeCalculator.getDefaultFeePercentage());
         }
         if (!BooleanConstants.YES.equalsIgnoreCase(booking.getIsFixedPrice())) {
             priceCalculator.calculateEstimatedPrice(booking);
