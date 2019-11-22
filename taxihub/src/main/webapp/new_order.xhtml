@@ -62,9 +62,7 @@
                     </td>
                     <td>
                         <p:selectOneMenu value="#{newOrderComponent.booking.car_type}">
-                            <f:selectItem itemLabel="4 Cho" itemValue="N4"/>
-                            <f:selectItem itemLabel="4 Cho Vios" itemValue="G4"/>
-                            <f:selectItem itemLabel="7 Cho" itemValue="N7"/>
+                            <f:selectItems value="#{selectItemGenerator.carTypeSelectItems}"/>
                         </p:selectOneMenu>
                     </td>
                 </tr>
