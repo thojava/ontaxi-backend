@@ -3,7 +3,6 @@ package vn.ontaxi.common.utils;
 import org.springframework.stereotype.Service;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.jpa.entity.Booking;
-import vn.ontaxi.common.jpa.entity.PriceConfiguration;
 import vn.ontaxi.common.jpa.repository.PriceConfigurationRepository;
 import vn.ontaxi.common.model.PriceInfo;
 import vn.ontaxi.common.service.DistanceMatrixService;
@@ -13,11 +12,11 @@ public class PriceUtils {
     private static final String TAM_DAO_LOCATION = "Tam Dao, Tam Đảo, Vĩnh Phúc";
 
     private final DistanceMatrixService distanceMatrixService;
-    private final PriceConfiguration priceConfiguration;
+    private final PriceConfigurationRepository priceConfigurationRepository;
 
     public PriceUtils(DistanceMatrixService distanceMatrixService, PriceConfigurationRepository priceConfigurationRepository) {
         this.distanceMatrixService = distanceMatrixService;
-        this.priceConfiguration = priceConfigurationRepository.findAll().get(0);
+        this.priceConfigurationRepository = priceConfigurationRepository;
     }
 
     public PriceInfo calculatePrice(String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes car_type, boolean isRoundTrip,
@@ -33,7 +32,7 @@ public class PriceUtils {
 
             double outwardPrice = highDistance * pricePerKm;
 
-            double returnPrice = lowDistance * pricePerKm * priceConfiguration.getReturn_round_percentage() / 100;
+            double returnPrice = lowDistance * pricePerKm * getReturnRoundPercentage() / 100;
 
             double waitPrice = wait_hours * getPricePerWaitHour(car_type);
 
@@ -49,7 +48,7 @@ public class PriceUtils {
     }
 
     public double getReturnRoundPercentage() {
-        return priceConfiguration.getReturn_round_percentage();
+        return priceConfigurationRepository.findAll().get(0).getReturn_round_percentage();
     }
 
     public static int getPricePerWaitHour(CarTypes car_type) {
