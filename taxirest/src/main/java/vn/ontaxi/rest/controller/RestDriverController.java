@@ -258,7 +258,7 @@ public class RestDriverController {
             // Do not send message for contract customer
             if (!persistedBooking.isLaterPaidPersistentCustomer()) {
                 Booking finalPersistedBooking = persistedBooking;
-                new Thread(() -> smsService.sendSMS(finalPersistedBooking.getMobile(), SMSContentBuilder.buildCompleteOrderSMSContent(finalPersistedBooking))).start();
+                new Thread(() -> smsService.sendSMS(finalPersistedBooking.getMobile(), SMSContentBuilder.buildCompleteOrderSMSContent(finalPersistedBooking, priceUtils))).start();
             }
         }
 

@@ -525,34 +525,6 @@ public class Booking extends AbstractEntity {
         return BooleanConstants.YES.equalsIgnoreCase(viewed);
     }
 
-    @JsonIgnore
-    public String getTotalPriceInDetail() {
-        StringBuilder sb = new StringBuilder();
-        if (isRoundTrip()) {
-            double lowDistance = Math.min(outward_distance, return_distance);
-            double highDistance = Math.max(outward_distance, return_distance);
-
-            double freeWaitTime = PriceUtils.getFreeWaitTime(highDistance);
-
-
-            sb.append(NumberUtils.distanceWithKM(highDistance)).append(" * ").append(NumberUtils.formatAmountInVND(unit_price))
-                    .append(" + ").append(NumberUtils.distanceWithKM(lowDistance)).append(" * ").append(NumberUtils.formatAmountInVND(unit_price))
-                    .append(" * ").append(PriceUtils.getReturnRoundPercentage(lowDistance)).append("%")
-                    .append(" + (").append(Math.max(wait_hours, freeWaitTime)).append(" giờ ").append(" - ").append(freeWaitTime).append(" giờ ").append(")")
-                    .append(" = ").append(Math.max(wait_hours, freeWaitTime) - freeWaitTime).append(" giờ ")
-                    .append(" * ").append(NumberUtils.formatAmountInVND(PriceUtils.getPricePerWaitHour(car_type)))
-                    .append(" + ").append(NumberUtils.formatAmountInVND(this.transport_fee));
-            sb.append(" = ").append(NumberUtils.formatAmountInVND(this.actual_total_price));
-
-
-        } else {
-            sb.append(NumberUtils.distanceWithKM(actual_total_distance)).append(" * ").append(NumberUtils.formatAmountInVND(unit_price))
-                    .append(" = ").append(NumberUtils.formatAmountInVND(actual_total_price));
-        }
-
-        return sb.toString();
-    }
-
     public double getFee_percentage() {
         return fee_percentage;
     }

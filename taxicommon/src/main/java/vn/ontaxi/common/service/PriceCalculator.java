@@ -13,12 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class PriceCalculator {
-    private final PriceConfigurationRepository priceConfigurationRepository;
+    private final PriceConfiguration priceConfiguration;
     private final PriceUtils priceUtils;
 
     @Autowired
     public PriceCalculator(PriceConfigurationRepository priceConfigurationRepository, PriceUtils priceUtils) {
-        this.priceConfigurationRepository = priceConfigurationRepository;
+        this.priceConfiguration = priceConfigurationRepository.findAll().get(0);
         this.priceUtils = priceUtils;
     }
 
@@ -43,7 +43,6 @@ public class PriceCalculator {
 
 
     public double getPricePerKm(CarTypes car_type) {
-        PriceConfiguration priceConfiguration = priceConfigurationRepository.findAll().get(0);
         if (CarTypes.N4 == car_type) {
             return priceConfiguration.getNormal_4();
         } else if (CarTypes.G4 == car_type) {

@@ -7,6 +7,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import vn.ontaxi.common.jpa.entity.PriceConfiguration;
+import vn.ontaxi.common.utils.NumberUtils;
 import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
 import vn.ontaxi.common.constant.BookingTypes;
 import vn.ontaxi.common.constant.BooleanConstants;
@@ -206,6 +208,33 @@ public class OrderDetailComponent extends AbstractOrderComponent {
         }
 
         return booking;
+    }
+
+    public String totalPriceInDetail(Booking booking) {
+        StringBuilder sb = new StringBuilder();
+        if (booking.isRoundTrip()) {
+            double lowDistance = Math.min(booking.getOutward_distance(), booking.getReturn_distance());
+            double highDistance = Math.max(booking.getOutward_distance(), booking.getReturn_distance());
+
+            double freeWaitTime = PriceUtils.getFreeWaitTime(highDistance);
+
+
+            sb.append(NumberUtils.distanceWithKM(highDistance)).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
+                    .append(" + ").append(NumberUtils.distanceWithKM(lowDistance)).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
+                    .append(" * ").append(priceUtils.getReturnRoundPercentage()).append("%")
+                    .append(" + (").append(Math.max(booking.getWait_hours(), freeWaitTime)).append(" giờ ").append(" - ").append(freeWaitTime).append(" giờ ").append(")")
+                    .append(" = ").append(Math.max(booking.getWait_hours(), freeWaitTime) - freeWaitTime).append(" giờ ")
+                    .append(" * ").append(NumberUtils.formatAmountInVND(PriceUtils.getPricePerWaitHour(booking.getCar_type())))
+                    .append(" + ").append(NumberUtils.formatAmountInVND(booking.getTransport_fee()));
+            sb.append(" = ").append(NumberUtils.formatAmountInVND(booking.getActual_total_price()));
+
+
+        } else {
+            sb.append(NumberUtils.distanceWithKM(booking.getActual_total_distance())).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
+                    .append(" = ").append(NumberUtils.formatAmountInVND(booking.getActual_total_price()));
+        }
+
+        return sb.toString();
     }
 
     public void setBooking(Booking booking) {

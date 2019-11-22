@@ -1,11 +1,14 @@
 package vn.ontaxi.common.jpa.entity;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Data
 public class PriceConfiguration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,36 +17,5 @@ public class PriceConfiguration {
     private double good_4;
     private double normal_7;
     private double normal_16;
-
-    public double getNormal_4() {
-        return normal_4;
-    }
-
-    public void setNormal_4(double normal_4) {
-        this.normal_4 = normal_4;
-    }
-
-    public double getGood_4() {
-        return good_4;
-    }
-
-    public void setGood_4(double good_4) {
-        this.good_4 = good_4;
-    }
-
-    public double getNormal_7() {
-        return normal_7;
-    }
-
-    public void setNormal_7(double normal_7) {
-        this.normal_7 = normal_7;
-    }
-
-    public double getNormal_16() {
-        return normal_16;
-    }
-
-    public void setNormal_16(double normal_16) {
-        this.normal_16 = normal_16;
-    }
+    private double return_round_percentage;
 }

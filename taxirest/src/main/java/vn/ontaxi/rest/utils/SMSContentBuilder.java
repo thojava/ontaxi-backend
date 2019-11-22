@@ -23,7 +23,7 @@ public class SMSContentBuilder {
     }
 
 
-    public static String buildCompleteOrderSMSContent(Booking booking) {
+    public static String buildCompleteOrderSMSContent(Booking booking, PriceUtils priceUtils) {
         String fromLocation = StringUtils.defaultIfBlank(booking.getFrom_city(), booking.getFrom_location());
         String toLocation = StringUtils.defaultIfBlank(booking.getTo_city(), booking.getTo_location());
         int pricePerKm = (int) booking.getUnit_price();
@@ -69,7 +69,7 @@ public class SMSContentBuilder {
             return String.format(RETURN_ROUTE_TEMPLATE,
                     booking.getMobile(),
                     highFromLocation, highToLocation, NumberUtils.roundDistance(highDistance), pricePerKm, NumberUtils.formatAmountInVND(highPrice),
-                    lowFromLocation, lowToLocation, NumberUtils.roundDistance(lowDistance), pricePerKm, PriceUtils.getReturnRoundPercentage(highDistance) + "%",
+                    lowFromLocation, lowToLocation, NumberUtils.roundDistance(lowDistance), pricePerKm, priceUtils.getReturnRoundPercentage() + "%",
                     NumberUtils.formatAmountInVND(lowPrice),
                     NumberUtils.formatAmountInVND(booking.getTransport_fee()),
                     feeHours + "h",

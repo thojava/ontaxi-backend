@@ -1,6 +1,9 @@
+import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.AdditionalMatchers;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,8 +35,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {Application.class})
@@ -57,6 +59,7 @@ public class RestBookingControllerTest extends AbstractControllerTest {
     private RestBookingController restBookingController;
     @Autowired
     private WebApplicationContext webApplicationContext;
+    private Faker faker;
 
     @Before
     public void setUp() {
@@ -67,16 +70,18 @@ public class RestBookingControllerTest extends AbstractControllerTest {
         ReflectionTestUtils.setField(restBookingController, "distanceMatrixService", distanceMatrixService);
         ReflectionTestUtils.setField(restBookingController, "priceUtils", priceUtils);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+
+        faker = new Faker();
     }
 
     @Test
     public void postBookingFromWebsite_success() throws Exception {
         PostBookingRequestDTO bookingDTO = new PostBookingRequestDTO();
-        bookingDTO.setEmail("hihi@gmail.com");
+        bookingDTO.setEmail(faker.bothify("????##@gmail.com"));
         bookingDTO.setIs_round_trip("N");
-        bookingDTO.setMobile("0987654321");
-        bookingDTO.setName("Hihi");
-        bookingDTO.setNote("This is note");
+        bookingDTO.setMobile(faker.phoneNumber());
+        bookingDTO.setName(faker.name());
+        bookingDTO.setNote(faker.name());
 
         when(priceCalculator.getPricePerKm(any())).thenReturn(10.0);
         when(promotionPlanRepository.findAll()).thenReturn(new ArrayList<>());
@@ -121,7 +126,7 @@ public class RestBookingControllerTest extends AbstractControllerTest {
 
         mockMvc.perform(post("/booking/calculateDistanceAndPrice").contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(bookingCalculatePriceRequestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total_distance").isNumber())
+                .andExpect(jsonPath("$.total_distance").value(100))
                 .andExpect(jsonPath("$.total_price").isNumber());
     }
 

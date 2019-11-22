@@ -408,7 +408,7 @@
                     </td>
                     <td>
                         <h:outputText id="totalAmount"
-                                      value="#{orderDetailComponent.booking.completed ? orderDetailComponent.booking.totalPriceInDetail : numberFormatterComponent.formatPrice(orderDetailComponent.booking.total_price)}"/>
+                                      value="#{orderDetailComponent.booking.completed ? orderDetailComponent.totalPriceInDetail(orderDetailComponent.booking) : numberFormatterComponent.formatPrice(orderDetailComponent.booking.total_price)}"/>
                     </td>
                 </tr>
             </table>
