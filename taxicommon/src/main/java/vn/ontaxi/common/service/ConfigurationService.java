@@ -11,7 +11,7 @@ public class ConfigurationService {
 
     @PostConstruct
     public void init() {
-        driver_balance_low_limit = 500000;
+        driver_balance_low_limit = 200000;
         accuracy_limit = 30;
     }
 
