@@ -10,9 +10,11 @@ import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.ViewPrice;
 import vn.ontaxi.common.jpa.repository.BookingRepository;
+import vn.ontaxi.common.jpa.repository.NotificationConfigurationRepository;
 import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
 import vn.ontaxi.common.jpa.repository.ViewPriceRepository;
 import vn.ontaxi.common.service.DistanceMatrixService;
+import vn.ontaxi.common.service.EmailService;
 import vn.ontaxi.common.service.FeeCalculator;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.BookingUtils;
@@ -35,9 +37,11 @@ public class RestBookingController {
     private final FeeCalculator feeCalculator;
     private final DistanceMatrixService distanceMatrixService;
     private final PriceUtils priceUtils;
+    private final EmailService emailService;
+    private final NotificationConfigurationRepository notificationConfigurationRepository;
 
     @Autowired
-    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator, FeeCalculator feeCalculator, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils) {
+    public RestBookingController(BookingRepository bookingRepository, ViewPriceRepository viewPriceRepository, PromotionPlanRepository promotionPlanRepository, PriceCalculator priceCalculator, FeeCalculator feeCalculator, DistanceMatrixService distanceMatrixService, PriceUtils priceUtils, EmailService emailService, NotificationConfigurationRepository notificationConfigurationRepository) {
         this.bookingRepository = bookingRepository;
         this.viewPriceRepository = viewPriceRepository;
         this.promotionPlanRepository = promotionPlanRepository;
@@ -45,6 +49,8 @@ public class RestBookingController {
         this.feeCalculator = feeCalculator;
         this.distanceMatrixService = distanceMatrixService;
         this.priceUtils = priceUtils;
+        this.emailService = emailService;
+        this.notificationConfigurationRepository = notificationConfigurationRepository;
     }
 
     @CrossOrigin
@@ -95,6 +101,12 @@ public class RestBookingController {
         // Recalculate the fee
         booking.setFee_percentage(feeCalculator.getDefaultFeePercentage());
         booking.setTotal_fee(priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
+
+        new Thread(() -> {
+            String email = notificationConfigurationRepository.findAll().get(0).getNewOrderNotificationEmail();
+            emailService.sendEmail("Hệ thống có đơn hàng mới", email,
+                "Có khách đặt xe. Bạn hãy vào https://hub.ontaxi.vn/ để kiểm tra");
+        }).start();
 
         return bookingRepository.saveAndFlush(booking);
     }

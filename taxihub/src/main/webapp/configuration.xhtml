@@ -124,6 +124,21 @@
                     </table>
                 </h:form>
             </p:tab>
+            <p:tab title="#{msg.setup_notification}">
+                <h:form>
+                    <table>
+                        <tr>
+                            <td>
+                                Email Thông Báo Đơn Hàng Mới
+                            </td>
+                            <td>
+                                <p:inputText value="#{configurationComponent.notificationConfiguration.newOrderNotificationEmail}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <p:commandButton action="#{configurationComponent.saveNotificationConfiguration()}" update="@form" title="#{msg.update}"/>
+                </h:form>
+            </p:tab>
         </p:tabView>
     </ui:define>
 </ui:composition>
