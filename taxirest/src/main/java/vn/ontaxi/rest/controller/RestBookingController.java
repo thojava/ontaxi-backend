@@ -19,6 +19,7 @@ import vn.ontaxi.common.service.FeeCalculator;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.rest.payload.dto.request.BookingCalculatePriceRequestDTO;
 import vn.ontaxi.rest.payload.dto.request.PostBookingRequestDTO;
 import vn.ontaxi.rest.payload.dto.response.BookingCalculatePriceResponseDTO;
@@ -103,9 +104,11 @@ public class RestBookingController {
         booking.setTotal_fee(priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage()));
 
         new Thread(() -> {
-            String email = notificationConfigurationRepository.findAll().get(0).getNewOrderNotificationEmail();
-            emailService.sendEmail("Hệ thống có đơn hàng mới", email,
-                "Có khách đặt xe. Bạn hãy vào https://hub.ontaxi.vn/ để kiểm tra");
+            String emails = notificationConfigurationRepository.findAll().get(0).getNewOrderNotificationEmail();
+            for (String email : emails.split(",")) {
+                emailService.sendEmail("Hệ thống có đơn hàng mới", StringUtils.trim(email),
+                        "Có khách đặt xe. Bạn hãy vào https://hub.ontaxi.vn/ để kiểm tra");
+            }
         }).start();
 
         return bookingRepository.saveAndFlush(booking);
