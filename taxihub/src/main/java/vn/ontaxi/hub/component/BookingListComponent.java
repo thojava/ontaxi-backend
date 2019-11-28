@@ -103,8 +103,10 @@ public class BookingListComponent {
                 for (Booking acceptedBooking : acceptedBookingsWrappedData) {
                     if (acceptedBooking.isBeanSelected()) {
                         Driver accepted_by_driver = acceptedBooking.getAccepted_by_driver();
-                        accepted_by_driver.increaseAmt(acceptedBooking.getTotal_fee(), logger);
-                        driverRepository.saveAndFlush(accepted_by_driver);
+                        if (accepted_by_driver != null) {
+                            accepted_by_driver.increaseAmt(acceptedBooking.getTotal_fee(), logger);
+                            driverRepository.saveAndFlush(accepted_by_driver);
+                        }
                         acceptedBooking.setStatus(OrderStatus.ABORTED);
                         bookingRepository.saveAndFlush(acceptedBooking);
                         fcmService.abortNewTaxiOrder(acceptedBooking);
@@ -118,8 +120,10 @@ public class BookingListComponent {
                 for (Booking onGoingBooking : onGoingBookingsWrappedData) {
                     if (onGoingBooking.isBeanSelected()) {
                         Driver accepted_by_driver = onGoingBooking.getAccepted_by_driver();
-                        accepted_by_driver.increaseAmt(onGoingBooking.getActual_total_fee(), logger);
-                        driverRepository.saveAndFlush(accepted_by_driver);
+                        if (accepted_by_driver != null) {
+                            accepted_by_driver.increaseAmt(onGoingBooking.getActual_total_fee(), logger);
+                            driverRepository.saveAndFlush(accepted_by_driver);
+                        }
                         onGoingBooking.setStatus(OrderStatus.ABORTED);
                         bookingRepository.saveAndFlush(onGoingBooking);
                         fcmService.abortNewTaxiOrder(onGoingBooking);
@@ -132,8 +136,10 @@ public class BookingListComponent {
                 for (Booking completedBooking : completedBookingsWrappedData) {
                     if (completedBooking.isBeanSelected()) {
                         Driver accepted_by_driver = completedBooking.getAccepted_by_driver();
-                        accepted_by_driver.increaseAmt(completedBooking.getActual_total_fee(), logger);
-                        driverRepository.saveAndFlush(accepted_by_driver);
+                        if (accepted_by_driver != null) {
+                            accepted_by_driver.increaseAmt(completedBooking.getActual_total_fee(), logger);
+                            driverRepository.saveAndFlush(accepted_by_driver);
+                        }
                         completedBooking.setStatus(OrderStatus.ABORTED);
                         bookingRepository.saveAndFlush(completedBooking);
                     }
