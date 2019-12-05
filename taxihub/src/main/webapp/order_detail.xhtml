@@ -116,7 +116,7 @@
             <table class="table_booking_info">
                 <tr>
                     <td class="label">
-                        Giờ Đi dự kiến
+                        #{msg.khoi_hanh}
                     </td>
                     <td>
                         <p:calendar id="departureDate" value="#{orderDetailComponent.booking.departure_time}" pattern="#{dateTimePattern}" required="true"
@@ -127,6 +127,28 @@
                         <p:message for="departureDate"/>
                     </td>
                 </tr>
+                <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
+                    <tr>
+                        <td class="label">
+                            #{msg.khoi_hanh_chieu_ve}
+                        </td>
+                        <td>
+                            <p:calendar id="returnDepartureDate" value="#{orderDetailComponent.booking.returnDepartureTime}"
+                                        pattern="#{dateTimePattern}" required="true" disabled="#{not (orderDetailComponent.booking.ordered)}"/>
+                            <p:message for="returnDepartureDate"/>
+                        </td>
+                    </tr>
+                </ui:fragment>
+                <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
+                    <tr>
+                        <td class="label">
+                            #{msg.gio_cho}
+                        </td>
+                        <td>
+                            <h:outputText type="text" value="#{orderDetailComponent.booking.wait_hours}  Giờ"/>
+                        </td>
+                    </tr>
+                </ui:fragment>
                 <ui:fragment rendered="#{orderDetailComponent.booking.completed}">
                     <tr>
                         <td class="label">
@@ -174,16 +196,6 @@
             </table>
 
             <table class="table_booking_info">
-                <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
-                    <tr>
-                        <td class="label">
-                            #{msg.gio_cho}
-                        </td>
-                        <td>
-                            <h:outputText type="text" value="#{orderDetailComponent.booking.wait_hours}"/>
-                        </td>
-                    </tr>
-                </ui:fragment>
                 <tr>
                     <td class="label">
                         Khách Hợp Đồng

@@ -102,16 +102,16 @@
                     </td>
                     <td>
                         <p:selectBooleanCheckbox value="#{newOrderComponent.booking.roundTrip}">
-                            <p:ajax update="waitingHourText"/>
+                            <p:ajax update="@form"/>
                         </p:selectBooleanCheckbox>
                     </td>
-                    <td class="label">
-                        #{msg.gio_cho}
-                    </td>
-                    <td>
-                        <p:inputText id="waitingHourText" type="text" value="#{newOrderComponent.booking.wait_hours}"
-                                     style="width: 60px" disabled="#{not newOrderComponent.booking.roundTrip}"/>
-                    </td>
+<!--                    <td class="label">-->
+<!--                        #{msg.gio_cho}-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                        <p:inputText id="waitingHourText" type="text" value="#{newOrderComponent.booking.wait_hours}"-->
+<!--                                     style="width: 60px" disabled="#{not newOrderComponent.booking.roundTrip}"/>-->
+<!--                    </td>-->
                 </tr>
             </table>
             <table class="table_booking_info">
@@ -125,6 +125,18 @@
                         <p:message for="departureDate"/>
                     </td>
                 </tr>
+                <ui:fragment rendered="#{newOrderComponent.booking.roundTrip}">
+                    <tr>
+                        <td class="label">
+                            #{msg.khoi_hanh_chieu_ve}
+                        </td>
+                        <td>
+                            <p:calendar id="returnDepartureDate" value="#{newOrderComponent.booking.returnDepartureTime}"
+                                        pattern="MM/dd/yyyy HH:mm" required="true"/>
+                            <p:message for="returnDepartureDate"/>
+                        </td>
+                    </tr>
+                </ui:fragment>
             </table>
             <table class="table_booking_info">
                 <tr>
@@ -195,50 +207,12 @@
                         </p:selectOneMenu>
                     </td>
                 </tr>
-                <!--<tr>
-                    <td class="label">
-                        #{msg.driver_group_option}
-                    </td>
-                    <td>
-                        <p:selectOneRadio value="#{newOrderComponent.sendToGroupOption}">
-                            <f:selectItems value="#{newOrderComponent.sendToDriverGroupsOptions}"/>
-                            <p:ajax update="chooseDriverMenu"/>
-                        </p:selectOneRadio>
-                    </td>
-                </tr>
-                <tr>
-                    <td/>
-                    <td>
-                        &lt;!&ndash;@elvariable id="driverConverter" type="vn.ontaxi.hub.converter.DriverConverter"&ndash;&gt;
-                        <p:selectManyMenu id="chooseDriverMenu" style="width: 500px" disabled="#{!newOrderComponent.sendToIndividual}"
-                                          value="#{newOrderComponent.selectedDrivers}"
-                                          converter="#{driverConverter}" validator="#{newOrderComponent.validateSelectDriver}"
-                                          var="d" filter="true" filterMatchMode="contains" showCheckbox="true">
-                            <f:selectItems value="#{newOrderComponent.drivers}" var="driver" itemValue="#{driver}"
-                                           itemLabel="#{driver.name}"/>
-                            <p:column>
-                                <h:outputText value="#{d.name}"/>
-                            </p:column>
-                            <p:column>
-                                <h:outputText value="#{d.mobile}"/>
-                            </p:column>
-                            <p:column>
-                                <h:outputText value="#{d.carType}"/>
-                            </p:column>
-                            <p:ajax/>
-                        </p:selectManyMenu>
-                        <h:message for="chooseDriverMenu"/>
-                    </td>
-                </tr>-->
             </table>
             <table>
                 <tr>
                     <td>
                         <p:commandButton value="#{msg.schedule}" action="#{newOrderComponent.scheduleBooking}" update="newOrderForm"/>
                     </td>
-                    <!--<td>
-                        <p:commandButton value="#{msg.send_to_driver}" action="#{newOrderComponent.postBooking}" update="newOrderForm"/>
-                    </td>-->
                     <td>
                         <p:commandButton value="#{msg.danh_sach}" action="index.jsf?faces-redirect=true" ajax="false" immediate="true"/>
                     </td>
