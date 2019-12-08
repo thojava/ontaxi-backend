@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -155,6 +156,16 @@ public class RestDriverController {
     public void uploadCurrentLocation(@ApiIgnore @CurrentUser Driver driver, @PathVariable int versionCode, @RequestBody Location currentLocation) {
 //        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
         eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driver.getEmail(), versionCode, new Date())));
+    }
+
+    @RequestMapping(value = "/uploadFCMToken", consumes = MediaType.TEXT_PLAIN_VALUE, method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public RestResult<Boolean> uploadFCMToken(@ApiIgnore @CurrentUser Driver driver,  @RequestBody String fcmToken) {
+        driver.setFcmToken(fcmToken);
+        driverRepository.saveAndFlush(driver);
+        RestResult<Boolean> restResult = new RestResult<>();
+        restResult.setData(true);
+        return restResult;
     }
 
     @ApiOperation("In progress booking")

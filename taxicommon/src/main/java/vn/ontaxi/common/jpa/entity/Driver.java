@@ -50,6 +50,7 @@ public class Driver extends AbstractEntity {
     private double amount;
     @Enumerated(EnumType.STRING)
     private Status status;
+    private String fcmToken;
 
     public Status getStatus() {
         return status;
@@ -247,6 +248,14 @@ public class Driver extends AbstractEntity {
 
     public void setManufactureYear(String manufactureYear) {
         this.manufactureYear = manufactureYear;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     @Override
