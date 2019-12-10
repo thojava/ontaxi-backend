@@ -117,13 +117,13 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     }
 
     public String sendOrderToDriver() {
-        BookingUtils.setupToDriver(booking, selectedDrivers, sendToGroupOption, getDrivers());
+        List<String> fcmTokens = BookingUtils.setupToDriver(booking, selectedDrivers, sendToGroupOption, getDrivers());
 
         booking.setBooking_type(BookingTypes.XE_DI_TINH);
         booking.setStatus(OrderStatus.NEW);
         booking = bookingRepository.saveAndFlush(booking);
 
-        fcmService.postNewTaxiOrder(booking);
+        fcmService.postNewTaxiOrder(booking, fcmTokens);
 
         customerService.updateCustomerInfo(booking);
         return "index.jsf?faces-redirect=true";

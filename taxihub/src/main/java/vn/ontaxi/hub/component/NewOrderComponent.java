@@ -126,28 +126,6 @@ public class NewOrderComponent extends AbstractOrderComponent {
         return "index.jsf?faces-redirect=true";
     }
 
-    public String postBooking() {
-        booking.setBooking_type(BookingTypes.XE_DI_TINH);
-        booking.setStatus(OrderStatus.NEW);
-        booking.setUnit_price(priceCalculator.getPricePerKm(booking.getCar_type()));
-        calculateDistanceAndPriceAndFee(false);
-
-        if(booking.getTotal_distance() == 0) {
-            throw new RuntimeException("Tổng khoảng cách là 0đ. Cần chọn lại điểm đi điểm đến");
-        }
-
-        BookingUtils.setupToDriver(booking, selectedDrivers, sendToGroupOption, getDrivers());
-
-        booking.setCreatedBy(userCredentialComponent.getUserName());
-        booking = bookingRepository.saveAndFlush(booking);
-
-        fcmService.postNewTaxiOrder(booking);
-
-        customerService.updateCustomerInfo(booking);
-
-        return "index.jsf?faces-redirect=true";
-    }
-
     private void calculateDistanceAndPriceAndFee(boolean recalculateFee) {
         booking.setTotal_distance(distanceMatrixService.getDistance(booking.getFrom_location(), booking.getTo_location()) / 1000);
         if(recalculateFee) {

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -19,7 +20,7 @@ public class BookingUtils {
     private final static String DELIMITER = ",";
     private final static String PREFIX_CODE = "DT";
 
-    public static void setupToDriver(Booking booking, List<Driver> selectedDrivers, String sendToGroupOption, Iterable<Driver> allDrivers) {
+    public static List<String> setupToDriver(Booking booking, List<Driver> selectedDrivers, String sendToGroupOption, Iterable<Driver> allDrivers) {
         Stream<Driver> stream;
         if (SendToGroupOptions.ALL.equalsIgnoreCase(sendToGroupOption)) {
             stream = StreamSupport.stream(allDrivers.spliterator(), false);
@@ -42,6 +43,7 @@ public class BookingUtils {
         }
 
         booking.setTo_drivers(stream.map(Driver::getEmail).collect(Collectors.joining(DELIMITER)));
+        return stream.map(Driver::getFcmToken).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
     }
 
     public static double calculatePromotionPercentage(Date departureTime, double distance, boolean isLaterPaid, PromotionPlanRepository promotionPlanRepository) {

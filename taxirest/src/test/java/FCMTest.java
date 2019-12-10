@@ -16,33 +16,41 @@ import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.service.ConfigurationService;
 import vn.ontaxi.common.service.DistanceMatrixService;
 import vn.ontaxi.common.service.FCMClientFactory;
+import vn.ontaxi.common.service.FCMService;
 import vn.ontaxi.rest.app.Application;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Random;
 
-@SpringBootTest(classes = {FCMClientFactory.class})
+@SpringBootTest(classes = {FCMClientFactory.class, FCMService.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FCMTest {
     @Autowired
     private FcmClient fcmClient;
 
+    @Autowired
+    private FCMService fcmService;
+
     @Test
     public void sendNotificationMessage() {
         FcmMessageOptions options = FcmMessageOptions.builder().setTimeToLive(Duration.ofHours(1)).build();
         NotificationPayload payload = NotificationPayload.builder().setTitle("Title").setBody("Body").build();
-        FcmMessageResponse send = fcmClient.send(new NotificationUnicastMessage(options, String.format("/%s/%s", "topics", TopicNames.NEW_ORDER), payload));
-        System.out.println(send);
+        String fcmToken = "c7maUW5qYGM:APA91bEzrM76Xcui0JNzDdetV-0I6G0GdP9VqHSol994jJsGx6fnCkTnhK2TnTiVdYXZ8Wgyohusg9iEE-bC0PoUiL3VtfTeQ7VmmM41G1VOu5x0sURrmZ_5yc5UQ-7ABa9zd-HVVaE2";
+        FcmMessageResponse response = fcmClient.send(new NotificationUnicastMessage(options, fcmToken, payload));
+        System.out.println(response);
     }
 
     @Test
-    public void sendFirebaseMessage() {
+    public void sendBookingFCM() {
         Booking booking = new Booking();
+        booking.setId(new Random().nextLong());
         booking.setFrom_location("Hà Nội");
         booking.setTo_location("Hà Nam");
         booking.setDeparture_time(new Date());
-        FcmMessageOptions options = FcmMessageOptions.builder().setTimeToLive(Duration.ofHours(1)).build();
-        TopicMessageResponse fcmMessageResponse = fcmClient.send(new TopicUnicastMessage(options, new Topic(TopicNames.NEW_ORDER), booking));
-        System.out.println(fcmMessageResponse);
+        String fcmToken = "c7maUW5qYGM:APA91bEzrM76Xcui0JNzDdetV-0I6G0GdP9VqHSol994jJsGx6fnCkTnhK2TnTiVdYXZ8Wgyohusg9iEE-bC0PoUiL3VtfTeQ7VmmM41G1VOu5x0sURrmZ_5yc5UQ-7ABa9zd-HVVaE2";
+        fcmService.postNewTaxiOrder(booking, Collections.singletonList(fcmToken));
     }
 }
