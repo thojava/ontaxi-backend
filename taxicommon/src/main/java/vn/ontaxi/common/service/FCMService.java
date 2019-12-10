@@ -3,16 +3,13 @@ package vn.ontaxi.common.service;
 import de.bytefish.fcmjava.client.FcmClient;
 import de.bytefish.fcmjava.model.options.FcmMessageOptions;
 import de.bytefish.fcmjava.model.topics.Topic;
-import de.bytefish.fcmjava.requests.notification.NotificationMulticastMessage;
 import de.bytefish.fcmjava.requests.notification.NotificationPayload;
 import de.bytefish.fcmjava.requests.notification.NotificationUnicastMessage;
 import de.bytefish.fcmjava.requests.topic.TopicUnicastMessage;
-import de.bytefish.fcmjava.responses.FcmMessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.ontaxi.common.constant.TopicNames;
 import vn.ontaxi.common.jpa.entity.Booking;
-import vn.ontaxi.common.utils.StringUtils;
 
 import java.time.Duration;
 import java.util.List;
@@ -32,7 +29,10 @@ public class FCMService {
         fcmClient.send(new TopicUnicastMessage(options, new Topic(TopicNames.NEW_ORDER), booking));
 
         for (String fcmToken : fcmTokens) {
-            NotificationPayload payload = NotificationPayload.builder().setTitle("Hệ Thống OnTaxi").setBody("OnTaxi gửi bạn 1 đơn hàng mới").build();
+            NotificationPayload payload = NotificationPayload.builder()
+                    .setTitle("Hệ Thống OnTaxi")
+                    .setBody("OnTaxi gửi bạn 1 đơn hàng mới")
+                    .setSound(Boolean.toString(true)).build();
             fcmClient.send(new NotificationUnicastMessage(options, fcmToken, payload));
         }
     }
