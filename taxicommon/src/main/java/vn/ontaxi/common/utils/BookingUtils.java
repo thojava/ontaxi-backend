@@ -42,8 +42,9 @@ public class BookingUtils {
             stream = stream.filter(d -> d.getCarType() == CarTypes.N7);
         }
 
-        booking.setTo_drivers(stream.map(Driver::getEmail).collect(Collectors.joining(DELIMITER)));
-        return stream.map(Driver::getFcmToken).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+        List<Driver> drivers = stream.collect(Collectors.toList());
+        booking.setTo_drivers(drivers.stream().map(Driver::getEmail).collect(Collectors.joining(DELIMITER)));
+        return drivers.stream().map(Driver::getFcmToken).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
     }
 
     public static double calculatePromotionPercentage(Date departureTime, double distance, boolean isLaterPaid, PromotionPlanRepository promotionPlanRepository) {
