@@ -2,8 +2,6 @@ import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.AdditionalMatchers;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +33,8 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {Application.class})
@@ -119,14 +118,14 @@ public class RestBookingControllerTest extends AbstractControllerTest {
 
         when(priceCalculator.getPricePerKm(any())).thenReturn(10.0);
         when(promotionPlanRepository.findAll()).thenReturn(new ArrayList<>());
-        when(distanceMatrixService.getDistance(anyString(), anyString())).thenReturn(80.0);
+        when(distanceMatrixService.getDistance(anyString(), anyString())).thenReturn(80.D * 1000);
         when(priceUtils.calculateDriverFee(anyDouble(), anyDouble(), anyDouble())).thenReturn(0.0);
         when(viewPriceRepository.saveAndFlush(any())).thenReturn(null);
 
 
         mockMvc.perform(post("/booking/calculateDistanceAndPrice").contentType(MediaType.APPLICATION_JSON_VALUE).content(mapToJson(bookingCalculatePriceRequestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total_distance").value(100))
+                .andExpect(jsonPath("$.total_distance").value(80))
                 .andExpect(jsonPath("$.total_price").isNumber());
     }
 
