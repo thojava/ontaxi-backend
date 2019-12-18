@@ -18,6 +18,7 @@ import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
 import vn.ontaxi.common.jpa.repository.ViewPriceRepository;
 import vn.ontaxi.common.service.DistanceMatrixService;
+import vn.ontaxi.common.service.FeeCalculator;
 import vn.ontaxi.common.service.PriceCalculator;
 import vn.ontaxi.common.utils.PriceUtils;
 import vn.ontaxi.rest.app.Application;
@@ -53,6 +54,8 @@ public class RestBookingControllerTest extends AbstractControllerTest {
     @Mock
     private DistanceMatrixService distanceMatrixService;
     @Mock
+    private FeeCalculator feeCalculator;
+    @Mock
     private PriceUtils priceUtils;
     @Autowired
     private RestBookingController restBookingController;
@@ -71,6 +74,7 @@ public class RestBookingControllerTest extends AbstractControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         faker = new Faker();
+        when(feeCalculator.getDefaultFeePercentage()).thenReturn(15D);
     }
 
     @Test
