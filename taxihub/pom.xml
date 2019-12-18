@@ -23,6 +23,7 @@
         <cobertura.branchRate>50</cobertura.branchRate>
         <version.weld-servlet>2.4.3.Final</version.weld-servlet>
         <version.jandex>1.2.2.Final</version.jandex>
+        <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
     </properties>
 
     <dependencies>
@@ -90,7 +91,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <version>1.5.4.RELEASE</version>
+            <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -106,7 +107,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test-autoconfigure</artifactId>
-            <version>2.1.0.RELEASE</version>
+            <version>${spring-boot.version}</version>
         </dependency>
 
 

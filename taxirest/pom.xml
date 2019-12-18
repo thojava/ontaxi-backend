@@ -13,12 +13,16 @@
     <packaging>war</packaging>
     <name>Taxi API</name>
 
+    <properties>
+        <spring.version>5.1.3.RELEASE</spring.version>
+        <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
+    </properties>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>2.1.2.RELEASE</version>
+            <version>${spring-boot.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -29,7 +33,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>2.1.2.RELEASE</version>
+            <version>${spring-boot.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -40,7 +44,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.1.2.RELEASE</version>
+            <version>${spring-boot.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.projectreactor/reactor-bus -->
         <dependency>
@@ -84,13 +88,13 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>5.1.8.RELEASE</version>
+            <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <version>2.1.6.RELEASE</version>
+            <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
