@@ -50,6 +50,7 @@ public class FCMTest {
         booking.setFrom_location("Hà Nội");
         booking.setTo_location("Hà Nam");
         booking.setDeparture_time(new Date());
+        booking.setTo_drivers("demoontaxi@gmail.com");
         String fcmToken = "ftu9h8t2XF0:APA91bFsBvy9A18ymz6LIwx4-6HteY0-FnrT0u-h80Dg0d4RRhFWXhvRP-TgkaWrZo_drEjiePLJ9Q7d2u6HDkgQcrl9SGzsGvTT_gIT2ZSfJtiuw6Jz-YYFVs7a3oBi6rdVRy6C5QkP";
         fcmService.postNewTaxiOrder(booking, Collections.singletonList(fcmToken));
     }
