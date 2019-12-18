@@ -71,10 +71,10 @@ public class RestBookingControllerTest extends AbstractControllerTest {
         ReflectionTestUtils.setField(restBookingController, "priceCalculator", priceCalculator);
         ReflectionTestUtils.setField(restBookingController, "distanceMatrixService", distanceMatrixService);
         ReflectionTestUtils.setField(restBookingController, "priceUtils", priceUtils);
+        ReflectionTestUtils.setField(restBookingController, "feeCalculator", feeCalculator);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
         faker = new Faker();
-        when(feeCalculator.getDefaultFeePercentage()).thenReturn(15D);
     }
 
     @Test
@@ -90,6 +90,7 @@ public class RestBookingControllerTest extends AbstractControllerTest {
         when(promotionPlanRepository.findAll()).thenReturn(new ArrayList<>());
         when(distanceMatrixService.getDistance(anyString(), anyString())).thenReturn(80.0);
         when(priceUtils.calculateDriverFee(anyDouble(), anyDouble(), anyDouble())).thenReturn(0.0);
+        when(feeCalculator.getDefaultFeePercentage()).thenReturn(15D);
         Booking savedBooking = new Booking();
         savedBooking.setId(1);
         when(bookingRepository.saveAndFlush(any(Booking.class))).thenReturn(savedBooking);
