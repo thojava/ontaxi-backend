@@ -69,7 +69,7 @@ public class SMSContentBuilder {
             return String.format(RETURN_ROUTE_TEMPLATE,
                     booking.getMobile(),
                     highFromLocation, highToLocation, NumberUtils.roundDistance(highDistance), pricePerKm, NumberUtils.formatAmountInVND(highPrice),
-                    lowFromLocation, lowToLocation, NumberUtils.roundDistance(lowDistance), pricePerKm, priceUtils.getReturnRoundPercentage() + "%",
+                    lowFromLocation, lowToLocation, NumberUtils.roundDistance(lowDistance), pricePerKm, priceUtils.getReturnRoundPercentage(booking.isDriver_will_wait()) + "%",
                     NumberUtils.formatAmountInVND(lowPrice),
                     NumberUtils.formatAmountInVND(booking.getTransport_fee()),
                     feeHours + "h",

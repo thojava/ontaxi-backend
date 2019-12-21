@@ -18,4 +18,5 @@ public class PriceConfiguration {
     private double normal_7;
     private double normal_16;
     private double return_round_percentage;
+    private double return_round_percentage_without_waiting;
 }

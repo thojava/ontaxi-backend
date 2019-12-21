@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html
-        xmlns="http://www.w3.org/1999/xhtml"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -139,6 +138,14 @@
                             <p:message for="returnDepartureDate"/>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="label">
+                            #{msg.driver_will_wait}
+                        </td>
+                        <td>
+                            <p:selectBooleanCheckbox value="#{newOrderComponent.booking.driver_will_wait}"/>
+                        </td>
+                    </tr>
                 </ui:fragment>
             </table>
             <table class="table_booking_info">
@@ -224,12 +231,6 @@
         </h:form>
         <!-- admin@ontaxi.vn key -->
         <style type="text/css">
-            /* Always set the map height explicitly to define the size of the div
-             * element that contains the map. */
-            #map {
-                height: 100%;
-            }
-
             /* Optional: Makes the sample page fill the window. */
             html, body {
                 height: 100%;

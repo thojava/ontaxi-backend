@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html
-        xmlns="http://www.w3.org/1999/xhtml"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
         xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -24,6 +23,7 @@
         <p:spacer height="10px"/>
 
         <ui:param name="dateTimePattern" value="dd-MM-yyyy HH:mm"/>
+        <!--@elvariable id="dateTimePattern" type="java.lang.String"-->
         <h:form id="contentForm">
             <p:growl id="growl" showDetail="true" sticky="true" severity="error, info"/>
             <table class="table_booking_info">
@@ -141,16 +141,26 @@
                             <p:message for="returnDepartureDate"/>
                         </td>
                     </tr>
-                </ui:fragment>
-                <ui:fragment rendered="#{orderDetailComponent.booking.roundTrip}">
                     <tr>
                         <td class="label">
-                            #{msg.gio_cho}
+                            #{msg.driver_will_wait}
                         </td>
                         <td>
-                            <h:outputText type="text" value="#{orderDetailComponent.booking.wait_hours}  Giờ"/>
+                            <p:selectBooleanCheckbox value="#{orderDetailComponent.booking.driver_will_wait}">
+                                <p:ajax event="change" listener="#{orderDetailComponent.onChangeDriverWillWait}" update="@form"/>
+                            </p:selectBooleanCheckbox>
                         </td>
                     </tr>
+                    <ui:fragment rendered="#{orderDetailComponent.booking.driver_will_wait}">
+                        <tr>
+                            <td class="label">
+                                #{msg.gio_cho}
+                            </td>
+                            <td>
+                                <h:outputText type="text" value="#{orderDetailComponent.booking.wait_hours}  Giờ"/>
+                            </td>
+                        </tr>
+                    </ui:fragment>
                 </ui:fragment>
                 <ui:fragment rendered="#{orderDetailComponent.booking.completed}">
                     <tr>
@@ -159,7 +169,7 @@
                         </td>
                         <td>
                             <h:outputText value="#{orderDetailComponent.booking.actual_departure_time}">
-                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                <f:convertDateTime pattern="#{dateTimePattern}"/>
                             </h:outputText>
                         </td>
                     </tr>
@@ -170,7 +180,7 @@
                             </td>
                             <td>
                                 <h:outputText value="#{orderDetailComponent.booking.outwardArrivalTime}">
-                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    <f:convertDateTime pattern="#{dateTimePattern}"/>
                                 </h:outputText>
                             </td>
                         </tr>
@@ -180,7 +190,8 @@
                             </td>
                             <td>
                                 <h:outputText value="#{orderDetailComponent.booking.returnDepartureTime}">
-                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    <f:convertDateTime pattern="#{dateTimePattern}"/>
+
                                 </h:outputText>
                             </td>
                         </tr>
@@ -191,7 +202,7 @@
                         </td>
                         <td>
                             <h:outputText value="#{orderDetailComponent.booking.arrival_time}">
-                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                <f:convertDateTime pattern="#{dateTimePattern}"/>
                             </h:outputText>
                         </td>
                     </tr>
@@ -207,8 +218,7 @@
                         <h:outputText value="#{orderDetailComponent.booking.laterPaid ? msg.yes : msg.no}"/>
                     </td>
                 </tr>
-                <ui:fragment
-                        rendered="#{!(!orderDetailComponent.booking.laterPaid and orderDetailComponent.booking.completed)}">
+                <ui:fragment rendered="#{orderDetailComponent.booking.laterPaid}">
                     <tr>
                         <td class="label">
                         </td>
@@ -423,7 +433,7 @@
                     </td>
                     <td>
                         <h:outputText id="totalAmount"
-                                      value="#{orderDetailComponent.booking.completed ? orderDetailComponent.totalPriceInDetail(orderDetailComponent.booking) : numberFormatterComponent.formatPrice(orderDetailComponent.booking.total_price)}"/>
+                                      value="#{orderDetailComponent.booking.completed ? orderDetailComponent.totalPriceInDetail(orderDetailComponent.booking) : orderDetailComponent.totalEstimationPriceInDetail(orderDetailComponent.booking)}"/>
                     </td>
                 </tr>
             </table>
@@ -464,9 +474,9 @@
                 </ui:fragment>
             </h:form>
             <h:outputText value="#{orderDetailComponent.locationJson}" id="locationJson" style="display: none"/>
-            <div id="map"/>
-            <script type="text/javascript"
-                    src="https://maps.googleapis.com/maps/api/js?key=#{systemConfiguration.googleMapJSApiKey}&amp;callback=initMap"/>
+            <div id="map"></div>
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=#{systemConfiguration.googleMapJSApiKey}&amp;callback=initMap">
+            </script>
         </ui:fragment>
 
         <style type="text/css">

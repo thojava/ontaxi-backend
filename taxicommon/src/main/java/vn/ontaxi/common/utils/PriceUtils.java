@@ -3,6 +3,7 @@ package vn.ontaxi.common.utils;
 import org.springframework.stereotype.Service;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.jpa.entity.Booking;
+import vn.ontaxi.common.jpa.entity.PriceConfiguration;
 import vn.ontaxi.common.jpa.repository.PriceConfigurationRepository;
 import vn.ontaxi.common.model.PriceInfo;
 import vn.ontaxi.common.service.DistanceMatrixService;
@@ -19,8 +20,8 @@ public class PriceUtils {
         this.priceConfigurationRepository = priceConfigurationRepository;
     }
 
-    public PriceInfo calculatePrice(String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes car_type, boolean isRoundTrip,
-                                           double wait_hours, double transportFee, double promotionPercentage) {
+    public PriceInfo calculatePrice(String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes carType, boolean isRoundTrip,
+                                           double wait_hours, boolean driverWillWait, double transportFee, double promotionPercentage) {
         double terrain_price = 0.D;
         if(distanceMatrixService.getDistance(toLocation, TAM_DAO_LOCATION) < 4000) {
             terrain_price = 50000;
@@ -32,9 +33,9 @@ public class PriceUtils {
 
             double outwardPrice = highDistance * pricePerKm;
 
-            double returnPrice = lowDistance * pricePerKm * getReturnRoundPercentage() / 100;
+            double returnPrice = lowDistance * pricePerKm * getReturnRoundPercentage(driverWillWait) / 100;
 
-            double waitPrice = wait_hours * getPricePerWaitHour(car_type);
+            double waitPrice = driverWillWait ? wait_hours * getPricePerWaitHour(carType) : 0;
 
             return new PriceInfo(outwardPrice, returnPrice, waitPrice, terrain_price * 2, transportFee, promotionPercentage);
         } else {
@@ -47,8 +48,9 @@ public class PriceUtils {
         return distance * 1.5 / 60;
     }
 
-    public double getReturnRoundPercentage() {
-        return priceConfigurationRepository.findAll().get(0).getReturn_round_percentage();
+    public double getReturnRoundPercentage(boolean driverWillWait) {
+        PriceConfiguration priceConfiguration = priceConfigurationRepository.findAll().get(0);
+        return driverWillWait ? priceConfiguration.getReturn_round_percentage() : priceConfiguration.getReturn_round_percentage_without_waiting();
     }
 
     public static int getPricePerWaitHour(CarTypes car_type) {
@@ -57,7 +59,7 @@ public class PriceUtils {
 
     public void calculateActualPrice(Booking booking) {
         PriceInfo priceInfo = calculatePrice(booking.getTo_location(), booking.getUnit_price(), booking.isRoundTrip() ? booking.getOutward_distance() : booking.getActual_total_distance(), booking.getReturn_distance(),
-                booking.getCar_type(), booking.isRoundTrip(), booking.getWait_hours(), booking.getTransport_fee(), booking.getPromotionPercentage());
+                booking.getCar_type(), booking.isRoundTrip(), booking.getWait_hours(), booking.isDriver_will_wait(), booking.getTransport_fee(), booking.getPromotionPercentage());
         booking.setActual_total_price(priceInfo.getTotal_price());
         booking.setActualTotalPriceBeforePromotion(priceInfo.getTotal_price_before_promotion());
         booking.setActual_outward_price(priceInfo.outwardPrice);

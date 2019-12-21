@@ -7,9 +7,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import vn.ontaxi.common.jpa.entity.PriceConfiguration;
-import vn.ontaxi.common.utils.NumberUtils;
-import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
 import vn.ontaxi.common.constant.BookingTypes;
 import vn.ontaxi.common.constant.BooleanConstants;
 import vn.ontaxi.common.constant.OrderStatus;
@@ -23,16 +20,15 @@ import vn.ontaxi.common.model.Location;
 import vn.ontaxi.common.model.direction.GoogleDirections;
 import vn.ontaxi.common.service.*;
 import vn.ontaxi.common.utils.BookingUtils;
+import vn.ontaxi.common.utils.NumberUtils;
+import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
 import vn.ontaxi.hub.service.CustomerService;
 import vn.ontaxi.hub.utils.PolyUtil;
-import vn.ontaxi.common.utils.PriceUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Scope("view")
@@ -79,7 +75,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     }
 
     public void onChangeCarType() {
-        if(!booking.isFixedPrice()) {
+        if (!booking.isFixedPrice()) {
             booking.setUnit_price(priceCalculator.getPricePerKm(booking.getCar_type()));
             priceCalculator.calculateEstimatedPrice(booking);
         }
@@ -87,6 +83,11 @@ public class OrderDetailComponent extends AbstractOrderComponent {
         double fee = priceUtils.calculateDriverFee(booking.getTotalPriceBeforePromotion(), booking.getFee_percentage(), booking.getPromotionPercentage());
         booking.setTotal_fee(fee);
 
+        saveBooking();
+    }
+
+    public void onChangeDriverWillWait() {
+        priceCalculator.calculateEstimatedPrice(booking);
         saveBooking();
     }
 
@@ -204,7 +205,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
             Map<String, String> params = FacesContext.getCurrentInstance().
                     getExternalContext().getRequestParameterMap();
             String parameterOne = params.get("id");
-            booking = bookingRepository.findById(Long.parseLong(parameterOne)).get();
+            this.booking = bookingRepository.findById(Long.parseLong(parameterOne)).orElse(null);
         }
 
         return booking;
@@ -221,7 +222,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
 
             sb.append(NumberUtils.distanceWithKM(highDistance)).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
                     .append(" + ").append(NumberUtils.distanceWithKM(lowDistance)).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
-                    .append(" * ").append(priceUtils.getReturnRoundPercentage()).append("%")
+                    .append(" * ").append(priceUtils.getReturnRoundPercentage(booking.isDriver_will_wait())).append("%")
                     .append(" + (").append(Math.max(booking.getWait_hours(), freeWaitTime)).append(" giờ ").append(" - ").append(freeWaitTime).append(" giờ ").append(")")
                     .append(" = ").append(Math.max(booking.getWait_hours(), freeWaitTime) - freeWaitTime).append(" giờ ")
                     .append(" * ").append(NumberUtils.formatAmountInVND(PriceUtils.getPricePerWaitHour(booking.getCar_type())))
@@ -232,6 +233,35 @@ public class OrderDetailComponent extends AbstractOrderComponent {
         } else {
             sb.append(NumberUtils.distanceWithKM(booking.getActual_total_distance())).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
                     .append(" = ").append(NumberUtils.formatAmountInVND(booking.getActual_total_price()));
+        }
+
+        return sb.toString();
+    }
+
+    public String totalEstimationPriceInDetail(Booking booking) {
+        StringBuilder sb = new StringBuilder();
+        if (booking.isRoundTrip()) {
+            double lowDistance = booking.getTotal_distance();
+            double highDistance = booking.getTotal_distance();
+
+            double freeWaitTime = PriceUtils.getFreeWaitTime(highDistance);
+
+
+            sb.append(NumberUtils.distanceWithKM(highDistance)).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
+                    .append(" + ").append(NumberUtils.distanceWithKM(lowDistance)).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
+                    .append(" * ").append(priceUtils.getReturnRoundPercentage(booking.isDriver_will_wait())).append("%");
+            if (booking.isDriver_will_wait()) {
+                sb.append(String.format(" + (%.2f giờ - %.2f giờ) * %s",
+                        Math.max(booking.getWait_hours(), freeWaitTime),
+                        freeWaitTime,
+                        NumberUtils.formatAmountInVND(PriceUtils.getPricePerWaitHour(booking.getCar_type()))));
+            }
+            sb.append(" = ").append(NumberUtils.formatAmountInVND(booking.getTotal_price()));
+
+
+        } else {
+            sb.append(NumberUtils.distanceWithKM(booking.getTotal_distance())).append(" * ").append(NumberUtils.formatAmountInVND(booking.getUnit_price()))
+                    .append(" = ").append(NumberUtils.formatAmountInVND(booking.getTotal_price()));
         }
 
         return sb.toString();

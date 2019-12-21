@@ -2,10 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:p="http://primefaces.org/ui"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
-        xmlns:h="http://xmlns.jcp.org/jsf/html">
+        xmlns:p="http://primefaces.org/ui">
 
 <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
 <!--@elvariable id="configurationComponent" type="vn.ontaxi.hub.component.ConfigurationComponent"-->
@@ -103,8 +104,22 @@
                                 <p:inputText value="#{configurationComponent.priceConfiguration.return_round_percentage}"/>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                Phần % Chiều Về Không Chờ
+                            </td>
+                            <td>
+                                <p:inputText value="#{configurationComponent.priceConfiguration.return_round_percentage_without_waiting}"/>
+                            </td>
+                        </tr>
                     </table>
-                    <p:commandButton action="#{configurationComponent.savePriceConfiguration()}" update="@form" title="#{msg.update_unit_price}"/>
+                    <table>
+                        <tr>
+                            <td>
+                                <p:commandButton action="#{configurationComponent.savePriceConfiguration()}" update="@form" value="#{msg.update_unit_price}"/>
+                            </td>
+                        </tr>
+                    </table>
                 </h:form>
             </p:tab>
             <p:tab title="#{msg.setup_fee_percentage}">
@@ -136,7 +151,7 @@
                             </td>
                         </tr>
                     </table>
-                    <p:commandButton action="#{configurationComponent.saveNotificationConfiguration()}" update="@form" title="#{msg.update}"/>
+                    <p:commandButton action="#{configurationComponent.saveNotificationConfiguration()}" update="@form" value="#{msg.update}"/>
                 </h:form>
             </p:tab>
         </p:tabView>

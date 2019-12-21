@@ -3,6 +3,7 @@ package vn.ontaxi.common.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 import vn.ontaxi.common.constant.BooleanConstants;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.constant.OrderStatus;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 @Entity
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Booking extends AbstractEntity {
     @Id
@@ -60,6 +62,7 @@ public class Booking extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private CarTypes car_type;
     private String is_round_trip;
+    private boolean driver_will_wait;
     private double wait_hours;
     private String mobile;
     private String name;

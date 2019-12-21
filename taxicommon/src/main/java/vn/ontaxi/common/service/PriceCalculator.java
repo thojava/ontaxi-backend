@@ -31,7 +31,7 @@ public class PriceCalculator {
         }
 
         PriceInfo priceInfo = priceUtils.calculatePrice(booking.getTo_location(), booking.getUnit_price(), booking.getTotal_distance(), booking.getTotal_distance(), booking.getCar_type(),
-                booking.isRoundTrip(), estimatedWaitHours, 0, booking.getPromotionPercentage());
+                booking.isRoundTrip(), estimatedWaitHours, booking.isDriver_will_wait(), 0, booking.getPromotionPercentage());
         booking.setTotal_price(priceInfo.getTotal_price());
         booking.setTotalPriceBeforePromotion(priceInfo.getTotal_price_before_promotion());
         booking.setOutward_price(priceInfo.outwardPrice);
