@@ -226,5 +226,31 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <defaultGoal>package</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.5.2</version>
+                    <executions>
+                        <execution>
+                            <id>1</id>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>install-file</goal>
+                            </goals>
+                            <configuration>
+                                <groupId>org.primefaces</groupId>
+                                <artifactId>poseidon-theme</artifactId>
+                                <version>2.0.0</version>
+                                <packaging>jar</packaging>
+                                <file>${project.basedir}/lib/poseidon-theme-2.0.0.jar</file>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>
