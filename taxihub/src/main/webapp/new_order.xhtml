@@ -68,6 +68,16 @@
                 </tr>
                 <tr>
                     <td class="label">
+                        #{msg.no_of_guests}
+                    </td>
+                    <td>
+                        <p:selectOneMenu value="#{newOrderComponent.booking.noOfGuests}">
+                            <f:selectItems value="#{selectItemGenerator.getNoOfGuestSelectItems(newOrderComponent.booking.car_type.noOfSeats)}"/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
                         #{msg.diem_di}
                     </td>
                     <td colspan="3">
@@ -105,13 +115,6 @@
                             <p:ajax update="@form"/>
                         </p:selectBooleanCheckbox>
                     </td>
-<!--                    <td class="label">-->
-<!--                        #{msg.gio_cho}-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                        <p:inputText id="waitingHourText" type="text" value="#{newOrderComponent.booking.wait_hours}"-->
-<!--                                     style="width: 60px" disabled="#{not newOrderComponent.booking.roundTrip}"/>-->
-<!--                    </td>-->
                 </tr>
             </table>
             <table class="table_booking_info">

@@ -50,18 +50,10 @@
                 </tr>
                 <tr>
                     <td class="label">
-                        #{msg.no_of_guests}
-                    </td>
-                    <td>
-                        <h:outputText type="text" value="#{orderDetailComponent.booking.noOfGuests} người"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">
                         #{msg.loai_xe}
                     </td>
                     <td>
-                        <p:selectOneMenu value="#{orderDetailComponent.booking.car_type}" disabled="#{not (orderDetailComponent.booking.ordered)}">
+                        <p:selectOneMenu value="#{orderDetailComponent.booking.car_type}" disabled="#{not (orderDetailComponent.booking.ordered or orderDetailComponent.booking.confirmed)}">
                             <f:selectItems value="#{selectItemGenerator.carTypeSelectItems}"/>
                             <p:ajax event="change" listener="#{orderDetailComponent.onChangeCarType}" update="@form"/>
                         </p:selectOneMenu>
@@ -69,7 +61,18 @@
                 </tr>
                 <tr>
                     <td class="label">
-                        Lái Xe
+                        #{msg.no_of_guests}
+                    </td>
+                    <td>
+                        <p:selectOneMenu value="#{orderDetailComponent.booking.noOfGuests}">
+                            <f:selectItems value="#{selectItemGenerator.getNoOfGuestSelectItems(orderDetailComponent.booking.car_type.noOfSeats)}"/>
+                            <p:ajax event="change" listener="#{orderDetailComponent.saveBooking}" update="@form"/>
+                        </p:selectOneMenu>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">
+                        #{msg.driver}
                     </td>
                     <td>
                         <h:outputText

@@ -8,6 +8,7 @@ import vn.ontaxi.common.jpa.entity.PersistentCustomer;
 import vn.ontaxi.common.jpa.repository.PersistentCustomerRepository;
 
 import javax.faces.model.SelectItem;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,5 +38,14 @@ public class SelectItemGenerator {
 
     public List<SelectItem> getFeePercentageSelectItems() {
         return Stream.of(15, 12, 10, 6, 0).map(i -> new SelectItem(i, i + "%")).collect(Collectors.toList());
+    }
+
+    public List<SelectItem> getNoOfGuestSelectItems(int maxAvailableSets) {
+        List<SelectItem> items = new ArrayList<>();
+        for (int i = 1; i <= maxAvailableSets; i++) {
+            items.add(new SelectItem(i, i + " người"));
+        }
+
+        return items;
     }
 }

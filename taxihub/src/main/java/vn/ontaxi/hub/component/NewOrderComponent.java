@@ -7,15 +7,12 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.AutocompletePrediction;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.env.Environment;
+import vn.ontaxi.common.constant.*;
 import vn.ontaxi.common.jpa.entity.Customer;
 import vn.ontaxi.common.jpa.repository.*;
 import vn.ontaxi.common.service.FeeCalculator;
 import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
-import vn.ontaxi.common.constant.BookingTypes;
-import vn.ontaxi.common.constant.BooleanConstants;
-import vn.ontaxi.common.constant.OrderStatus;
-import vn.ontaxi.common.constant.SendToGroupOptions;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.service.DistanceMatrixService;
@@ -84,6 +81,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         booking = new Booking();
         booking.setPromotionPercentage(BookingUtils.calculatePromotionPercentage(DateUtils.today(), 0, false, promotionPlanRepository));
         booking.setFee_percentage(feeCalculator.getDefaultFeePercentage());
+        booking.setCar_type(CarTypes.N4);
         booking.setStatus(OrderStatus.NEW);
 
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
