@@ -35,7 +35,7 @@ public class PriceUtils {
 
             double returnPrice = lowDistance * pricePerKm * getReturnRoundPercentage(driverWillWait) / 100;
 
-            double waitPrice = driverWillWait ? wait_hours * getPricePerWaitHour(carType) : 0;
+            double waitPrice = driverWillWait ? Math.max(wait_hours - PriceUtils.getFreeWaitTime(highDistance), 0) * getPricePerWaitHour(carType) : 0;
 
             return new PriceInfo(outwardPrice, returnPrice, waitPrice, terrain_price * 2, transportFee, promotionPercentage);
         } else {
