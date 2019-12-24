@@ -19,7 +19,7 @@ public class BookingUtils {
     public final static String DELIMITER = ",";
     private final static String PREFIX_CODE = "DT";
 
-    public static List<String> setupToDriver(Booking booking, List<Driver> selectedDrivers, String sendToGroupOption, Iterable<Driver> allDrivers) {
+    public static List<Driver> getDriversToBeSent(Booking booking, List<Driver> selectedDrivers, String sendToGroupOption, Iterable<Driver> allDrivers) {
         Stream<Driver> stream;
         if (SendToGroupOptions.ALL.equalsIgnoreCase(sendToGroupOption)) {
             stream = StreamSupport.stream(allDrivers.spliterator(), false);
@@ -41,9 +41,7 @@ public class BookingUtils {
             stream = stream.filter(d -> d.getCarType() == CarTypes.N7);
         }
 
-        List<Driver> drivers = stream.collect(Collectors.toList());
-        booking.setTo_drivers(drivers.stream().map(Driver::getEmail).collect(Collectors.joining(DELIMITER)));
-        return drivers.stream().map(Driver::getFcmToken).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+        return stream.collect(Collectors.toList());
     }
 
     public static double calculatePromotionPercentage(Date departureTime, double distance, boolean isLaterPaid, PromotionPlanRepository promotionPlanRepository) {

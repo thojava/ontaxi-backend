@@ -22,14 +22,18 @@ import vn.ontaxi.common.service.*;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.NumberUtils;
 import vn.ontaxi.common.utils.PriceUtils;
+import vn.ontaxi.common.utils.StringUtils;
 import vn.ontaxi.hub.component.abstracts.AbstractOrderComponent;
 import vn.ontaxi.hub.service.CustomerService;
 import vn.ontaxi.hub.utils.PolyUtil;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static vn.ontaxi.common.utils.BookingUtils.DELIMITER;
 
 @Component
 @Scope("view")
@@ -119,12 +123,18 @@ public class OrderDetailComponent extends AbstractOrderComponent {
     }
 
     public String sendOrderToDriver() {
-        List<String> fcmTokens = BookingUtils.setupToDriver(booking, selectedDrivers, sendToGroupOption, getDrivers());
+        List<Driver> driversToBeSent = BookingUtils.getDriversToBeSent(booking, selectedDrivers, sendToGroupOption, getDrivers());
+        if (driversToBeSent.isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Hệ thống không tìm được tài xế phù hợp để gửi order"));
+            return null;
+        }
 
+        booking.setTo_drivers(driversToBeSent.stream().map(Driver::getEmail).collect(Collectors.joining(DELIMITER)));
         booking.setBooking_type(BookingTypes.XE_DI_TINH);
         booking.setStatus(OrderStatus.NEW);
         booking = bookingRepository.saveAndFlush(booking);
 
+        List<String> fcmTokens = driversToBeSent.stream().map(Driver::getFcmToken).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
         fcmService.postNewTaxiOrder(booking, fcmTokens);
 
         customerService.updateCustomerInfo(booking);
@@ -208,7 +218,7 @@ public class OrderDetailComponent extends AbstractOrderComponent {
             String parameterOne = params.get("id");
             this.booking = bookingRepository.findById(Long.parseLong(parameterOne)).orElse(null);
             if(this.booking != null && this.booking.isNew()) {
-                selectedDrivers = Arrays.stream(this.booking.getTo_drivers().split(BookingUtils.DELIMITER)).map(email -> driverRepository.findByEmail(email)).collect(Collectors.toList());
+                selectedDrivers = Arrays.stream(this.booking.getTo_drivers().split(DELIMITER)).map(driverRepository::findByEmail).collect(Collectors.toList());
             }
         }
 
