@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class BookingUtils {
-    private final static String DELIMITER = ",";
+    public final static String DELIMITER = ",";
     private final static String PREFIX_CODE = "DT";
 
     public static List<String> setupToDriver(Booking booking, List<Driver> selectedDrivers, String sendToGroupOption, Iterable<Driver> allDrivers) {

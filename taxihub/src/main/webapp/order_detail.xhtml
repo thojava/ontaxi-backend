@@ -295,7 +295,7 @@
                             #{msg.driver_group_option}
                         </td>
                         <td>
-                            <p:selectOneRadio value="#{orderDetailComponent.sendToGroupOption}">
+                            <p:selectOneRadio value="#{orderDetailComponent.sendToGroupOption}" disabled="#{orderDetailComponent.booking.isNew()}">
                                 <f:selectItems value="#{orderDetailComponent.sendToDriverGroupsOptions}"/>
                                 <p:ajax update="chooseDriverMenu"/>
                             </p:selectOneRadio>
@@ -308,7 +308,7 @@
                             <ui:fragment rendered="#{orderDetailComponent.booking.confirmed}">
                                 <p:selectManyMenu id="chooseDriverMenu" style="width: 500px"
                                                   converter="#{driverConverter}" validator="#{orderDetailComponent.validateSelectDriver}"
-                                                  disabled="#{!orderDetailComponent.sendToIndividual}"
+                                                  disabled="#{!orderDetailComponent.sendToIndividual || orderDetailComponent.booking.isNew()}"
                                                   value="#{orderDetailComponent.selectedDrivers}"
                                                   var="d" filter="true" filterMatchMode="contains" showCheckbox="true">
                                     <f:selectItems value="#{orderDetailComponent.drivers}" var="driver"

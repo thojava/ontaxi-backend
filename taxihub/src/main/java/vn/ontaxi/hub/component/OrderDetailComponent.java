@@ -29,6 +29,7 @@ import vn.ontaxi.hub.utils.PolyUtil;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Scope("view")
@@ -206,6 +207,9 @@ public class OrderDetailComponent extends AbstractOrderComponent {
                     getExternalContext().getRequestParameterMap();
             String parameterOne = params.get("id");
             this.booking = bookingRepository.findById(Long.parseLong(parameterOne)).orElse(null);
+            if(this.booking != null && this.booking.isNew()) {
+                selectedDrivers = Arrays.stream(this.booking.getTo_drivers().split(BookingUtils.DELIMITER)).map(email -> driverRepository.findByEmail(email)).collect(Collectors.toList());
+            }
         }
 
         return booking;
