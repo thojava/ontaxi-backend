@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html
-        xmlns="http://www.w3.org/1999/xhtml"
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -34,7 +33,7 @@
                                 #{msg.birthday}
                             </td>
                             <td>
-                                <p:calendar id="birthday" required="true" pattern="dd-MM-yyyy" mask="true" requiredMessage="${msg.require_field}" value="#{driverDetailComponent.newDriver.birthDay}" />
+                                <p:calendar id="birthday" required="true" pattern="dd-MM-yyyy" mask="true" requiredMessage="${msg.require_field}" value="#{driverDetailComponent.newDriver.birthDay}"/>
                                 <p:message for="birthday"/>
                             </td>
                         </tr>
@@ -61,8 +60,8 @@
                                 #{msg.identity}
                             </td>
                             <td>
-                                <p:inputText id="identity" value="#{driverDetailComponent.newDriver.identity}" required="true" requiredMessage="${msg.require_field}" />
-                                <p:message for="identity" />
+                                <p:inputText id="identity" value="#{driverDetailComponent.newDriver.identity}" required="true" requiredMessage="${msg.require_field}"/>
+                                <p:message for="identity"/>
                             </td>
                         </tr>
                         <tr>
@@ -71,7 +70,7 @@
                             </td>
                             <td>
                                 <p:inputText id="bank_account" value="#{driverDetailComponent.newDriver.bankId}" required="true" requiredMessage="${msg.require_field}"/>
-                                <p:message for="bank_account" />
+                                <p:message for="bank_account"/>
                             </td>
                         </tr>
                         <tr>
@@ -80,7 +79,7 @@
                             </td>
                             <td>
                                 <p:inputText required="true" id="address" value="#{driverDetailComponent.newDriver.address}" requiredMessage="${msg.require_field}"/>
-                                <p:message for="address" />
+                                <p:message for="address"/>
                             </td>
                         </tr>
                         <tr>
@@ -89,7 +88,7 @@
                             </td>
                             <td>
                                 <p:inputText required="true" id="dia_chi_thuong_tru" value="#{driverDetailComponent.newDriver.currentAddress}" requiredMessage="${msg.require_field}"/>
-                                <p:message for="dia_chi_thuong_tru" />
+                                <p:message for="dia_chi_thuong_tru"/>
                             </td>
                         </tr>
                         <tr>
@@ -98,7 +97,7 @@
                             </td>
                             <td>
                                 <p:inputText required="true" id="bang_lai" placeholder="Số bằng lái" value="#{driverDetailComponent.newDriver.licenseNumber}" requiredMessage="${msg.require_field}"/>
-                                <p:message for="bang_lai" />
+                                <p:message for="bang_lai"/>
                             </td>
                             <td>
                                 <p:selectOneMenu value="#{driverDetailComponent.newDriver.licenseType}">
@@ -119,11 +118,11 @@
                             </td>
                             <td>
                                 <p:inputText id="car_brand" placeholder="Hãng xe" required="true" value="#{driverDetailComponent.newDriver.carBrand}" requiredMessage="${msg.require_field}"/>
-                                <p:message for="car_brand" />
+                                <p:message for="car_brand"/>
                             </td>
                             <td>
                                 <p:inputText id="doi_xe" placeholder="Đời xe" required="true" value="#{driverDetailComponent.newDriver.manufactureYear}" requiredMessage="${msg.require_field}"/>
-                                <p:message for="doi_xe" />
+                                <p:message for="doi_xe"/>
                             </td>
                         </tr>
                         <tr>
@@ -131,7 +130,8 @@
                                 #{msg.license_plates}
                             </td>
                             <td>
-                                <p:inputText id="license_plates" label="#{msg.license_plates}" type="text" value="#{driverDetailComponent.newDriver.license_plates}" required="true" requiredMessage="${msg.require_field}"/>
+                                <p:inputText id="license_plates" label="#{msg.license_plates}" type="text" value="#{driverDetailComponent.newDriver.license_plates}" required="true"
+                                             requiredMessage="${msg.require_field}"/>
                                 <p:message for="license_plates"/>
                             </td>
                         </tr>
@@ -164,8 +164,10 @@
                                     <f:selectItem itemLabel="Đã kích hoạt" itemValue="ACTIVATED"/>
                                     <f:selectItem itemLabel="Đã khóa" itemValue="BLOCKED"/>
                                 </p:selectOneMenu>
-                                <p:commandButton style="margin-right: 10px" process="@this" update="status" styleClass="btn btn-line" actionListener="#{driverDetailComponent.newDriver.setStatus('ACTIVATED')}" value="Kích Hoạt"/>
-                                <p:commandButton process="@this" update="status" styleClass="btn btn-primary" actionListener="#{driverDetailComponent.newDriver.setStatus('BLOCKED')}" value="Khóa Tài Khoản" />
+                                <p:commandButton style="margin-right: 10px" process="@this" update="status" styleClass="btn btn-line"
+                                                 actionListener="#{driverDetailComponent.newDriver.setStatus('ACTIVATED')}" value="Kích Hoạt"/>
+                                <p:commandButton process="@this" update="status" styleClass="btn btn-primary" actionListener="#{driverDetailComponent.newDriver.setStatus('BLOCKED')}"
+                                                 value="Khóa Tài Khoản"/>
                             </td>
                         </tr>
                     </table>
@@ -181,6 +183,17 @@
                         <h:commandButton value="#{msg.export_financial_report}" action="#{driverDetailComponent.exportFinancialReport}" update="@form"/>
                     </h:form>
                 </div>
+                <p:spacer height="10px"/>
+                <table>
+                    <tr>
+                        <td class="label">
+                            <h:outputLabel value="#{msg.amount}"/>
+                        </td>
+                        <td>
+                            <h:outputText value="#{numberFormatterComponent.formatPrice(driverDetailComponent.newDriver.amount)}"/>
+                        </td>
+                    </tr>
+                </table>
                 <p:spacer height="10px"/>
                 <p:dataTable value="#{driverDetailComponent.driverTransactions}" var="driverTransaction">
                     <p:column headerText="#{msg.payment_type}">
