@@ -6,5 +6,5 @@ import vn.ontaxi.common.jpa.entity.DriverTransaction;
 import java.util.List;
 
 public interface DriverTransactionRepository extends JpaRepository<DriverTransaction, String> {
-    List<DriverTransaction> findByDriverOrderByLastUpdatedDatetimeDesc(String driver);
+    List<DriverTransaction> findByDriverOrderByLastUpdatedDatetimeDesc(long id);
 }

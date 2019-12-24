@@ -76,6 +76,6 @@ public class DriverDetailComponent {
     }
 
     public List<DriverTransaction> getDriverTransactions() {
-        return driverTransactionRepository.findByDriverOrderByLastUpdatedDatetimeDesc(newDriver.getEmail());
+        return driverTransactionRepository.findByDriverOrderByLastUpdatedDatetimeDesc(newDriver.getId());
     }
 }
