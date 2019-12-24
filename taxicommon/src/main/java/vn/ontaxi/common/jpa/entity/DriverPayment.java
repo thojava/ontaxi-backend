@@ -11,7 +11,7 @@ public class DriverPayment extends AbstractEntity {
     @JsonIgnore
     private long id;
     @ManyToOne
-    @JoinColumn(name = "driver", referencedColumnName = "email", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "driver", referencedColumnName = "id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Driver driver;
     private double amount;
     private String paymentType;
