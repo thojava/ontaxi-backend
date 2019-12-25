@@ -26,7 +26,7 @@ public class FCMService {
     public void postNewTaxiOrder(Booking booking, List<String> fcmTokens) {
         FcmMessageOptions options = FcmMessageOptions.builder().setTimeToLive(Duration.ofHours(1)).build();
 
-        fcmClient.send(new TopicUnicastMessage(options, new Topic(TopicNames.NEW_ORDER), booking));
+//        fcmClient.send(new TopicUnicastMessage(options, new Topic(TopicNames.NEW_ORDER), booking));
 
         for (String fcmToken : fcmTokens) {
             NotificationPayload payload = NotificationPayload.builder()
