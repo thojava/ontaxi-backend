@@ -60,7 +60,7 @@ public class Driver extends AbstractEntity {
         this.status = status;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -144,7 +144,7 @@ public class Driver extends AbstractEntity {
     }
 
     public boolean equals(Object obj) {
-        return obj instanceof Driver && this.getId() == ((Driver) obj).getId();
+        return obj instanceof Driver && this.getId().equals(((Driver) obj).getId());
     }
 
     @JsonIgnore

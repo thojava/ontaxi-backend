@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,8 @@ public class DriverDetailComponent {
     }
 
     public List<DriverTransaction> getDriverTransactions() {
-        return driverTransactionRepository.findByDriverOrderByLastUpdatedDatetimeDesc(newDriver.getId());
+        if(newDriver.getId() != null)
+            return driverTransactionRepository.findByDriverOrderByLastUpdatedDatetimeDesc(newDriver.getId());
+        return new ArrayList<>();
     }
 }
