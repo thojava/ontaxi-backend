@@ -1,24 +1,30 @@
 package vn.ontaxi.common.constant;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum CarTypes {
-    N4("4 Chỗ", 4), G4("4 Chỗ Vios", 5), N7("7 Chỗ", 7), N16("16 Chỗ", 16);
+    N4("4 Chỗ"), G4("4 Chỗ Vios"), N7("7 Chỗ"), N16("16 Chỗ");
 
     private String description;
-    private int noOfSeats;
 
-    CarTypes(String description, int noOfSeats) {
+    CarTypes(String description) {
         this.description = description;
-        this.noOfSeats = noOfSeats;
     }
 
-    @JsonValue
     public String getDescription() {
         return description;
     }
 
     public int getNoOfSeats() {
-        return noOfSeats;
+        switch (this) {
+            case N4:
+                return 4;
+            case G4:
+                return 5;
+            case N7:
+                return 7;
+            case N16:
+                return 16;
+        }
+
+        return -1;
     }
 }
