@@ -11,6 +11,11 @@ public enum CarTypes {
         this.noOfSeats = noOfSeats;
     }
 
+    @Override
+    public String toString() {
+        return getDescription();
+    }
+
     public String getDescription() {
         return description;
     }
