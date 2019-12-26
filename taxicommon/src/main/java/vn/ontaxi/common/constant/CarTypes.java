@@ -1,5 +1,7 @@
 package vn.ontaxi.common.constant;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CarTypes {
     N4("4 Chỗ", 4), G4("4 Chỗ Vios", 5), N7("7 Chỗ", 7), N16("16 Chỗ", 16);
 
@@ -11,11 +13,7 @@ public enum CarTypes {
         this.noOfSeats = noOfSeats;
     }
 
-    @Override
-    public String toString() {
-        return getDescription();
-    }
-
+    @JsonValue
     public String getDescription() {
         return description;
     }
