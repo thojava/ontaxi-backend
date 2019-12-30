@@ -154,7 +154,7 @@ public class RestDriverController {
     @RequestMapping(value = "/uploadCurrentLocation/{versionCode}", method = RequestMethod.POST)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public void uploadCurrentLocation(@ApiIgnore @CurrentUser Driver driver, @PathVariable int versionCode, @RequestBody Location currentLocation) {
-//        logger.debug(versionCode + " " + driverCode + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
+        logger.debug(versionCode + " " + driver.getEmail() + " " + currentLocation.getLongitude() + ":" + currentLocation.getLatitude() + ":" + currentLocation.getAccuracy());
         eventBus.notify("updateLocation", Event.wrap(new LocationWithDriver(currentLocation, driver.getEmail(), versionCode, new Date())));
     }
 
