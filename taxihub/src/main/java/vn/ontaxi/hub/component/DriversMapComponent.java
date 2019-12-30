@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import vn.ontaxi.common.model.LocationWithDriver;
+import vn.ontaxi.hub.utils.DriverUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.Serializable;
@@ -44,14 +45,8 @@ public class DriversMapComponent implements Serializable {
     }
 
     public String getLocationJson() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + taxiApiKey);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> entity = restTemplate.exchange(restUrl + "/driver/location?showFullDriverInfo=true", HttpMethod.GET, new HttpEntity<>(headers), String.class);
-        Type locationType = new TypeToken<List<LocationWithDriver>>() {}.getType();
-        List<LocationWithDriver> onlineDriverMap = ObjectUtils.defaultIfNull(new Gson().fromJson(entity.getBody(), locationType), new ArrayList<>());
+        List<LocationWithDriver> onlineDriverMap = DriverUtils.getLocationJson(taxiApiKey, restUrl);
         numOfActivatedCar = onlineDriverMap.size();
         return new Gson().toJson(onlineDriverMap);
     }
-
 }

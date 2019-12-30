@@ -1,22 +1,32 @@
 package vn.ontaxi.hub.component;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import vn.ontaxi.common.jpa.entity.Driver;
 import vn.ontaxi.common.jpa.entity.DriverPayment;
 import vn.ontaxi.common.jpa.repository.DriverPaymentRepository;
 import vn.ontaxi.common.jpa.repository.DriverRepository;
 import vn.ontaxi.common.model.LocationWithDriver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import vn.ontaxi.common.service.ConfigurationService;
+import vn.ontaxi.hub.utils.DriverUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
 @Scope("view")
+@PropertySource("classpath:application.properties")
 public class DriversComponent {
+    @Value("${rest.url}")
+    private String restUrl;
+    @Value("${taxiApiKey}")
+    private String taxiApiKey;
+
     private final DriverRepository driverRepository;
     private Map<String, LocationWithDriver> onlineDriversLocation = new HashMap<>();
     private DriverPaymentRepository driverPaymentRepository;
@@ -29,6 +39,14 @@ public class DriversComponent {
         this.driverRepository = driverRepository;
         this.driverPaymentRepository = driverPaymentRepository;
         this.configurationService = configurationService;
+    }
+
+    @PostConstruct
+    public void init() {
+        List<LocationWithDriver> onlineDriverMap = DriverUtils.getLocationJson(taxiApiKey, restUrl);
+        for (LocationWithDriver locationWithDriver : onlineDriverMap) {
+            onlineDriversLocation.put(locationWithDriver.getDriverCode(), locationWithDriver);
+        }
     }
 
     public Iterable<Driver> getLongHaulDrivers() {
@@ -79,10 +97,6 @@ public class DriversComponent {
 
     public String viewDriverDetail(Driver driver) {
         return "driver_detail.jsf?faces-redirect=true&id=" + driver.getId();
-    }
-
-    public void updateDriver(Driver driver) {
-        driverRepository.saveAndFlush(driver);
     }
 
     public List<DriverPayment> getDriverPayments() {

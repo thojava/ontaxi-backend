@@ -61,7 +61,6 @@ public class RestDriverController {
     private BaseMapper<Booking, BookingDTO> mapper = new BaseMapper<>(Booking.class, BookingDTO.class);
     private BaseMapper<Driver, DriverDTO> driverMapper = new BaseMapper<>(Driver.class, DriverDTO.class);
 
-    private final LocationWithDriverService driversMapComponent;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final MessageSource messageSource;
@@ -78,8 +77,7 @@ public class RestDriverController {
     private EntityManager em;
 
     @Autowired
-    public RestDriverController(LocationWithDriverService driversMapComponent, AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource, DriverRepository driverRepository, EventBus eventBus, LocationWithDriverService locationWithDriverService, BookingRepository bookingRepository, FCMService fcmService, SMSService smsService, ConfigurationService configurationService, PriceUtils priceUtils) {
-        this.driversMapComponent = driversMapComponent;
+    public RestDriverController(AuthenticationManager authenticationManager, JwtTokenProvider tokenProvider, MessageSource messageSource, DriverRepository driverRepository, EventBus eventBus, LocationWithDriverService locationWithDriverService, BookingRepository bookingRepository, FCMService fcmService, SMSService smsService, ConfigurationService configurationService, PriceUtils priceUtils) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.messageSource = messageSource;
@@ -102,7 +100,7 @@ public class RestDriverController {
     @CrossOrigin
     @RequestMapping(path = "/location", method = RequestMethod.GET)
     public String getLocationJson(@RequestParam boolean showFullDriverInfo) {
-        return new Gson().toJson(driversMapComponent.getOnlineDriversLocation(showFullDriverInfo).values());
+        return new Gson().toJson(locationWithDriverService.getOnlineDriversLocation(showFullDriverInfo).values());
     }
 
     @CrossOrigin
