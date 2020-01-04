@@ -20,12 +20,9 @@ public class PriceUtils {
         this.priceConfigurationRepository = priceConfigurationRepository;
     }
 
-    public PriceInfo calculatePrice(String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes carType, boolean isRoundTrip,
+    public PriceInfo calculatePrice(String fromLocation, String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes carType, boolean isRoundTrip,
                                            double wait_hours, boolean driverWillWait, double transportFee, double promotionPercentage) {
-        double terrain_price = 0.D;
-        if(distanceMatrixService.getDistance(toLocation, TAM_DAO_LOCATION) < 4000) {
-            terrain_price = 50000;
-        }
+        double terrain_price = calculateTerrainPrice(fromLocation, toLocation);
 
         if (isRoundTrip) {
             double lowDistance = Math.min(outwardDistant, returnDistant);
@@ -43,6 +40,13 @@ public class PriceUtils {
         }
     }
 
+    private double calculateTerrainPrice(String fromLocation, String toLocation) {
+        double terrain_price = 0.D;
+        if(distanceMatrixService.getDistance(toLocation, TAM_DAO_LOCATION) < 4000 || distanceMatrixService.getDistance(fromLocation, TAM_DAO_LOCATION) < 4000) {
+            terrain_price = 50000;
+        }
+        return terrain_price;
+    }
     public static double getFreeWaitTime(double distance) {
         // 1 km get 1.5 min free wait.
         return distance * 1.5 / 60;
@@ -58,7 +62,7 @@ public class PriceUtils {
     }
 
     public void calculateActualPrice(Booking booking) {
-        PriceInfo priceInfo = calculatePrice(booking.getTo_location(), booking.getUnit_price(), booking.isRoundTrip() ? booking.getOutward_distance() : booking.getActual_total_distance(), booking.getReturn_distance(),
+        PriceInfo priceInfo = calculatePrice(booking.getFrom_location(), booking.getTo_location(), booking.getUnit_price(), booking.isRoundTrip() ? booking.getOutward_distance() : booking.getActual_total_distance(), booking.getReturn_distance(),
                 booking.getCar_type(), booking.isRoundTrip(), booking.getWait_hours(), booking.isDriver_will_wait(), booking.getTransport_fee(), booking.getPromotionPercentage());
         booking.setActual_total_price(priceInfo.getTotal_price());
         booking.setActualTotalPriceBeforePromotion(priceInfo.getTotal_price_before_promotion());

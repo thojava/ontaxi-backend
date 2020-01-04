@@ -30,7 +30,7 @@ public class PriceCalculator {
             estimatedWaitHours = TimeUnit.SECONDS.toHours(differenceInMillis / 1000) - estimatedTripHours;
         }
 
-        PriceInfo priceInfo = priceUtils.calculatePrice(booking.getTo_location(), booking.getUnit_price(), booking.getTotal_distance(), booking.getTotal_distance(), booking.getCar_type(),
+        PriceInfo priceInfo = priceUtils.calculatePrice(booking.getFrom_location(), booking.getTo_location(), booking.getUnit_price(), booking.getTotal_distance(), booking.getTotal_distance(), booking.getCar_type(),
                 booking.isRoundTrip(), estimatedWaitHours, booking.isDriver_will_wait(), 0, booking.getPromotionPercentage());
         booking.setTotal_price(priceInfo.getTotal_price());
         booking.setTotalPriceBeforePromotion(priceInfo.getTotal_price_before_promotion());
