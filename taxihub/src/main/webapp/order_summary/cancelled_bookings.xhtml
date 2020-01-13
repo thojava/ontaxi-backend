@@ -33,12 +33,6 @@
                  lazy="true"
                  filteredValue="#{bookingListComponent.filteredCancelledBookings}">
 
-        <p:column style="width: 50px">
-            <p:selectBooleanCheckbox value="#{booking.beanSelected}">
-                <p:ajax/>
-            </p:selectBooleanCheckbox>
-        </p:column>
-
         <p:column headerText="Id" style="width: 50px" filterBy="#{booking.id}" filterMatchMode="contains">
             <p:commandLink value="#{booking.id}"
                            action="#{bookingListComponent.selectBooking(booking)}" update="@all"/>
