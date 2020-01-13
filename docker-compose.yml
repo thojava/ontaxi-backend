@@ -1,0 +1,35 @@
+version: '2.2'
+
+services:
+  apache:
+    image: nginx
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_PORT=80
+    depends_on:
+      - hub
+    restart: always
+  hub:
+    image: thold88/ontaxi-hub:1.0.0-SNAPSHOT
+    environment:
+      TZ: "Europe/Amsterdam"
+    depends_on:
+      - mysql
+    ports:
+      - "8585:8080"
+  mysql:
+    image: thold88/ontaxi-mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "adm1n"
+      MYSQL_DATABASE: "ontaxi"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "adm1n"
+      TZ: "Asia/Ho_Chi_Minh"
+    command: ["--max_allowed_packet=512M", "--innodb_log_file_size=200M"]
+    restart: always
+volumes:
+  mysql_data:
+    driver: local

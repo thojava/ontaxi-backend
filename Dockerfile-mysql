@@ -1,0 +1,5 @@
+FROM mysql:5.7
+
+ADD sql/init.sql /docker-entrypoint-initdb.d
+ADD sql/view.sql /docker-entrypoint-initdb.d
+ADD sql/quartz.sql /docker-entrypoint-initdb.d
