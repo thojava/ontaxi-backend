@@ -34,6 +34,8 @@ public class TaxiLazyDataModel<T extends AbstractEntity> extends LazyDataModel<T
         this.jpaSpecificationExecutor = jpaSpecificationExecutor;
         if (bookingOrder == BookingOrder.DEPARTURE_TIME_ASC) {
             defaultOrder = new Sort.Order(Sort.Direction.ASC, "departureTime");
+        } else if (bookingOrder == BookingOrder.DEPARTURE_TIME_DESC) {
+            defaultOrder = new Sort.Order(Sort.Direction.DESC, "departureTime");
         } else if (bookingOrder == BookingOrder.ARRIVAL_TIME_DESC) {
             defaultOrder = new Sort.Order(Sort.Direction.DESC, "arrivalTime");
         } else if (bookingOrder == BookingOrder.ARRIVAL_TIME_ASC) {

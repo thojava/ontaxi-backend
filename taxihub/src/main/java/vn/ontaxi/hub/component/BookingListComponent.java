@@ -230,7 +230,7 @@ public class BookingListComponent {
 
     public TaxiLazyDataModel<Booking> getCancelledBookings() {
         if(cancelledBookings == null) {
-            cancelledBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.DEPARTURE_TIME_ASC);
+            cancelledBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.DEPARTURE_TIME_DESC);
             cancelledBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.equal(root.get("status"), OrderStatus.ABORTED)));
             if (filterFromDate != null && filterToDate != null) {
                 cancelledBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.between(root.get("departureTime"), DateUtils.getStartOfDay(filterFromDate), DateUtils.getEndOfDay(filterToDate))));
