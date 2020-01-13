@@ -65,7 +65,7 @@
                         #{msg.no_of_guests}
                     </td>
                     <td>
-                        <p:selectOneMenu value="#{orderDetailComponent.booking.noOfGuests}">
+                        <p:selectOneMenu value="#{orderDetailComponent.booking.noOfGuests}" disabled="#{not (orderDetailComponent.booking.ordered or orderDetailComponent.booking.confirmed)}">
                             <f:selectItems value="#{selectItemGenerator.getNoOfGuestSelectItems(orderDetailComponent.booking.car_type.noOfSeats)}"/>
                             <p:ajax event="change" listener="#{orderDetailComponent.saveBooking}" update="@form"/>
                         </p:selectOneMenu>

@@ -57,6 +57,10 @@
             <p:tab title="#{msg.completed} (#{bookingListComponent.completedBookingSize})">
                 <ui:include src="order_summary/completed_bookings.xhtml"/>
             </p:tab>
+
+            <p:tab title="#{msg.cancelled} (#{bookingListComponent.cancelledBookingSize})">
+                <ui:include src="order_summary/cancelled_bookings.xhtml"/>
+            </p:tab>
         </p:tabView>
     </h:form>
 </ui:composition>

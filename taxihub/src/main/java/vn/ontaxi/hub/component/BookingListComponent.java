@@ -43,9 +43,11 @@ public class BookingListComponent {
     private TaxiLazyDataModel<Booking> acceptedBookings;
     private TaxiLazyDataModel<Booking> inProgressBookings;
     private TaxiLazyDataModel<Booking> completedBookings;
+    private TaxiLazyDataModel<Booking> cancelledBookings;
 
     private List<Booking> filteredNewBookings;
     private List<Booking> filteredCompletedBookings;
+    private List<Booking> filteredCancelledBookings;
     private Date filterFromDate;
     private Date filterToDate;
 
@@ -226,6 +228,17 @@ public class BookingListComponent {
         return completedBookings;
     }
 
+    public TaxiLazyDataModel<Booking> getCancelledBookings() {
+        if(cancelledBookings == null) {
+            cancelledBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.DEPARTURE_TIME_ASC);
+            cancelledBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.equal(root.get("status"), OrderStatus.ABORTED)));
+            if (filterFromDate != null && filterToDate != null) {
+                cancelledBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.between(root.get("departureTime"), DateUtils.getStartOfDay(filterFromDate), DateUtils.getEndOfDay(filterToDate))));
+            }
+        }
+
+        return cancelledBookings;
+    }
     public TaxiLazyDataModel<Booking> getCompletedBookingsForCustomer(String phoneNumber) {
         if (completedBookings == null) {
             completedBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.ARRIVAL_TIME_DESC);
@@ -241,6 +254,10 @@ public class BookingListComponent {
 
     public Long getCompletedBookingSize() {
         return getCompletedBookings().getTotalSize();
+    }
+
+    public Long getCancelledBookingSize() {
+        return getCancelledBookings().getTotalSize();
     }
 
     public double getTotalCompletedKM() {
@@ -265,6 +282,10 @@ public class BookingListComponent {
 
     public void filterCompletedBooking() {
         completedBookings = null;
+    }
+
+    public void filterCancelledBooking() {
+        cancelledBookings = null;
     }
 
     public String justifyLocation(String location) {
@@ -305,5 +326,13 @@ public class BookingListComponent {
 
     public void setFilterToDate(Date filterToDate) {
         this.filterToDate = filterToDate;
+    }
+
+    public List<Booking> getFilteredCancelledBookings() {
+        return filteredCancelledBookings;
+    }
+
+    public void setFilteredCancelledBookings(List<Booking> filteredCancelledBookings) {
+        this.filteredCancelledBookings = filteredCancelledBookings;
     }
 }

@@ -1,0 +1,122 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <!--@elvariable id="msg" type="vn.ontaxi.messages.ResourceBundleBean"-->
+    <!--@elvariable id="bookingListComponent" type="vn.ontaxi.hub.component.BookingListComponent"-->
+
+    <ui:param name="datePattern" value="dd-MM-yyyy"/>
+    <div>
+        <h:outputText value="#{msg.bo_loc}:    " style="font-weight: bolder"/>
+        <h:outputText value="#{msg.tu_ngay}"/>
+        <p:calendar value="${bookingListComponent.filterFromDate}" pattern="${datePattern}">
+            <p:ajax event="dateSelect" listener="#{bookingListComponent.filterCancelledBooking}"
+                    update="cancelledBookingTable"/>
+        </p:calendar>
+        <h:outputText value="#{msg.den_ngay}" style="margin-left: 20px;"/>
+        <p:calendar value="${bookingListComponent.filterToDate}" pattern="${datePattern}">
+            <p:ajax event="dateSelect" listener="#{bookingListComponent.filterCancelledBooking}"
+                    update="cancelledBookingTable"/>
+        </p:calendar>
+    </div>
+
+    <p:spacer height="10px"/>
+    <p:dataTable value="#{bookingListComponent.cancelledBookings}"
+                 var="booking"
+                 rows="10"
+                 paginator="true"
+                 id="cancelledBookingTable"
+                 widgetVar="cancelledBookingTable"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,15"
+                 lazy="true"
+                 filteredValue="#{bookingListComponent.filteredCancelledBookings}">
+
+        <p:column style="width: 50px">
+            <p:selectBooleanCheckbox value="#{booking.beanSelected}">
+                <p:ajax/>
+            </p:selectBooleanCheckbox>
+        </p:column>
+
+        <p:column headerText="Id" style="width: 50px" filterBy="#{booking.id}" filterMatchMode="contains">
+            <p:commandLink value="#{booking.id}"
+                           action="#{bookingListComponent.selectBooking(booking)}" update="@all"/>
+        </p:column>
+
+        <p:column headerText="#{msg.khach_hang}" filterBy="#{booking.mobile}" filterMatchMode="contains">
+            <h:outputText value="#{booking.mobile}&lt;br/&gt;#{booking.name}" escape="false"/>
+        </p:column>
+
+        <p:column headerText="#{msg.gio_di}">
+            <h:outputText value="#{booking.departureTime}">
+                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+            </h:outputText>
+        </p:column>
+
+        <p:column headerText="#{msg.diem_di}">
+            <h:outputText value="#{bookingListComponent.justifyLocation(booking.from_location)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.diem_den}">
+            <h:outputText value="#{bookingListComponent.justifyLocation(booking.to_location)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.quang_duong}">
+            <h:outputText
+                    value="#{numberFormatterComponent.formatDistance(booking.actual_total_distance)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.tong_tien}">
+            <h:outputText value="#{numberFormatterComponent.formatPrice(booking.actual_total_price)}"/>
+        </p:column>
+
+        <p:column headerText="#{msg.tai_xe}"
+                  filterBy="#{booking.accepted_by_driver.name}"
+                  filterMatchMode="contains">
+            <ui:fragment rendered="#{empty booking.accepted_by_driver.name}">
+                <h:outputText value="${booking.accepted_by_driver.email}"/>
+            </ui:fragment>
+            <ui:fragment rendered="#{not empty booking.accepted_by_driver.name}">
+                <h:outputText
+                        value="${booking.accepted_by_driver.name} ${booking.accepted_by_driver.mobile} ${booking.accepted_by_driver.license_plates}"/>
+            </ui:fragment>
+        </p:column>
+
+        <f:facet name="footer">
+            <!--@elvariable id="userCredentialComponent" type="vn.ontaxi.hub.component.UserCredentialComponent"-->
+            <p:fragment id="footerPanel" autoUpdate="true" rendered="#{userCredentialComponent.manager}">
+                <table>
+                    <tr>
+                        <td>
+                            <h:outputText value="#{msg.tong_khuyen_mai}"/>
+                        </td>
+                        <td>
+                            <h:outputText
+                                    value="${numberFormatterComponent.formatDistance(bookingListComponent.totalCompletedKM)}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText value="#{msg.tong_tien}"/>
+                        </td>
+                        <td>
+                            <h:outputText
+                                    value="${numberFormatterComponent.formatPrice(bookingListComponent.totalCompletedPrice)}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText value="#{msg.tong_phi}"/>
+                        </td>
+                        <td>
+                            <h:outputText
+                                    value="${numberFormatterComponent.formatPrice(bookingListComponent.totalCompletedFee)}"/>
+                        </td>
+                    </tr>
+                </table>
+            </p:fragment>
+        </f:facet>
+    </p:dataTable>
+
+</ui:composition>
