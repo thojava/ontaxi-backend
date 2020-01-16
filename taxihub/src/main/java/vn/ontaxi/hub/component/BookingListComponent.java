@@ -194,7 +194,7 @@ public class BookingListComponent {
 
     public TaxiLazyDataModel<Booking> getAcceptedBookings() {
         if (acceptedBookings == null) {
-            acceptedBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.ARRIVAL_TIME_DESC);
+            acceptedBookings = new TaxiLazyDataModel<>(lazyDataService, bookingRepository, BookingOrder.DEPARTURE_TIME_ASC);
             acceptedBookings.addPredicate(((criteriaBuilder, root) -> criteriaBuilder.equal(root.get("status"), OrderStatus.ACCEPTED)));
         }
 
