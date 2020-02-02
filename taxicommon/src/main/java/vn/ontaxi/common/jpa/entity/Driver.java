@@ -1,6 +1,7 @@
 package vn.ontaxi.common.jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.slf4j.Logger;
 import vn.ontaxi.common.constant.CarTypes;
 import vn.ontaxi.common.constant.LicenseTypes;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Data
 public class Driver extends AbstractEntity {
 
     public enum Status {
@@ -51,6 +53,7 @@ public class Driver extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
     private String fcmToken;
+    private String notes;
 
     public Status getStatus() {
         return status;

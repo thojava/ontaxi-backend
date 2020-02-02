@@ -55,10 +55,10 @@
                                 <p:column headerText="Tên">
                                     <p:outputLabel value="#{driver.name}"/>
                                 </p:column>
-                                <p:column headerText="Phone">
+                                <p:column headerText="Phone" colspan="2">
                                     <p:outputLabel value="#{driver.mobile}"/>
                                 </p:column>
-                                <p:column headerText="Email">
+                                <p:column headerText="Email" colspan="3">
                                     <p:outputLabel value="#{driver.email}"/>
                                 </p:column>
                                 <p:column headerText="Biển Số">
@@ -66,6 +66,9 @@
                                 </p:column>
                                 <p:column headerText="Loại Xe">
                                     <p:outputLabel value="#{driver.carType.description}"/>
+                                </p:column>
+                                <p:column headerText="Notes" filterBy="#{driver.notes}" filterMatchMode="contains" colspan="3">
+                                    <p:outputLabel value="#{driver.notes}"/>
                                 </p:column>
                                 <p:column style="width: 50px" headerText="Phiên Bản Ứng Dụng">
                                     <p:outputLabel value="#{driversComponent.getVersionCode(driver)}"/>
