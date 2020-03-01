@@ -7,7 +7,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - nginx_data:/etc/nginx/conf
+      - nginx_conf:/etc/nginx/conf
+      - nginx_certs:/etc/nginx/certs
     depends_on:
       - hub
       - api
@@ -45,5 +46,7 @@ services:
 volumes:
   mysql_data:
     driver: local
-  nginx_data:
+  nginx_conf:
+    driver: local
+  nginx_certs:
     driver: local
