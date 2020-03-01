@@ -29,7 +29,7 @@ services:
     ports:
       - "8586:8080"
   mysql:
-    image: thold88/ontaxi-mysql
+    image: mysql:5.7
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
