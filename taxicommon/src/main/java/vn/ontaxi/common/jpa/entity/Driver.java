@@ -3,7 +3,7 @@ package vn.ontaxi.common.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.slf4j.Logger;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.constant.LicenseTypes;
 import vn.ontaxi.common.utils.RoundUtils;
 
@@ -15,7 +15,7 @@ import java.util.Date;
 public class Driver extends AbstractEntity {
 
     public enum Status {
-        ACTIVATED("Đã kích hoạt"), REGISTRY("Chưa kích hoạt"), BLOCKED("Đã khóa");
+        ACTIVATED("Đã kích hoạt"), REGISTRY("Chưa kích hoạt");
         private String name;
 
         Status(String name) {
@@ -43,11 +43,12 @@ public class Driver extends AbstractEntity {
     private String licenseNumber;
     private boolean airport;
     @Enumerated(EnumType.STRING)
-    private CarTypes carType;
+    private CarType carType;
     private String carBrand;
     private String manufactureYear;
     private String license_plates;
     private int level;
+    @JsonIgnore
     private boolean deleted;
     private double amount;
     @Enumerated(EnumType.STRING)
@@ -129,21 +130,12 @@ public class Driver extends AbstractEntity {
     }
 
     @JsonIgnore
-    public CarTypes getCarType() {
+    public CarType getCarType() {
         return carType;
     }
 
-    public void setCarType(CarTypes carType) {
+    public void setCarType(CarType carType) {
         this.carType = carType;
-    }
-
-    @JsonIgnore
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public boolean equals(Object obj) {

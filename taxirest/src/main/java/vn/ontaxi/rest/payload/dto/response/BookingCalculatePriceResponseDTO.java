@@ -2,7 +2,7 @@ package vn.ontaxi.rest.payload.dto.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -14,7 +14,7 @@ public class BookingCalculatePriceResponseDTO {
     private String to_location;
     private Date departureTime;
     @Enumerated(EnumType.STRING)
-    private CarTypes car_type;
+    private CarType car_type;
     private double total_distance;
     private double total_price;
     private double unit_price;

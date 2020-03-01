@@ -1,6 +1,6 @@
 package vn.ontaxi.common.utils;
 
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.constant.SendToGroupOptions;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.Driver;
@@ -33,12 +33,14 @@ public class BookingUtils {
             stream = selectedDrivers.stream();
         }
 
-        // Filter out blocked driver
+        // Filter out blocked drivers
         stream = stream.filter(driver -> driver.getStatus() == Driver.Status.ACTIVATED);
 
         // Send to related car type
-        if (booking.getCar_type() == CarTypes.N7) {
-            stream = stream.filter(d -> d.getCarType() == CarTypes.N7);
+        if (!SendToGroupOptions.INDIVIDUAL.equalsIgnoreCase(sendToGroupOption)) {
+            if (booking.getCar_type() == CarType.N7) {
+                stream = stream.filter(d -> d.getCarType() == CarType.N7);
+            }
         }
 
         return stream.collect(Collectors.toList());

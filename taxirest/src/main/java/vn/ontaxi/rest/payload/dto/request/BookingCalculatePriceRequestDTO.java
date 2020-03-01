@@ -1,7 +1,7 @@
 package vn.ontaxi.rest.payload.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,13 +16,13 @@ public class BookingCalculatePriceRequestDTO {
     private Date returnDepartureTime;
     @Enumerated(EnumType.STRING)
 
-    private CarTypes car_type;
+    private CarType car_type;
 
-    public CarTypes getCar_type() {
+    public CarType getCar_type() {
         return car_type;
     }
 
-    public void setCar_type(CarTypes car_type) {
+    public void setCar_type(CarType car_type) {
         this.car_type = car_type;
     }
 

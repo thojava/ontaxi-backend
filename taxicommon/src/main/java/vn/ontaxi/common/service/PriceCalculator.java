@@ -2,7 +2,7 @@ package vn.ontaxi.common.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.PriceConfiguration;
 import vn.ontaxi.common.jpa.repository.PriceConfigurationRepository;
@@ -42,15 +42,15 @@ public class PriceCalculator {
     }
 
 
-    public double getPricePerKm(CarTypes car_type) {
+    public double getPricePerKm(CarType car_type) {
         PriceConfiguration priceConfiguration = priceConfigurationRepository.findAll().get(0);
-        if (CarTypes.N4 == car_type) {
+        if (CarType.N4 == car_type) {
             return priceConfiguration.getNormal_4();
-        } else if (CarTypes.G4 == car_type) {
+        } else if (CarType.G4 == car_type) {
             return priceConfiguration.getGood_4();
-        } else if (CarTypes.N7 == car_type) {
+        } else if (CarType.N7 == car_type) {
             return priceConfiguration.getNormal_7();
-        } else if(CarTypes.N16 == car_type) {
+        } else if(CarType.N16 == car_type) {
             return priceConfiguration.getNormal_16();
         }
 

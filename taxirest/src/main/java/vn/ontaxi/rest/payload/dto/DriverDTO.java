@@ -1,7 +1,7 @@
 package vn.ontaxi.rest.payload.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.constant.LicenseTypes;
 import vn.ontaxi.common.jpa.entity.Driver;
 
@@ -38,7 +38,7 @@ public class DriverDTO {
     private boolean airport;
     @NotNull(message = "Loại xe không được để trống")
     @Enumerated(EnumType.STRING)
-    private CarTypes carType;
+    private CarType carType;
     @NotBlank(message = "Hãng xe không được để trống")
     private String carBrand;
     @NotBlank(message = "Năm sản xuất không được để trống")
@@ -151,11 +151,11 @@ public class DriverDTO {
         this.airport = airport;
     }
 
-    public CarTypes getCarType() {
+    public CarType getCarType() {
         return carType;
     }
 
-    public void setCarType(CarTypes carType) {
+    public void setCarType(CarType carType) {
         this.carType = carType;
     }
 

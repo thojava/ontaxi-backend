@@ -1,7 +1,7 @@
 package vn.ontaxi.common.utils;
 
 import org.springframework.stereotype.Service;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.entity.PriceConfiguration;
 import vn.ontaxi.common.jpa.repository.PriceConfigurationRepository;
@@ -20,8 +20,8 @@ public class PriceUtils {
         this.priceConfigurationRepository = priceConfigurationRepository;
     }
 
-    public PriceInfo calculatePrice(String fromLocation, String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarTypes carType, boolean isRoundTrip,
-                                           double wait_hours, boolean driverWillWait, double transportFee, double promotionPercentage) {
+    public PriceInfo calculatePrice(String fromLocation, String toLocation, double pricePerKm, double outwardDistant, double returnDistant, CarType carType, boolean isRoundTrip,
+                                    double wait_hours, boolean driverWillWait, double transportFee, double promotionPercentage) {
         double terrain_price = calculateTerrainPrice(fromLocation, toLocation);
 
         if (isRoundTrip) {
@@ -57,7 +57,7 @@ public class PriceUtils {
         return driverWillWait ? priceConfiguration.getReturn_round_percentage() : priceConfiguration.getReturn_round_percentage_without_waiting();
     }
 
-    public static int getPricePerWaitHour(CarTypes car_type) {
+    public static int getPricePerWaitHour(CarType car_type) {
         return 40000;
     }
 

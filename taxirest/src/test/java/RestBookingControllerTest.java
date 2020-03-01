@@ -12,7 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.jpa.entity.Booking;
 import vn.ontaxi.common.jpa.repository.BookingRepository;
 import vn.ontaxi.common.jpa.repository.PromotionPlanRepository;
@@ -115,7 +115,7 @@ public class RestBookingControllerTest extends AbstractControllerTest {
     @Test
     public void calculateDistanceAndPrice_success() throws Exception {
         BookingCalculatePriceRequestDTO bookingCalculatePriceRequestDTO = new BookingCalculatePriceRequestDTO();
-        bookingCalculatePriceRequestDTO.setCar_type(CarTypes.N4);
+        bookingCalculatePriceRequestDTO.setCar_type(CarType.N4);
         bookingCalculatePriceRequestDTO.setFrom_location("Thạch Đà Mê Linh Hà Nội");
         bookingCalculatePriceRequestDTO.setTo_location("144 Xuân Thủy Cầu Giấy Hà Nội");
         bookingCalculatePriceRequestDTO.setIs_round_trip("N");

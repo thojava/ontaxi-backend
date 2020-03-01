@@ -1,11 +1,11 @@
 package vn.ontaxi.common.constant;
 
-public enum CarTypes {
+public enum CarType {
     N4("4 Chỗ"), G4("5 Chỗ"), N7("7 Chỗ"), N16("16 Chỗ");
 
     private String description;
 
-    CarTypes(String description) {
+    CarType(String description) {
         this.description = description;
     }
 

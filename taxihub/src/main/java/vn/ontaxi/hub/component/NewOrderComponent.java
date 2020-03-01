@@ -81,7 +81,7 @@ public class NewOrderComponent extends AbstractOrderComponent {
         booking = new Booking();
         booking.setPromotionPercentage(BookingUtils.calculatePromotionPercentage(DateUtils.today(), 0, false, promotionPlanRepository));
         booking.setFee_percentage(feeCalculator.getDefaultFeePercentage());
-        booking.setCar_type(CarTypes.N4);
+        booking.setCar_type(CarType.N4);
         booking.setStatus(OrderStatus.NEW);
 
         Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();

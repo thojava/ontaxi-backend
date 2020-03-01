@@ -1,19 +1,16 @@
 package vn.ontaxi.common.jpa.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import vn.ontaxi.common.constant.BooleanConstants;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.constant.OrderStatus;
 import vn.ontaxi.common.utils.BookingUtils;
 import vn.ontaxi.common.utils.NumberUtils;
-import vn.ontaxi.common.utils.PriceUtils;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.TimeZone;
 
 @Entity
 @Data
@@ -60,7 +57,7 @@ public class Booking extends AbstractEntity {
     private String status = OrderStatus.NEW;
     private String accepted_by;
     @Enumerated(EnumType.STRING)
-    private CarTypes car_type;
+    private CarType car_type;
     private String is_round_trip;
     private boolean driver_will_wait;
     private double wait_hours;
@@ -299,11 +296,11 @@ public class Booking extends AbstractEntity {
         this.actual_total_fee = actual_total_fee;
     }
 
-    public CarTypes getCar_type() {
+    public CarType getCar_type() {
         return car_type;
     }
 
-    public void setCar_type(CarTypes car_type) {
+    public void setCar_type(CarType car_type) {
         this.car_type = car_type;
     }
 

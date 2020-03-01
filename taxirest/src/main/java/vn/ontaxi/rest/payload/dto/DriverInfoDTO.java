@@ -2,7 +2,7 @@ package vn.ontaxi.rest.payload.dto;
 
 import com.google.maps.model.LatLng;
 import io.swagger.annotations.ApiModelProperty;
-import vn.ontaxi.common.constant.CarTypes;
+import vn.ontaxi.common.constant.CarType;
 import vn.ontaxi.common.jpa.entity.Driver;
 
 import javax.validation.constraints.Email;
@@ -24,7 +24,7 @@ public class DriverInfoDTO {
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")
     private String email;
-    private CarTypes carTypes;
+    private CarType carTypes;
     private boolean airport;
 
     public DriverInfoDTO() {
@@ -51,11 +51,11 @@ public class DriverInfoDTO {
         this.email = email;
     }
 
-    public CarTypes getCarTypes() {
+    public CarType getCarTypes() {
         return carTypes;
     }
 
-    public void setCarTypes(CarTypes carTypes) {
+    public void setCarTypes(CarType carTypes) {
         this.carTypes = carTypes;
     }
 
