@@ -11,6 +11,7 @@ services:
       - nginx_data:/etc/nginx/conf
     depends_on:
       - hub
+      - api
     restart: always
   hub:
     image: thold88/ontaxi-hub:1.0.0-SNAPSHOT
