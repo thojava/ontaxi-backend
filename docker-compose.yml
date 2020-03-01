@@ -15,11 +15,19 @@ services:
   hub:
     image: thold88/ontaxi-hub:1.0.0-SNAPSHOT
     environment:
-      TZ: "Europe/Amsterdam"
+      TZ: "Asia/Ho_Chi_Minh"
     depends_on:
       - mysql
     ports:
       - "8585:8080"
+  api:
+    image: thold88/ontaxi-api:1.0.0-SNAPSHOT
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+    depends_on:
+      - mysql
+    ports:
+      - "8586:8080"
   mysql:
     image: thold88/ontaxi-mysql
     volumes:

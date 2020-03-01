@@ -253,4 +253,42 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>dockerfile-maven-plugin</artifactId>
+                        <version>1.3.6</version>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <repository>thold88/ontaxi-hub</repository>
+                            <tag>${project.version}</tag>
+                            <pullNewerImage>true</pullNewerImage>
+                            <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>docker-build</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>docker-push</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
