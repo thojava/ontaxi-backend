@@ -15,6 +15,7 @@ services:
     restart: always
   hub:
     image: thold88/ontaxi-hub:1.0.0-SNAPSHOT
+    container_name: ontaxi-hub
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     depends_on:
@@ -23,6 +24,7 @@ services:
       - "8585:8080"
   api:
     image: thold88/ontaxi-api:1.0.0-SNAPSHOT
+    container_name: ontaxi-api
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     depends_on:
