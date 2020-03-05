@@ -221,10 +221,6 @@
                 <module>taxihub</module>
                 <module>taxirest</module>
             </modules>
-            <properties>
-                <rest.url>https://api.ontaxi.vn</rest.url>
-                <swagger.docket.host>api.ontaxi.vn</swagger.docket.host>
-            </properties>
         </profile>
     </profiles>
 </project>

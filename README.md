@@ -11,3 +11,6 @@
 2. Install poseidon-theme-2.0.0.jar to local maven repository
     mvn install:install-file -Dfile=lib\poseidon-theme-2.0.0.jar -DgroupId=org.primefaces \
         -DartifactId=poseidon-theme -Dversion=2.0.0
+
+3. Build docker
+    mvn -P docker
