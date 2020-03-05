@@ -10,6 +10,7 @@ jobs:
       - setup_remote_docker
       - run: |
             echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+      - run: mvn initialize
       - run: mvn -P docker
 
 
