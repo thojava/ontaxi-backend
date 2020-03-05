@@ -7,7 +7,10 @@ jobs:
     working_directory: ~/backend
     steps:
       - checkout
-      - run: mvn clean package -Pprod
-      -
+      - run:
+        name: Build and push docker images
+        command: |
+          echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          mvn -P docker
 
 
