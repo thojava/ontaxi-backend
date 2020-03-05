@@ -289,9 +289,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <properties>
-                <rest.url>https://api.ontaxi.vn</rest.url>
-            </properties>
         </profile>
     </profiles>
 </project>

@@ -191,9 +191,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <properties>
-                <swagger.docket.host>api.ontaxi.vn</swagger.docket.host>
-            </properties>
         </profile>
     </profiles>
 </project>
