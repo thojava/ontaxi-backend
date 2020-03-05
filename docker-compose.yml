@@ -3,6 +3,7 @@ version: '2.2'
 services:
   nginx:
     image: nginx
+    container_name: ontaxi-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -20,8 +21,6 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     depends_on:
       - mysql
-    ports:
-      - "8585:8080"
   api:
     image: thold88/ontaxi-api:1.0.0-SNAPSHOT
     container_name: ontaxi-api
@@ -29,10 +28,9 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     depends_on:
       - mysql
-    ports:
-      - "8586:8080"
   mysql:
     image: mysql:5.7
+    container_name: ontaxi-mysql
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
