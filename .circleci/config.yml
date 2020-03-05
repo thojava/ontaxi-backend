@@ -14,6 +14,6 @@ jobs:
       - run: mvn -P prod clean package
       - run: mvn -P docker
       - run: |
-            echo "$SSH_PASSWORD" | ssh admin@hub.ontaxi.vn -t bash -ci deploy_hub
+            echo "$SSH_PASSWORD" | ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t bash -ci deploy_hub
 
 
