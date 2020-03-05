@@ -6,6 +6,7 @@ jobs:
 
     working_directory: ~/backend
     steps:
+      - run: sudo apt-get install sshpass
       - checkout
       - setup_remote_docker
       - run: |
@@ -13,7 +14,6 @@ jobs:
       - run: mvn initialize
       - run: mvn -P prod clean package
       - run: mvn -P docker
-      - run: |
-            echo "$SSH_PASSWORD" | ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t bash -ci deploy_hub
+      - run: sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t bash -ci deploy_hub
 
 
