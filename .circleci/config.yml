@@ -7,10 +7,9 @@ jobs:
     working_directory: ~/backend
     steps:
       - checkout
-      - run:
-        name: Build and push docker images
-        command: |
-          echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          mvn -P docker
+      - setup_remote_docker
+      - run: |
+            echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+      - run: mvn -P docker
 
 
