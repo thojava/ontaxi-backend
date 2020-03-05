@@ -13,5 +13,7 @@ jobs:
       - run: mvn initialize
       - run: mvn clean package
       - run: mvn -P docker
+      - run: |
+            echo "SSH_PASSWORD" ssh admin@hub.ontaxi.vn -t bash -ci deploy_hub
 
 
