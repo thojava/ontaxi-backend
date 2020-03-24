@@ -28,6 +28,15 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     depends_on:
       - mysql
+  backup:
+    image: thold88/ontaxi-backup:1.0.0
+    tty: true
+    container_name: ontaxi-backup
+    depends_on:
+      - mysql
+    environment:
+      - AWS_ACCESS_KEY_ID=AKIAQFNFYMQHBMSXWIWK
+      - AWS_SECRET_ACCESS_KEY=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
   mysql:
     image: mysql:5.7
     container_name: ontaxi-mysql
