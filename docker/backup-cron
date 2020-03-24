@@ -1,1 +1,1 @@
-15 03 * * * /usr/local/bin/mysqlbackup-tos3.sh
+01 * * * * /usr/local/bin/mysqlbackup-tos3.sh
