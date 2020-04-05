@@ -31,11 +31,17 @@ services:
     depends_on:
       - mysql
   backup:
-    image: thold88/ontaxi-backup:1.0.0
+    image: thold88/mysql-s3-backup:1.0.0
     tty: true
     container_name: ontaxi-backup
     depends_on:
       - mysql
+    environment:
+      MYSQL_DATABASE: "ontaxi"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "adm1n"
+      AWS_ACCESS_KEY_ID: "AKIAQFNFYMQHBMSXWIWK"
+      AWS_SECRET_ACCESS_KEY: "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"
   mysql:
     image: mysql:5.7
     container_name: ontaxi-mysql
