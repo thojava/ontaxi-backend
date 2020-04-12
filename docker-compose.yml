@@ -2,15 +2,20 @@ version: '2.2'
 
 services:
   nginx:
-    image: nginx
+    build:
+      context: docker/nginx
     container_name: ontaxi-nginx
     environment:
       TZ: "Asia/Ho_Chi_Minh"
+      PUID: 1000
+      PGID: 1000
+      URL: ontaxi.vn
+      SUBDOMAINS: api,hub
+      VALIDATION: http
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - nginx_conf:/etc/nginx/conf.d
       - nginx_certs:/etc/nginx/certs
     depends_on:
       - hub
