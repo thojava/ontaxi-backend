@@ -11,7 +11,7 @@ services:
       PGID: 1000
       URL: ontaxi.vn
       SUBDOMAINS: api,hub
-      ONLY_SUBDOMAINS: true
+      ONLY_SUBDOMAINS: "true"
       VALIDATION: http
     ports:
       - "80:80"
