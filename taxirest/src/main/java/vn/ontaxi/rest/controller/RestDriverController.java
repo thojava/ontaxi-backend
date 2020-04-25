@@ -133,6 +133,7 @@ public class RestDriverController {
             return restResult;
         }
 
+        System.out.println(logger.getName() + " " + logger.isDebugEnabled());
         logger.debug(String.format("Driver login with email %s successfully", email));
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(driver, null, Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name()))));
