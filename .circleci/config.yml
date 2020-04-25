@@ -14,6 +14,8 @@ jobs:
       - run: mvn initialize
       - run: mvn -P prod clean package
       - run: mvn -P docker
-      - run: sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t "cd ~/sources/ontaxi;git pull;docker pull thold88/ontaxi-hub:1.0.0-SNAPSHOT;docker pull thold88/ontaxi-api:1.0.0-SNAPSHOT;docker-compose up -d"
-
+      - run: sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t "cd ~/sources/ontaxi;git pull"
+      - run: sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t "cd ~/sources/ontaxi;docker pull thold88/ontaxi-hub:1.0.0-SNAPSHOT"
+      - RUN: sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t "cd ~/sources/ontaxi;docker pull thold88/ontaxi-api:1.0.0-SNAPSHOT"
+      - run: sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no admin@hub.ontaxi.vn -t "cd ~/sources/ontaxi;docker-compose up -d"
 
