@@ -124,15 +124,16 @@ public class RestDriverController {
     @ApiOperation("Verify driver account via email")
     @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.POST)
     public RestResult validateLoginEmail(@PathVariable String email) {
-        logger.debug(String.format("Driver login with email %s", email));
-
         RestResult<JwtAuthenticationResponse> restResult = new RestResult<>();
         Driver driver = driverRepository.findByEmailAndDeletedFalse(email);
         if (driver == null || driver.getStatus() != Driver.Status.ACTIVATED) {
+            logger.debug(String.format("Driver login with email %s failed", email));
             restResult.setSucceed(false);
             restResult.setMessage(messageSource.getMessage("account_is_not_registered", new String[]{email}, Locale.getDefault()));
             return restResult;
         }
+
+        logger.debug(String.format("Driver login with email %s successfully", email));
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(driver, null, Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_DRIVER.name()))));
         SecurityContextHolder.getContext().setAuthentication(authentication);
