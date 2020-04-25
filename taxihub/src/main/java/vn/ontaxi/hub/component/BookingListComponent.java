@@ -60,6 +60,7 @@ public class BookingListComponent {
         this.bookingService = bookingService;
         this.bookingRepository = bookingRepository;
         this.orderSummaryTabStore = orderSummaryTabStore;
+        logger.debug("Init booking list");
     }
 
     public void resetNewOrder() {
