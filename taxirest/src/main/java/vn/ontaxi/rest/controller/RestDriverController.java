@@ -124,6 +124,8 @@ public class RestDriverController {
     @ApiOperation("Verify driver account via email")
     @RequestMapping(path = "/validateLoginEmail/{email:.+}", method = RequestMethod.POST)
     public RestResult validateLoginEmail(@PathVariable String email) {
+        logger.debug(String.format("Driver login with email %s", email));
+
         RestResult<JwtAuthenticationResponse> restResult = new RestResult<>();
         Driver driver = driverRepository.findByEmailAndDeletedFalse(email);
         if (driver == null || driver.getStatus() != Driver.Status.ACTIVATED) {
