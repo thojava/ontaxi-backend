@@ -1,0 +1,15 @@
+version: '2.2'
+services:
+  nginx:
+    entrypoint: ["echo", "NgInx is disabled on local"]
+    restart: "no"
+  hub:
+    build:
+      context: taxihub
+    ports:
+      - "8080:8080"
+  api:
+    build:
+      context: taxirest
+    ports:
+      - "8081:8080"

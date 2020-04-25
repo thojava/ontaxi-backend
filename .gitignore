@@ -2,3 +2,6 @@
 **/*.iml
 **/.idea
 rebel.xml
+
+# env files
+.env
