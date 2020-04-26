@@ -27,6 +27,8 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     depends_on:
       - mysql
+    volumes:
+      - hub_log:/usr/local/tomcat/logs
   api:
     image: thold88/ontaxi-api:1.0.0-SNAPSHOT
     container_name: ontaxi-api
@@ -34,6 +36,8 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     depends_on:
       - mysql
+    volumes:
+      - api_log:/usr/local/tomcat/logs
   backup:
     image: thold88/mysql-s3-backup:1.0.0
     tty: true
@@ -61,4 +65,8 @@ services:
     restart: always
 volumes:
   mysql_data:
+    driver: local
+  api_log:
+    driver: local
+  hub_log:
     driver: local
