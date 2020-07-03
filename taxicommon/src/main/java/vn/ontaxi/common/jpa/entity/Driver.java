@@ -15,8 +15,8 @@ import java.util.Date;
 public class Driver extends AbstractEntity {
 
     public enum Status {
-        ACTIVATED("Đã kích hoạt"), REGISTRY("Chưa kích hoạt");
-        private String name;
+        ACTIVATED("Đã kích hoạt"), REGISTRY("Chưa kích hoạt"), BLOCKED("Đã khóa");
+        private final String name;
 
         Status(String name) {
             this.name = name;
